@@ -1,0 +1,28 @@
+name: space_nico
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.0-279.2.beta <4.0.0'
+
+dependencies:
+  flame: ^1.14.0
+  flame_3d:
+    git:
+      url: git@github.com:flame-engine/flame.git
+      ref: feat(flame_3d)-initial-implementation-of-the-3D-support
+      path: packages/flame_3d
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/objects/
