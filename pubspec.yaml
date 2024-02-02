@@ -9,12 +9,13 @@ environment:
 dependencies:
   flame: ^1.14.0
   flame_3d:
-    git:
-      url: git@github.com:flame-engine/flame.git
-      ref: feat(flame_3d)-initial-implementation-of-the-3D-support
-      path: packages/flame_3d
+    path: ../flame/packages/flame_3d
   flutter:
     sdk: flutter
+  pointer_lock:
+    git:
+      url: https://github.com/helgoboss/pointer_lock.git
+      ref: main
 
 dev_dependencies:
   flutter_test:

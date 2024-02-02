@@ -1,11 +1,12 @@
-import 'package:flame/components.dart' show KeyboardHandler;
+import 'package:flame/components.dart' show HasGameReference, KeyboardHandler;
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flutter/gestures.dart' show kMiddleMouseButton;
 import 'package:flutter/services.dart'
     show LogicalKeyboardKey, PointerEvent, RawKeyEvent;
+import 'package:space_nico/main.dart';
 
-class KeyboardControlledCamera extends CameraComponent3D with KeyboardHandler {
+class KeyboardControlledCamera extends CameraComponent3D with KeyboardHandler, HasGameReference<ExampleGame3D> {
   KeyboardControlledCamera({
     super.world,
     super.viewport,
@@ -32,7 +33,13 @@ class KeyboardControlledCamera extends CameraComponent3D with KeyboardHandler {
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<Key> keysPressed) {
+    // TODO: use PointerLock.lastPointerDelta
+
     _keysDown = keysPressed;
+
+    if (isKeyDown(Key.escape)) {
+      game.pause();
+    }
 
     // Switch camera mode
     if (isKeyDown(Key.digit1)) {
@@ -46,6 +53,9 @@ class KeyboardControlledCamera extends CameraComponent3D with KeyboardHandler {
       up = Vector3(0, 1, 0); // Reset roll
     } else if (isKeyDown(Key.digit4)) {
       mode = CameraMode.orbital;
+      up = Vector3(0, 1, 0); // Reset roll
+    } else if (isKeyDown(Key.digit5)) {
+      mode = CameraMode.game;
       up = Vector3(0, 1, 0); // Reset roll
     }
 

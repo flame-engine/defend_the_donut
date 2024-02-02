@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:space_nico/keyboard_controlled_camera.dart';
 import 'package:space_nico/obj_parser.dart';
+import 'package:space_nico/pause_menu.dart';
 import 'package:space_nico/simple_hud.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart' show FlameGame, GameWidget;
@@ -16,14 +17,22 @@ import 'package:flutter/material.dart' show runApp, Listener;
 // TODO(wolfen): we need surfaces!! I AM WORKING ON IT
 
 class ExampleGame3D extends FlameGame<World3D>
-    with HasKeyboardHandlerComponents {
+    with CanPause, HasKeyboardHandlerComponents {
+
   ExampleGame3D()
       : super(
           world: World3D(),
           camera: KeyboardControlledCamera(
-            hudComponents: [SimpleHud()],
+            hudComponents: [SimpleHud(), PauseMenu()],
           ),
         );
+
+  @override
+  void onMount() {
+    super.onMount();
+
+    pointerSetup();
+  }
 
   @override
   KeyboardControlledCamera get camera =>
@@ -56,7 +65,16 @@ void main() {
   runApp(
     Listener(
       onPointerMove: (event) {
+        if (example.isGamePaused) {
+          return;
+        }
         if (!event.down) {
+          return;
+        }
+        example.camera.pointerEvent = event;
+      },
+      onPointerHover: (event) {
+        if (example.isGamePaused) {
           return;
         }
         example.camera.pointerEvent = event;
