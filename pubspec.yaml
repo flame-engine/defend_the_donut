@@ -9,7 +9,10 @@ environment:
 dependencies:
   flame: ^1.14.0
   flame_3d:
-    path: ../flame/packages/flame_3d
+    git:
+      url: https://github.com/flame-engine/flame.git
+      ref: feat(flame_3d)-initial-implementation-of-the-3D-support
+      path: packages/flame_3d
   flutter:
     sdk: flutter
   pointer_lock:

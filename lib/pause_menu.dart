@@ -2,7 +2,10 @@ import 'dart:ui' hide TextStyle;
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/game.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:pointer_lock/pointer_lock.dart';
 import 'package:space_nico/main.dart';
 
@@ -12,7 +15,8 @@ final _text = TextPaint(
   ),
 );
 
-class PauseMenu extends Component with TapCallbacks, HasGameReference<ExampleGame3D> {
+class PauseMenu extends Component
+    with TapCallbacks, HasGameReference<ExampleGame3D> {
   @override
   void onTapUp(TapUpEvent event) {
     game.resume();
@@ -36,25 +40,28 @@ class PauseMenu extends Component with TapCallbacks, HasGameReference<ExampleGam
   }
 }
 
-mixin CanPause {
-  final _pointerLockPlugin = PointerLock();
+mixin CanPause<T extends World> on FlameGame<T> {
+  final lock = PointerLock();
   bool _gamePaused = true;
 
   bool get isGamePaused => _gamePaused;
 
-  void pointerSetup() {
-    _pointerLockPlugin.subscribeToRawInputData();
+  @override
+  @mustCallSuper
+  void onMount() {
+    lock.subscribeToRawInputData();
+    return super.onMount();
   }
 
   void pause() {
     _gamePaused = true;
-    _pointerLockPlugin.showPointer();
-    _pointerLockPlugin.unlockPointer();
+    mouseCursor = MouseCursor.defer;
+    lock.unlockPointer();
   }
 
   void resume() {
     _gamePaused = false;
-    _pointerLockPlugin.hidePointer();
-    _pointerLockPlugin.lockPointer();
+    mouseCursor = SystemMouseCursors.none;
+    lock.lockPointer();
   }
 }
