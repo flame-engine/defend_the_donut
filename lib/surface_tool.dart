@@ -4,19 +4,16 @@ import 'dart:ui';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
 
+// TODO(wolfen): heavily inspired by the Godot one, maybe this should be part
+// of the core package
 class SurfaceTool {
-  late List<Vertex> vertices;
-  late List<int> indices;
+  final List<Vertex> _vertices = [];
+  final List<int> _indices = [];
 
   Color _lastColor = const Color(0xFFFFFFFF);
   final Vector3 _lastNormal = Vector3.zero();
   final Vector2 _lastTexCoord = Vector2.zero();
   Material _lastMaterial = StandardMaterial();
-
-  SurfaceTool() {
-    vertices = [];
-    indices = [];
-  }
 
   void setColor(Color color) => _lastColor = color;
 
@@ -24,9 +21,7 @@ class SurfaceTool {
 
   void setTexCoord(Vector2 texCoord) => _lastTexCoord.setFrom(texCoord);
 
-  void setMaterial(Material material) {
-    _lastMaterial = material;
-  }
+  void setMaterial(Material material) => _lastMaterial = material;
 
   void addTriangleFan(
     List<Vector3> vertices,
@@ -51,7 +46,7 @@ class SurfaceTool {
       addVertex(vertices[n]);
     }
 
-    for (int i = 0; i < vertices.length - 2; i++) {
+    for (var i = 0; i < vertices.length - 2; i++) {
       addPoint(0);
       addPoint(i + 1);
       addPoint(i + 2);
@@ -61,42 +56,41 @@ class SurfaceTool {
   void addVertex(Vector3 position) {
     final vertex = Vertex(
       position: position,
-      texCoords: _lastTexCoord,
+      texCoord: _lastTexCoord,
       normal: _lastNormal,
       color: _lastColor,
     );
 
-    vertices.add(vertex);
+    _vertices.add(vertex);
   }
 
   void addIndex(int index) {
-    indices.add(index);
+    _indices.add(index);
   }
 
   void index() {
-    if (indices.isNotEmpty) {
+    if (_indices.isNotEmpty) {
       return;
     }
 
     final indexMap = HashMap<Vertex, int>();
-    final oldVertices = List.from(vertices);
-    vertices.clear();
+    final oldVertices = List<Vertex>.from(_vertices);
+    _vertices.clear();
 
     for (final vertex in oldVertices) {
-      int? idx = indexMap[vertex];
+      var idx = indexMap[vertex];
       if (idx == null) {
         idx = indexMap.length;
-        vertices.add(vertex);
+        _vertices.add(vertex);
         indexMap[vertex] = idx;
       }
-      indices.add(idx);
+      _indices.add(idx);
     }
   }
 
-  void apply(Geometry geometry) {
+  Mesh apply([Mesh? mesh]) {
     index();
-
-    geometry.setVertices(vertices);
-    geometry.setIndices(indices);
+    mesh ??= Mesh();
+    return mesh..addSurface(_vertices, _indices, material: _lastMaterial);
   }
 }

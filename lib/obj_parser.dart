@@ -6,21 +6,22 @@ import 'package:flame_3d/resources.dart';
 import 'package:space_nico/surface_tool.dart';
 
 class Face {
-  List<int> vertex;
-  List<int> texCoord;
-  List<int> normal;
+  const Face(this.vertex, this.texCoord, this.normal);
+
+  final List<int> vertex;
+  final List<int> texCoord;
+  final List<int> normal;
 
   Face.empty()
       : vertex = [],
         texCoord = [],
         normal = [];
-
-  Face(this.vertex, this.texCoord, this.normal);
 }
 
 class ObjParser {
   static Future<Map<String, StandardMaterial>> _parseMaterial(
-      String filePath) async {
+    String filePath,
+  ) async {
     final lines = (await Flame.assets.readFile(filePath)).split('\n');
 
     final materials = <String, StandardMaterial>{};
@@ -62,7 +63,7 @@ class ObjParser {
 
     final lines = (await Flame.assets.readFile(filePath)).split('\n');
 
-    var matName = "default";
+    var matName = 'default';
 
     final materials = <String, StandardMaterial>{};
     for (final line in lines) {
@@ -123,9 +124,9 @@ class ObjParser {
       }
     }
 
-    final surface = SurfaceTool();
+    var mesh = Mesh();
     for (final materialGroup in faces.keys) {
-      surface.setMaterial(materials[materialGroup]!);
+      final surface = SurfaceTool()..setMaterial(materials[materialGroup]!);
 
       for (final face in faces[materialGroup]!) {
         if (face.vertex.length == 3) {
@@ -154,16 +155,14 @@ class ObjParser {
               normals[face.normal[0]],
               normals[face.normal[1]],
               normals[face.normal[2]],
-            ]
+            ],
           ];
 
           surface.addTriangleFan(fanVertices, fanTexCoords, fanNormals);
         }
       }
+      mesh = surface.apply(mesh);
     }
-
-    final geometry = Geometry();
-    surface.apply(geometry);
-    return Mesh(geometry: geometry, material: materials['metalRed']);
+    return mesh;
   }
 }

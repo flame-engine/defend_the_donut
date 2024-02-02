@@ -14,8 +14,6 @@ import 'package:flame_3d/resources.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show runApp, Listener;
 
-// TODO(wolfen): we need surfaces!! I AM WORKING ON IT
-
 class ExampleGame3D extends FlameGame<World3D>
     with CanPause, HasKeyboardHandlerComponents {
 
@@ -41,7 +39,6 @@ class ExampleGame3D extends FlameGame<World3D>
   @override
   FutureOr<void> onLoad() async {
     final speeder = await ObjParser.parse('objects/craft_speederA.obj');
-    print(speeder.material);
 
     world.addAll([
       MeshComponent(mesh: speeder),
