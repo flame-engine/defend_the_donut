@@ -8,6 +8,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:pointer_lock/pointer_lock.dart';
 import 'package:space_nico/main.dart';
+import 'package:space_nico/mouse.dart';
 
 final _text = TextPaint(
   style: const TextStyle(
@@ -27,7 +28,7 @@ class PauseMenu extends Component
 
   @override
   void render(Canvas canvas) {
-    if (game.isGamePaused) {
+    if (game.isPaused) {
       canvas.drawRect(
           game.canvasSize.toRect(), Paint()..color = const Color(0x7FFFFFFF));
       _text.render(
@@ -41,27 +42,26 @@ class PauseMenu extends Component
 }
 
 mixin CanPause<T extends World> on FlameGame<T> {
-  final lock = PointerLock();
-  bool _gamePaused = true;
+  bool _isPaused = true;
 
-  bool get isGamePaused => _gamePaused;
+  bool get isPaused => _isPaused;
 
   @override
   @mustCallSuper
   void onMount() {
-    lock.subscribeToRawInputData();
+    Mouse.init();
     return super.onMount();
   }
 
   void pause() {
-    _gamePaused = true;
+    _isPaused = true;
     mouseCursor = MouseCursor.defer;
-    lock.unlockPointer();
+    Mouse.unlock();
   }
 
   void resume() {
-    _gamePaused = false;
+    _isPaused = false;
     mouseCursor = SystemMouseCursors.none;
-    lock.lockPointer();
+    Mouse.lock();
   }
 }

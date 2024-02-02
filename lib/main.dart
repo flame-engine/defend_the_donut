@@ -97,30 +97,13 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       return;
     }
 
-    if (!game.isGamePaused) {
+    if (!game.isPaused) {
       game.pause();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerMove: (event) async {
-        if (game.isGamePaused || !event.down) {
-          return;
-        }
-
-        // Discard the first delta as it might be way out there.
-        final delta = await game.lock.lastPointerDelta();
-        if (discardDelta) {
-          discardDelta = false;
-          return;
-        }
-        game.camera.pointerDelta = delta;
-      },
-      onPointerUp: (_) => discardDelta = true,
-      onPointerCancel: (_) => discardDelta = true,
-      child: GameWidget(game: game),
-    );
+    return GameWidget(game: game);
   }
 }

@@ -3,7 +3,7 @@ import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey, RawKeyEvent;
 import 'package:space_nico/main.dart';
-import 'package:flutter/gestures.dart' show Offset;
+import 'package:space_nico/mouse.dart';
 
 class KeyboardControlledCamera extends CameraComponent3D
     with KeyboardHandler, HasGameReference<ExampleGame3D> {
@@ -28,7 +28,6 @@ class KeyboardControlledCamera extends CameraComponent3D
   final double orbitalSpeed = 0.5;
 
   Set<Key> _keysDown = {};
-  Offset pointerDelta = Offset.zero;
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<Key> keysPressed) {
@@ -57,6 +56,9 @@ class KeyboardControlledCamera extends CameraComponent3D
 
   @override
   void update(double dt) {
+    if (game.isPaused) {
+      return;
+    }
     final rotateAroundTarget = switch (mode) {
       CameraMode.thirdPerson || CameraMode.orbital => true,
       _ => false,
@@ -66,19 +68,18 @@ class KeyboardControlledCamera extends CameraComponent3D
       _ => false,
     };
 
-    if (pointerDelta.distance != 0) {
+    if (Mouse.delta.distance != 0) {
       const mouseMoveSensitivity = 0.003;
 
       yaw(
-        (pointerDelta.dx) * mouseMoveSensitivity,
+        (Mouse.delta.dx) * mouseMoveSensitivity,
         rotateAroundTarget: rotateAroundTarget,
       );
       pitch(
-        (pointerDelta.dy) * mouseMoveSensitivity,
+        (Mouse.delta.dy) * mouseMoveSensitivity,
         lockView: lockView,
         rotateAroundTarget: rotateAroundTarget,
       );
-      pointerDelta = Offset.zero;
     }
 
     // Keyboard movement
