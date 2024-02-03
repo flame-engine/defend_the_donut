@@ -1,17 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flame/components.dart' show HasGameReference;
-import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
+import 'package:space_nico/components/base_component.dart';
 import 'package:space_nico/key_event_handler.dart';
 import 'package:space_nico/obj_parser.dart';
-import 'package:space_nico/space_game_3d.dart';
 
-class Player extends MeshComponent
-    with HasGameReference<SpaceGame3D>, KeyEventHandler {
-  Player() : super(mesh: Mesh());
+class Player extends BaseComponent with KeyEventHandler {
+  Player() : super(position: Vector3.zero(), mesh: Mesh());
 
   @override
   bool get propegateKeyEvent =>
@@ -25,23 +22,7 @@ class Player extends MeshComponent
   }
 
   @override
-  void update(double dt) {
-    // final mouseDelta = Mouse.getDelta();
-    // if (mouseDelta.distance != 0) {
-    //   const mouseMoveSensitivity = 0.003;
-
-    //   yaw(
-    //     -mouseDelta.dx * mouseMoveSensitivity,
-    //     rotateAroundTarget: rotateAroundTarget,
-    //   );
-    //   pitch(
-    //     -mouseDelta.dy * mouseMoveSensitivity,
-    //     lockView: lockView,
-    //     rotateAroundTarget: rotateAroundTarget,
-    //   );
-    // }
-
-    // Keyboard movement
+  void doUpdate(double dt) {
     if (isKeyDown(Key.keyW)) {
       moveForward(moveSpeed * dt);
     } else if (isKeyDown(Key.keyS)) {
