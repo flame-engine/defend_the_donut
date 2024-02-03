@@ -7,6 +7,7 @@ class Mouse {
 
   static Future<void> init() => _lock.subscribeToRawInputData();
 
+  // TODO: I think we want to use startPointerLockSession instead
   static Offset get delta {
     _lock.lastPointerDelta().then((value) => _delta = value);
     return _delta;

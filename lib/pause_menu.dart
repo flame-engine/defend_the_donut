@@ -1,12 +1,9 @@
-import 'dart:ui' hide TextStyle;
-
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:pointer_lock/pointer_lock.dart';
 import 'package:space_nico/main.dart';
 import 'package:space_nico/mouse.dart';
 
