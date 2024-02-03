@@ -13,13 +13,11 @@ class PauseMenu extends Component
   void onTapUp(TapUpEvent event) {
     if (game.isPaused) {
       game.resume();
-    } else {
-      event.continuePropagation = true;
     }
   }
 
   @override
-  bool containsLocalPoint(Vector2 point) => true;
+  bool containsLocalPoint(Vector2 point) => game.isPaused;
 
   @override
   void render(Canvas canvas) {
