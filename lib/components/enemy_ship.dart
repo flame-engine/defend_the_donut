@@ -6,14 +6,6 @@ import 'package:space_nico/components/base_component.dart';
 import 'package:space_nico/obj_parser.dart';
 import 'package:space_nico/utils.dart';
 
-const _shipAcc = 2.0;
-
-const _worldRadius = 100.0;
-double _randomCoord() => _worldRadius * (random.nextDouble() - 0.5);
-
-// this is the "forward" direction with respect to how the ship mesh is oriented
-final _forward = Vector3(0, 0, 1);
-
 enum ShipType {
   speederA('objects/craft_speederA.obj'),
   speederB('objects/craft_speederB.obj'),
@@ -62,4 +54,11 @@ class EnemyShip extends BaseComponent {
       speed.setFrom(direction.normalized() * _shipAcc);
     }
   }
+
+  static const _shipAcc = 2.0;
+
+  static double _randomCoord() => worldRadius * (2 * random.nextDouble() - 1);
+
+  // this is the "forward" direction with respect to how the ship mesh is oriented
+  final _forward = Vector3(0, 0, 1);
 }
