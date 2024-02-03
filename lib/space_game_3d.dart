@@ -72,11 +72,10 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   @override
   void onTapUp(TapUpEvent event) {
-    print('pew pew!');
     add(
       Pew(
-        speed: camera.forward.normalized() * 10,
         position: camera.position.clone(),
+        direction: camera.forward.clone(),
       ),
     );
   }

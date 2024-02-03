@@ -22,7 +22,7 @@ class KeyboardControlledCamera extends CameraComponent3D
           fovY: 60,
         );
 
-  final double moveSpeed = 0.9;
+  final double moveSpeed = 0.95;
   final double rotationSpeed = 0.3;
   final double panSpeed = 2;
   final double orbitalSpeed = 0.5;
