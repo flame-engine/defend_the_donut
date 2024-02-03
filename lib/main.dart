@@ -12,6 +12,9 @@ import 'package:flame/game.dart' show FlameGame, GameWidget;
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart' show runApp, Listener;
 
 class ExampleGame3D extends FlameGame<World3D>
     with CanPause, HasKeyboardHandlerComponents {
