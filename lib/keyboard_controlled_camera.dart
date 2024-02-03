@@ -2,11 +2,11 @@ import 'package:flame/components.dart' show HasGameReference, KeyboardHandler;
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey, RawKeyEvent;
-import 'package:space_nico/main.dart';
 import 'package:space_nico/mouse.dart';
+import 'package:space_nico/space_game_3d.dart';
 
 class KeyboardControlledCamera extends CameraComponent3D
-    with KeyboardHandler, HasGameReference<ExampleGame3D> {
+    with KeyboardHandler, HasGameReference<SpaceGame3D> {
   KeyboardControlledCamera({
     super.world,
     super.viewport,
