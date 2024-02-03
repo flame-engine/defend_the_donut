@@ -72,11 +72,11 @@ class KeyboardControlledCamera extends CameraComponent3D
       const mouseMoveSensitivity = 0.003;
 
       yaw(
-        (Mouse.delta.dx) * mouseMoveSensitivity,
+        -Mouse.delta.dx * mouseMoveSensitivity,
         rotateAroundTarget: rotateAroundTarget,
       );
       pitch(
-        (Mouse.delta.dy) * mouseMoveSensitivity,
+        -Mouse.delta.dy * mouseMoveSensitivity,
         lockView: lockView,
         rotateAroundTarget: rotateAroundTarget,
       );
