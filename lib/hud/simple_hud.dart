@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/text.dart';
 import 'package:flame_3d/camera.dart';
-import 'package:space_nico/space_game.dart';
+import 'package:space_nico/space_game_3d.dart';
 
 class SimpleHud extends Component with HasGameReference<SpaceGame3D> {
   SimpleHud() : super(children: [FpsComponent()]);

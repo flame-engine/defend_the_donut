@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:space_nico/mouse.dart';
-import 'package:space_nico/space_game.dart';
+import 'package:space_nico/space_game_3d.dart';
 
 class PauseMenu extends Component
     with TapCallbacks, HasGameReference<SpaceGame3D> {
