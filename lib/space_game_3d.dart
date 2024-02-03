@@ -1,19 +1,22 @@
 import 'dart:async';
 
-import 'package:flame_3d/resources.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:space_nico/hud/crosshair.dart';
-import 'package:space_nico/keyboard_controlled_camera.dart';
-import 'package:space_nico/obj_parser.dart';
-import 'package:space_nico/hud/pause_menu.dart';
-import 'package:space_nico/hud/simple_hud.dart';
+import 'package:flame/components.dart' show TimerComponent;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart' show FlameGame;
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:space_nico/components/enemy_ship.dart';
 import 'package:space_nico/components/pew.dart';
+import 'package:space_nico/hud/crosshair.dart';
+import 'package:space_nico/hud/pause_menu.dart';
+import 'package:space_nico/hud/simple_hud.dart';
+import 'package:space_nico/keyboard_controlled_camera.dart';
+import 'package:space_nico/obj_parser.dart';
+import 'package:space_nico/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
@@ -42,7 +45,8 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 }
 
 class SpaceWorld3D extends World3D with TapCallbacks {
-  KeyboardControlledCamera get camera => findParent<SpaceGame3D>()!.camera;
+  SpaceGame3D get game => findParent<SpaceGame3D>()!;
+  KeyboardControlledCamera get camera => game.camera;
 
   @override
   FutureOr<void> onLoad() async {
@@ -68,6 +72,18 @@ class SpaceWorld3D extends World3D with TapCallbacks {
         ),
       ),
     ]);
+
+    add(
+      TimerComponent(
+        period: 1, // 1 second
+        repeat: true,
+        onTick: () {
+          if (random.nextDouble() < 0.5) {
+            spawnEnemy();
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -78,5 +94,9 @@ class SpaceWorld3D extends World3D with TapCallbacks {
         direction: camera.forward.clone(),
       ),
     );
+  }
+
+  Future<void> spawnEnemy() async {
+    await add(await EnemyShip.spawnShip());
   }
 }
