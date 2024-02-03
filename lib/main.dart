@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flame_3d/resources.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:space_nico/hud/crosshair.dart';
 import 'package:space_nico/keyboard_controlled_camera.dart';
 import 'package:space_nico/obj_parser.dart';
-import 'package:space_nico/pause_menu.dart';
-import 'package:space_nico/simple_hud.dart';
+import 'package:space_nico/hud/pause_menu.dart';
+import 'package:space_nico/hud/simple_hud.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart' show FlameGame, GameWidget;
 import 'package:flame_3d/camera.dart';
@@ -19,7 +20,7 @@ class ExampleGame3D extends FlameGame<World3D>
       : super(
           world: World3D(),
           camera: KeyboardControlledCamera(
-            hudComponents: [SimpleHud(), PauseMenu()],
+            hudComponents: [SimpleHud(), Crosshair(), PauseMenu()],
           ),
         );
 
