@@ -5,22 +5,6 @@ import 'package:flame/components.dart';
 import 'package:flame/text.dart';
 import 'package:flame_3d/camera.dart';
 
-const _width = 1.2;
-const _color = Color(0xFFFFFFFF);
-
-final _style = TextStyle(
-  color: const Color(0xFF000000),
-  shadows: [
-    for (var x = 1; x < _width + 5; x++)
-      for (var y = 1; y < _width + 5; y++) ...[
-        Shadow(offset: Offset(-_width / x, -_width / y), color: _color),
-        Shadow(offset: Offset(-_width / x, _width / y), color: _color),
-        Shadow(offset: Offset(_width / x, -_width / y), color: _color),
-        Shadow(offset: Offset(_width / x, _width / y), color: _color),
-      ],
-  ],
-);
-
 class SimpleHud extends Component with HasGameReference<ExampleGame3D> {
   SimpleHud() : super(children: [FpsComponent()]);
 
@@ -58,4 +42,19 @@ Up: ${up.x.toStringAsFixed(2)}, ${up.y.toStringAsFixed(2)}, ${up.z.toStringAsFix
       anchor: Anchor.topRight,
     );
   }
+
+  static const _width = 1.2;
+  static const _color = Color(0xFFFFFFFF);
+  static final _style = TextStyle(
+    color: const Color(0xFF000000),
+    shadows: [
+      for (var x = 1; x < _width + 5; x++)
+        for (var y = 1; y < _width + 5; y++) ...[
+          Shadow(offset: Offset(-_width / x, -_width / y), color: _color),
+          Shadow(offset: Offset(-_width / x, _width / y), color: _color),
+          Shadow(offset: Offset(_width / x, -_width / y), color: _color),
+          Shadow(offset: Offset(_width / x, _width / y), color: _color),
+        ],
+    ],
+  );
 }

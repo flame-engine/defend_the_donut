@@ -7,12 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:space_nico/main.dart';
 import 'package:space_nico/mouse.dart';
 
-final _text = TextPaint(
-  style: const TextStyle(
-    color: Color(0xFFFFFFFF),
-  ),
-);
-
 class PauseMenu extends Component
     with TapCallbacks, HasGameReference<ExampleGame3D> {
   @override
@@ -36,6 +30,10 @@ class PauseMenu extends Component
       );
     }
   }
+
+  static final _text = TextPaint(
+    style: const TextStyle(color: Color(0xFFFFFFFF)),
+  );
 }
 
 mixin CanPause<T extends World> on FlameGame<T> {
