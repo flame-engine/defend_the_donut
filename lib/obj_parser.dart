@@ -53,7 +53,7 @@ class ObjParser {
     return materials;
   }
 
-  static Future<Mesh> parse(String filePath) async {
+  static Future<Mesh> parse(String filePath, {Mesh? applyTo}) async {
     final vertices = <Vector3>[];
     final normals = <Vector3>[];
     final texCoords = <Vector2>[];
@@ -122,7 +122,7 @@ class ObjParser {
       }
     }
 
-    var mesh = Mesh();
+    var mesh = applyTo ?? Mesh();
     for (final materialGroup in faces.keys) {
       final surface = SurfaceTool()..setMaterial(materials[materialGroup]!);
 

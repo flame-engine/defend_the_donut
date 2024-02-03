@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:flame/game.dart' show GameWidget;
 import 'package:space_nico/space_game_3d.dart';
@@ -16,8 +15,6 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   final game = SpaceGame3D();
-
-  bool discardDelta = true;
 
   @override
   void initState() {

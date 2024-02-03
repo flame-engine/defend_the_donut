@@ -1,12 +1,15 @@
-import 'package:flame/components.dart' show HasGameReference, KeyboardHandler;
+import 'dart:async';
+
+import 'package:flame/components.dart' show HasGameReference;
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/game.dart';
-import 'package:flutter/services.dart' show LogicalKeyboardKey, RawKeyEvent;
+import 'package:flutter/services.dart' show RawKeyEvent;
+import 'package:space_nico/key_event_handler.dart';
 import 'package:space_nico/mouse.dart';
 import 'package:space_nico/space_game_3d.dart';
 
 class KeyboardControlledCamera extends CameraComponent3D
-    with KeyboardHandler, HasGameReference<SpaceGame3D> {
+    with KeyEventHandler, HasGameReference<SpaceGame3D> {
   KeyboardControlledCamera({
     super.world,
     super.viewport,
@@ -15,24 +18,28 @@ class KeyboardControlledCamera extends CameraComponent3D
     super.hudComponents,
   }) : super(
           projection: CameraProjection.perspective,
-          mode: CameraMode.firstPerson,
-          position: Vector3(0, 2, 4),
-          target: Vector3(0, 2, 0),
+          mode: CameraMode.thirdPerson,
+          position: Vector3(0, 0, 0),
+          target: Vector3(0, 0, 0),
           up: Vector3(0, 1, 0),
           fovY: 60,
         );
 
-  final double moveSpeed = 0.95;
+  final double moveSpeed = 0.9;
   final double rotationSpeed = 0.3;
   final double panSpeed = 2;
   final double orbitalSpeed = 0.5;
 
-  Set<Key> _keysDown = {};
+  @override
+  FutureOr<void> onLoad() {
+    position = game.world.player.position + Vector3(0, 1, 2);
+    target.setFrom(game.world.player.position + Vector3(0, 1, 0));
+    return super.onLoad();
+  }
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<Key> keysPressed) {
-    _keysDown = keysPressed;
-
+    super.onKeyEvent(event, keysPressed);
     // Switch camera mode
     if (isKeyDown(Key.digit1)) {
       mode = CameraMode.free;
@@ -51,7 +58,7 @@ class KeyboardControlledCamera extends CameraComponent3D
       up = Vector3(0, 1, 0); // Reset roll
     }
 
-    return false;
+    return true;
   }
 
   @override
@@ -59,43 +66,13 @@ class KeyboardControlledCamera extends CameraComponent3D
     if (game.isPaused) {
       return;
     }
-    final rotateAroundTarget = switch (mode) {
-      CameraMode.thirdPerson || CameraMode.orbital => true,
-      _ => false,
-    };
-    final lockView = switch (mode) {
-      CameraMode.free || CameraMode.firstPerson || CameraMode.orbital => true,
-      _ => false,
-    };
 
-    if (Mouse.delta.distance != 0) {
+    final mouseDelta = Mouse.getDelta();
+    if (mouseDelta.distance != 0) {
       const mouseMoveSensitivity = 0.003;
 
-      yaw(
-        -Mouse.delta.dx * mouseMoveSensitivity,
-        rotateAroundTarget: rotateAroundTarget,
-      );
-      pitch(
-        -Mouse.delta.dy * mouseMoveSensitivity,
-        lockView: lockView,
-        rotateAroundTarget: rotateAroundTarget,
-      );
-    }
-
-    // Keyboard movement
-    if (isKeyDown(Key.keyW)) {
-      moveForward(moveSpeed * dt);
-    } else if (isKeyDown(Key.keyS)) {
-      moveForward(-moveSpeed * dt);
-    }
-    if (isKeyDown(Key.keyA)) {
-      moveRight(-moveSpeed * dt);
-    } else if (isKeyDown(Key.keyD)) {
-      moveRight(moveSpeed * dt);
+      yaw(-mouseDelta.dx * mouseMoveSensitivity, rotateAroundTarget: true);
+      pitch(-mouseDelta.dy * mouseMoveSensitivity, rotateAroundTarget: true);
     }
   }
-
-  bool isKeyDown(Key key) => _keysDown.contains(key);
 }
-
-typedef Key = LogicalKeyboardKey;
