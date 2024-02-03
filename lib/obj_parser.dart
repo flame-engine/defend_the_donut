@@ -57,8 +57,6 @@ class ObjParser {
     final vertices = <Vector3>[];
     final normals = <Vector3>[];
     final texCoords = <Vector2>[];
-
-    // TODO(wolfen): make it a map of <material name, Face>{};
     final faces = <String, List<Face>>{};
 
     final lines = (await Flame.assets.readFile(filePath)).split('\n');
