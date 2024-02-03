@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:space_nico/main.dart';
+import 'package:space_nico/space_game.dart';
 
-class Crosshair extends Component with HasGameReference<ExampleGame3D> {
+class Crosshair extends Component with HasGameReference<SpaceGame3D> {
   List<(Offset, Offset)> _lines = [];
 
   @override

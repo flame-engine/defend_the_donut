@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:space_nico/main.dart';
 import 'package:flame/components.dart';
 import 'package:flame/text.dart';
 import 'package:flame_3d/camera.dart';
+import 'package:space_nico/space_game.dart';
 
-class SimpleHud extends Component with HasGameReference<ExampleGame3D> {
+class SimpleHud extends Component with HasGameReference<SpaceGame3D> {
   SimpleHud() : super(children: [FpsComponent()]);
 
   String get fps => firstChild<FpsComponent>()?.fps.toStringAsFixed(2) ?? '0';

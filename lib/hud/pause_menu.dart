@@ -4,14 +4,18 @@ import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:space_nico/main.dart';
 import 'package:space_nico/mouse.dart';
+import 'package:space_nico/space_game.dart';
 
 class PauseMenu extends Component
-    with TapCallbacks, HasGameReference<ExampleGame3D> {
+    with TapCallbacks, HasGameReference<SpaceGame3D> {
   @override
   void onTapUp(TapUpEvent event) {
-    game.resume();
+    if (game.isPaused) {
+      game.resume();
+    } else {
+      event.continuePropagation = true;
+    }
   }
 
   @override
