@@ -5,7 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:pointer_lock/pointer_lock.dart';
 
 class Mouse {
-  static Offset get delta => _delta;
+  static Offset getDelta() {
+    final delta = _delta;
+    _delta = Offset.zero;
+    return delta;
+  }
+
   static Offset _delta = Offset.zero;
 
   static final _lock = PointerLock();
