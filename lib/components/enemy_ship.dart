@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flame_3d/game.dart';
 import 'package:space_nico/components/base_component.dart';
-import 'package:space_nico/obj_parser.dart';
+import 'package:space_nico/parser/obj_parser.dart';
 import 'package:space_nico/utils.dart';
 
 enum ShipType {

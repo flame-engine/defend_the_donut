@@ -15,6 +15,7 @@ import 'package:space_nico/hud/crosshair.dart';
 import 'package:space_nico/hud/pause_menu.dart';
 import 'package:space_nico/hud/simple_hud.dart';
 import 'package:space_nico/keyboard_controlled_camera.dart';
+import 'package:space_nico/parser/glb_parser.dart';
 import 'package:space_nico/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
@@ -53,14 +54,15 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   @override
   FutureOr<void> onLoad() async {
+    final result = await GlbParser.parseGlb('objects/donuts/d2.glb');
+    result.describe();
+
     await addAll([
       Donut(
         type: DonutType.donut1,
         position: Vector3(0, 0, 0),
       ),
-
       player,
-
       TimerComponent(
         period: 1, // 1 second
         repeat: true,
