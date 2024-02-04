@@ -7,10 +7,10 @@ import 'package:space_nico/obj_parser.dart';
 import 'package:space_nico/utils.dart';
 
 enum ShipType {
-  speederA('objects/craft_speederA.obj'),
-  speederB('objects/craft_speederB.obj'),
-  speederC('objects/craft_speederC.obj'),
-  speederD('objects/craft_speederD.obj');
+  speeder1('objects/ships/speeder_1.obj'),
+  speeder2('objects/ships/speeder_2.obj'),
+  speeder3('objects/ships/speeder_3.obj'),
+  speeder4('objects/ships/speeder_4.obj');
 
   final String path;
 

@@ -7,16 +7,26 @@ import 'package:space_nico/components/base_component.dart';
 import 'package:space_nico/obj_parser.dart';
 import 'package:space_nico/utils.dart';
 
+enum DonutType {
+  donut1('objects/donuts/donut_1.obj');
+
+  final String path;
+
+  const DonutType(this.path);
+}
+
 class Donut extends BaseComponent {
+  final DonutType type;
   late Vector3 _rotationAxis;
 
   Donut({
+    required this.type,
     required super.position,
   }) : super(mesh: Mesh());
 
   @override
   FutureOr<void> onLoad() async {
-    await ObjParser.parse('objects/donut.obj', applyTo: mesh);
+    await ObjParser.parse(type.path, applyTo: mesh);
     transform.scale = Vector3.all(150.0);
     transform.rotation = Quaternion.euler(
       random.nextDouble() * tau,

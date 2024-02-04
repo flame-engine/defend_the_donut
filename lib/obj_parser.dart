@@ -108,7 +108,7 @@ class ObjParser {
         // Material library
         case 'mtllib':
           final relative = (filePath.split('/')..removeLast()).join('/');
-          materials.addAll(await _parseMaterial('$relative/${parts[0]}'));
+          materials.addAll(await _parseMaterial('$relative/${parts[0]}'.trim()));
           break;
         // Material
         case 'usemtl':

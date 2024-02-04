@@ -1,8 +1,8 @@
 # Created by Kenney (www.kenney.nl)
 
-mtllib craft_speederC.mtl
+mtllib speeder_3.mtl
 
-g craft_speederC
+g speeder_3 
 
 v -0.8 0.2 -0.3628353
 v -0.8 0.2 -0.2628353
