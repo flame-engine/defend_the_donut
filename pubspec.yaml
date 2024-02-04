@@ -29,4 +29,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/objects/
+    - assets/audio/sfx/
+    - assets/objects/donuts/
+    - assets/objects/ships/

@@ -55,6 +55,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   FutureOr<void> onLoad() async {
     await addAll([
       Donut(
+        type: DonutType.donut1,
         position: Vector3(0, 0, 0),
       ),
 
