@@ -92,7 +92,9 @@ class ObjParser {
             for (final value in parts) {
               final indices = value.split('/');
               face.vertex.add(int.parse(indices[0]) - 1);
-              face.texCoord.add(int.parse(indices[1]) - 1);
+              if (indices[1].isNotEmpty) {
+                face.texCoord.add(int.parse(indices[1]) - 1);
+              }
               if (indices.length > 2) {
                 face.normal.add(int.parse(indices[2]) - 1);
               }

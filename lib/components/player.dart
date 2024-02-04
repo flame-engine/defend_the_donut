@@ -4,7 +4,9 @@ import 'package:space_nico/key_event_handler.dart';
 import 'package:space_nico/mouse.dart';
 
 class Player extends Component3D with KeyEventHandler {
-  Player() : super(position: Vector3.zero());
+  Player({
+    required super.position,
+  });
 
   @override
   bool get propagateKeyEvent =>
@@ -58,7 +60,7 @@ class Player extends Component3D with KeyEventHandler {
     position += direction;
   }
 
-  static const moveSpeed = 5;
+  static const moveSpeed = 12;
   static const strafingSpeed = 2;
 
   static final _up = Vector3(0, 1, 0);
