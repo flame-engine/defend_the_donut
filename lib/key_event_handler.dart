@@ -11,10 +11,10 @@ mixin KeyEventHandler implements KeyboardHandler {
   @override
   bool onKeyEvent(RawKeyEvent event, Set<Key> keysPressed) {
     _keysDown = keysPressed;
-    return propegateKeyEvent;
+    return propagateKeyEvent;
   }
 
-  bool get propegateKeyEvent => true;
+  bool get propagateKeyEvent => true;
 }
 
 typedef Key = LogicalKeyboardKey;

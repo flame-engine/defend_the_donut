@@ -1,57 +1,65 @@
-import 'dart:async';
-import 'dart:math';
-
+import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
-import 'package:flame_3d/resources.dart';
-import 'package:space_nico/components/base_component.dart';
 import 'package:space_nico/key_event_handler.dart';
-import 'package:space_nico/obj_parser.dart';
+import 'package:space_nico/mouse.dart';
 
-class Player extends BaseComponent with KeyEventHandler {
-  Player() : super(position: Vector3.zero(), mesh: Mesh());
+class Player extends Component3D with KeyEventHandler {
+  Player() : super(position: Vector3.zero());
 
   @override
-  bool get propegateKeyEvent =>
+  bool get propagateKeyEvent =>
       isAnyDown([Key.keyW, Key.keyS, Key.keyA, Key.keyD]);
 
-  double angle = 0;
+  Vector3 get forward => Vector3(0, 0, 1)..applyQuaternion(rotation);
 
   @override
-  FutureOr<void> onLoad() async {
-    await ObjParser.parse('objects/craft_speederA.obj', applyTo: mesh);
-  }
-
-  @override
-  void doUpdate(double dt) {
+  void update(double dt) {
     if (isKeyDown(Key.keyW)) {
-      moveForward(moveSpeed * dt);
+      accelerate(moveSpeed * dt);
     } else if (isKeyDown(Key.keyS)) {
-      moveForward(-moveSpeed * dt);
+      accelerate(-moveSpeed * dt);
     }
     if (isKeyDown(Key.keyA)) {
-      moveRight(rotationSpeed * dt);
+      strafe(strafingSpeed * dt);
     } else if (isKeyDown(Key.keyD)) {
-      moveRight(-rotationSpeed * dt);
+      strafe(-strafingSpeed * dt);
+    }
+
+    final mouseDelta = Mouse.getDelta();
+    if (mouseDelta.distance != 0) {
+      const mouseMoveSensitivity = 0.003;
+      applyDeltaYawPitch(
+        deltaYaw: -mouseDelta.dx * mouseMoveSensitivity,
+        deltaPitch: mouseDelta.dy * mouseMoveSensitivity,
+      );
     }
   }
 
-  void moveForward(double distance) {
-    final forward = Vector3(0, 0, 1)
-      ..applyQuaternion(rotation)
-      ..scale(distance);
-    position += forward;
-    game.camera.position += forward;
-    game.camera.target.setFrom(position + Vector3(0, 1, 0));
+  void applyDeltaYawPitch({
+    required double deltaYaw,
+    required double deltaPitch,
+  }) {
+    Quaternion yawRotation = Quaternion.axisAngle(Vector3(0, 1, 0), deltaYaw);
+    Quaternion pitchRotation =
+        Quaternion.axisAngle(Vector3(1, 0, 0), deltaPitch);
+
+    rotation.setFrom((rotation * yawRotation) * pitchRotation);
+    rotation.normalize();
   }
 
-  void moveRight(double distance) {
-    angle += distance;
-    rotation.x = sin(angle / 2) * 0;
-    rotation.y = sin(angle / 2) * 1;
-    rotation.z = sin(angle / 2) * 0;
-    rotation.w = cos(angle / 2);
+  void accelerate(double distance) {
+    position += forward..scale(distance);
+  }
+
+  void strafe(double distance) {
+    final direction = forward.cross(_up)
+      ..normalize()
+      ..scale(distance);
+    position += direction;
   }
 
   static const moveSpeed = 5;
-  static const rotationSpeed = 2;
+  static const strafingSpeed = 2;
+
+  static final _up = Vector3(0, 1, 0);
 }
