@@ -23,8 +23,8 @@ class Pew extends BaseComponent {
 
     for (final enemy in game.descendants().whereType<EnemyShip>()) {
       if (enemy.aabb.containsVector3(position)) {
+        enemy.takeDamage();
         removeFromParent();
-        enemy.removeFromParent();
       }
     }
   }

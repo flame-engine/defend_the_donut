@@ -21,6 +21,8 @@ class EnemyShip extends BaseComponent {
   final Vector3 speed = Vector3.zero();
   final Vector3 goal;
 
+  double life = 3.0;
+
   EnemyShip({
     required super.mesh,
     required Vector3 position,
@@ -52,6 +54,13 @@ class EnemyShip extends BaseComponent {
     } else {
       final direction = goal - position;
       speed.setFrom(direction.normalized() * _shipAcc);
+    }
+  }
+
+  void takeDamage() {
+    life -= 1;
+    if (life <= 0) {
+      removeFromParent();
     }
   }
 
