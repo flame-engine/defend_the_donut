@@ -93,6 +93,10 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   @override
   void onTapUp(TapUpEvent event) {
+    if (player.energy < 15) {
+      return;
+    }
+    player.energy -= 15;
     add(
       Pew(
         position: camera.position.clone(),
