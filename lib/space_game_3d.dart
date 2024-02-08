@@ -14,7 +14,6 @@ import 'package:space_nico/components/player.dart';
 import 'package:space_nico/hud/crosshair.dart';
 import 'package:space_nico/hud/hud.dart';
 import 'package:space_nico/hud/pause_menu.dart';
-import 'package:space_nico/hud/simple_hud.dart';
 import 'package:space_nico/keyboard_controlled_camera.dart';
 import 'package:space_nico/main_menu.dart';
 import 'package:space_nico/utils.dart';
@@ -34,7 +33,7 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 
   void initGame() async {
     camera.viewport.removeWhere((e) => e is MainMenu);
-    await camera.viewport.addAll([SimpleHud(), Crosshair(), Hud(), PauseMenu()]);
+    await camera.viewport.addAll([Crosshair(), Hud(), PauseMenu()]);
     await world.initGame();
     resume();
   }

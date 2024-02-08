@@ -1,9 +1,30 @@
+import 'dart:async';
+
 import 'package:flame/components.dart';
 import 'package:flutter/rendering.dart';
 import 'package:space_nico/space_game_3d.dart';
 import 'package:space_nico/styles.dart';
 
 class Hud extends Component with HasGameReference<SpaceGame3D> {
+  @override
+  FutureOr<void> onLoad() {
+    addAll([_DonutLifeBar(), _PlayerEnergyBar()]);
+  }
+}
+
+class _PlayerEnergyBar extends Component with HasGameReference<SpaceGame3D> {
+  @override
+  void render(Canvas canvas) {
+    // TODO: render player energy bar
+    Styles.textBig.render(
+      canvas,
+      '${game.world.player.energy.toStringAsFixed(0)} %',
+      Vector2.all(32.0),
+    );
+  }
+}
+
+class _DonutLifeBar extends Component with HasGameReference<SpaceGame3D> {
   @override
   void render(Canvas canvas) {
     final fullWidth = game.size.x - 2 * _m;

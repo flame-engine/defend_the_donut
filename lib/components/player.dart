@@ -4,20 +4,38 @@ import 'package:space_nico/key_event_handler.dart';
 import 'package:space_nico/mouse.dart';
 
 class Player extends Component3D with KeyEventHandler {
+
+  bool isBoosting = false;
+  double energy = 100.0;
+
   Player({
     required super.position,
   });
 
   @override
   bool get propagateKeyEvent =>
-      isAnyDown([Key.keyW, Key.keyS, Key.keyA, Key.keyD]);
+      isAnyDown([Key.keyW, Key.keyS, Key.keyA, Key.keyD, Key.shiftLeft]);
 
   Vector3 get forward => Vector3(0, 0, 1)..applyQuaternion(rotation);
 
   @override
   void update(double dt) {
+    isBoosting = isKeyDown(Key.shiftLeft);
+    energy += 5 * dt;
+    if (energy > 100) {
+      energy = 100;
+    }
+    if (isBoosting) {
+      energy -= dt * 25;
+    }
+    if (energy <= 0) {
+      energy = 0;
+      isBoosting = false;
+    }
+
+    final multiplier = isBoosting ? 10 : 1;
     if (isKeyDown(Key.keyW)) {
-      accelerate(moveSpeed * dt);
+      accelerate(moveSpeed * multiplier * dt);
     } else if (isKeyDown(Key.keyS)) {
       accelerate(-moveSpeed * dt);
     }
