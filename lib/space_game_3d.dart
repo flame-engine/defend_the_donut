@@ -12,6 +12,7 @@ import 'package:space_nico/components/enemy_ship.dart';
 import 'package:space_nico/components/pew.dart';
 import 'package:space_nico/components/player.dart';
 import 'package:space_nico/hud/crosshair.dart';
+import 'package:space_nico/hud/hud.dart';
 import 'package:space_nico/hud/pause_menu.dart';
 import 'package:space_nico/hud/simple_hud.dart';
 import 'package:space_nico/keyboard_controlled_camera.dart';
@@ -19,11 +20,14 @@ import 'package:space_nico/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
+
+  double donutLife = 100.0;
+
   SpaceGame3D()
       : super(
           world: SpaceWorld3D(),
           camera: KeyboardControlledCamera(
-            hudComponents: [SimpleHud(), Crosshair(), PauseMenu()],
+            hudComponents: [SimpleHud(), Crosshair(), Hud(), PauseMenu()],
           ),
         );
 
@@ -40,6 +44,14 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
       pause();
     }
     return super.onKeyEvent(event, keysPressed);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (random.nextDouble() < 0.05) {
+      donutLife -= 0.1;
+    }
   }
 }
 
