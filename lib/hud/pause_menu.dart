@@ -23,7 +23,7 @@ class PauseMenu extends Component
   void render(Canvas canvas) {
     if (game.isPaused) {
       canvas.drawRect(
-          game.canvasSize.toRect(), Paint()..color = const Color(0x7FFFFFFF));
+          game.canvasSize.toRect(), Paint()..color = const Color(0xAF000000));
       _text.render(
         canvas,
         'Continue',

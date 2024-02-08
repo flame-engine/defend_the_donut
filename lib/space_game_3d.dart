@@ -16,6 +16,7 @@ import 'package:space_nico/hud/hud.dart';
 import 'package:space_nico/hud/pause_menu.dart';
 import 'package:space_nico/hud/simple_hud.dart';
 import 'package:space_nico/keyboard_controlled_camera.dart';
+import 'package:space_nico/main_menu.dart';
 import 'package:space_nico/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
@@ -27,9 +28,16 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
       : super(
           world: SpaceWorld3D(),
           camera: KeyboardControlledCamera(
-            hudComponents: [SimpleHud(), Crosshair(), Hud(), PauseMenu()],
+            hudComponents: [MainMenu()],
           ),
         );
+
+  void initGame() async {
+    camera.viewport.removeWhere((e) => e is MainMenu);
+    await camera.viewport.addAll([SimpleHud(), Crosshair(), Hud(), PauseMenu()]);
+    await world.initGame();
+    resume();
+  }
 
   @override
   KeyboardControlledCamera get camera =>
@@ -63,8 +71,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
     position: Vector3(0, 0, -100),
   );
 
-  @override
-  FutureOr<void> onLoad() async {
+  FutureOr<void> initGame() async {
     await addAll([
       Donut(
         type: DonutType.donut1,
