@@ -8,6 +8,7 @@ import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/base_component.dart';
 import 'package:defend_the_donut/obj_parser.dart';
 import 'package:defend_the_donut/utils.dart';
+import 'package:flutter/animation.dart';
 
 enum ShipType {
   speeder1('objects/ships/speeder_1.obj'),
@@ -26,6 +27,7 @@ class EnemyShip extends BaseComponent {
 
   double life = 3.0;
   double damageTimer = 0.0;
+  double deathTimer = 0.0;
 
   final Map<int, Color> _originalAlbedoColorMap = {};
 
@@ -58,15 +60,38 @@ class EnemyShip extends BaseComponent {
 
   @override
   void doUpdate(double dt) {
+    if (deathTimer > 0.0) {
+      deathTimer -= dt;
+      if (deathTimer <= 0.0) {
+        removeFromParent();
+      } else {
+        if (deathTimer > 1.0) {
+          final progress = 1 - (deathTimer - 1.0);
+          _tintMesh((color) {
+            return color
+                .withRed((color.red + (255 - color.red) * progress).toInt())
+                .withGreen((color.green + (255 - color.green) * progress).toInt())
+                .withBlue((color.blue + (255 - color.blue) * progress).toInt());
+          });
+        } else {
+          final progress = 1 - Curves.easeInCubic.transform(1 - deathTimer);
+          _tintMesh((color) => const Color(0xFFFFFFFF));
+          transform.scale.setValues(progress, progress, progress);
+        }
+      }
+
+      return;
+    }
+
     damageTimer -= dt;
     if (damageTimer < 0) {
       damageTimer = 0;
     }
 
     if (damageTimer > 0) {
-      _tintMesh(apply: damageTimer % 0.1 < 0.05);
+      _tintMesh(damageTimer % 0.1 < 0.05 ? _tintRed : _tintNone);
     } else {
-      _tintMesh(apply: false);
+      _tintMesh();
     }
 
     position += speed * dt;
@@ -89,29 +114,31 @@ class EnemyShip extends BaseComponent {
     damageTimer = 0.5;
     if (life <= 0) {
       Audio.explode();
-      removeFromParent();
+      deathTimer = 2.0;
     }
   }
 
-  void _tintMesh({
-    required bool apply,
-  }) {
+  void _tintMesh([
+    Color Function(Color) tint = _tintNone,
+  ]) {
     for (int i = 0; i < mesh.surfaceCount; i++) {
       final material = mesh.getMaterialToSurface(i)! as StandardMaterial;
 
       final originalColor = _originalAlbedoColorMap[i]!;
-      final currentColor = apply ? _tint(originalColor) : originalColor;
+      final newColor = tint(originalColor);
 
-      if (material.albedoColor == currentColor) {
+      if (material.albedoColor == newColor) {
         continue;
       }
 
-      material.albedoColor = currentColor;
+      material.albedoColor = newColor;
       mesh.addMaterialToSurface(i, material);
     }
   }
 
-  Color _tint(Color color) {
+  static Color _tintNone(Color color) => color;
+
+  static Color _tintRed(Color color) {
     return color.withRed((color.red + 50).clamp(0, 255)).withAlpha(180);
   }
 
