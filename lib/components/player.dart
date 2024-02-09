@@ -1,12 +1,15 @@
+import 'package:flame/components.dart' show HasGameReference;
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
+import 'package:space_nico/components/pew.dart';
 import 'package:space_nico/key_event_handler.dart';
 import 'package:space_nico/mouse.dart';
+import 'package:space_nico/space_game_3d.dart';
 
-class Player extends Component3D with KeyEventHandler {
+class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGame3D> {
 
-  bool isBoosting = false;
   double energy = 100.0;
+  double heat = 0.0;
 
   Player({
     required super.position,
@@ -20,18 +23,14 @@ class Player extends Component3D with KeyEventHandler {
 
   @override
   void update(double dt) {
-    isBoosting = isKeyDown(Key.shiftLeft);
-    energy += 5 * dt;
-    if (energy > 100) {
-      energy = 100;
+    if (game.isPaused) {
+      return;
     }
-    if (isBoosting) {
-      energy -= dt * 25;
-    }
-    if (energy <= 0) {
-      energy = 0;
-      isBoosting = false;
-    }
+
+    _addHeat(-20 * dt);
+    _addEnergy(5 * dt);
+
+    final isBoosting = isKeyDown(Key.shiftLeft) && consumeEnergy(25 * dt);
 
     final multiplier = isBoosting ? 10 : 1;
     if (isKeyDown(Key.keyW)) {
@@ -53,6 +52,45 @@ class Player extends Component3D with KeyEventHandler {
         deltaPitch: mouseDelta.dy * mouseMoveSensitivity,
       );
     }
+  }
+
+  bool consumeEnergy(double value) {
+    if (energy < value) {
+      return false;
+    }
+    _addEnergy(-value);
+    return true;
+  }
+
+  void _addEnergy(double value) {
+    energy = (energy + value).clamp(0, 100);
+    _addHeat(0.0);
+  }
+
+  void _addHeat(double value) {
+    heat = (heat + value).clamp(0, 100 - energy);
+  }
+
+  void pew() {
+    if (heat > 0) {
+      return;
+    }
+
+    if (energy >= 95) {
+      energy = 95;
+      _addEnergy(0.0);
+    }
+    heat = 100 - energy;
+    _spawnPew();
+  }
+
+  void _spawnPew() {
+    game.world.add(
+      Pew(
+        position: position.clone(),
+        direction: forward.clone(),
+      ),
+    );
   }
 
   void applyDeltaYawPitch({

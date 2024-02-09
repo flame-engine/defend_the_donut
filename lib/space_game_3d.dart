@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:space_nico/components/donut.dart';
 import 'package:space_nico/components/enemy_ship.dart';
-import 'package:space_nico/components/pew.dart';
 import 'package:space_nico/components/player.dart';
 import 'package:space_nico/hud/crosshair.dart';
 import 'package:space_nico/hud/hud.dart';
@@ -56,6 +55,10 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
   @override
   void update(double dt) {
     super.update(dt);
+
+    if (isPaused) {
+      return;
+    }
     if (random.nextDouble() < 0.05) {
       donutLife -= 0.1;
     }
@@ -93,16 +96,10 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   @override
   void onTapUp(TapUpEvent event) {
-    if (player.energy < 15) {
+    if (game.isPaused) {
       return;
     }
-    player.energy -= 15;
-    add(
-      Pew(
-        position: camera.position.clone(),
-        direction: camera.forward.clone(),
-      ),
-    );
+    player.pew();
   }
 
   Future<void> spawnEnemy() async {
