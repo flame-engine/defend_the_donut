@@ -1,6 +1,7 @@
 import 'package:flame/components.dart' show HasGameReference;
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
+import 'package:space_nico/audio.dart';
 import 'package:space_nico/components/pew.dart';
 import 'package:space_nico/key_event_handler.dart';
 import 'package:space_nico/mouse.dart';
@@ -10,6 +11,8 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
 
   double energy = 100.0;
   double heat = 0.0;
+
+  double boostingSfxTimer = 0.0;
 
   Player({
     required super.position,
@@ -31,6 +34,15 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
     _addEnergy(5 * dt);
 
     final isBoosting = isKeyDown(Key.shiftLeft) && consumeEnergy(25 * dt);
+    if (isBoosting && boostingSfxTimer == 0.0) {
+      Audio.boost();
+      boostingSfxTimer = 2.0;
+    } else if (boostingSfxTimer > 0.0) {
+      boostingSfxTimer -= dt;
+      if (boostingSfxTimer <= 0.0) {
+        boostingSfxTimer = 0.0;
+      }
+    }
 
     final multiplier = isBoosting ? 10 : 1;
     if (isKeyDown(Key.keyW)) {
@@ -73,6 +85,7 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
 
   void pew() {
     if (heat > 0) {
+      Audio.failedPew();
       return;
     }
 
@@ -85,6 +98,7 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
   }
 
   void _spawnPew() {
+    Audio.pew();
     game.world.add(
       Pew(
         position: position.clone(),

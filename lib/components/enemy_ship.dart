@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame_3d/game.dart';
+import 'package:space_nico/audio.dart';
 import 'package:space_nico/components/base_component.dart';
 import 'package:space_nico/obj_parser.dart';
 import 'package:space_nico/utils.dart';
@@ -60,6 +61,7 @@ class EnemyShip extends BaseComponent {
   void takeDamage() {
     life -= 1;
     if (life <= 0) {
+      Audio.explode();
       removeFromParent();
     }
   }

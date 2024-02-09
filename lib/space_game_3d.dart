@@ -7,6 +7,7 @@ import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:space_nico/audio.dart';
 import 'package:space_nico/components/donut.dart';
 import 'package:space_nico/components/enemy_ship.dart';
 import 'package:space_nico/components/player.dart';
@@ -19,7 +20,6 @@ import 'package:space_nico/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
-
   double donutLife = 100.0;
 
   SpaceGame3D()
@@ -29,6 +29,11 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
             hudComponents: [MainMenu()],
           ),
         );
+
+  @override
+  FutureOr<void> onLoad() async {
+    await Audio.init();
+  }
 
   void initGame() async {
     camera.viewport.removeWhere((e) => e is MainMenu);
@@ -79,9 +84,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
         type: DonutType.donut1,
         position: Vector3(0, 0, 0),
       ),
-
       player,
-
       TimerComponent(
         period: 1, // 1 second
         repeat: true,
