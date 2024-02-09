@@ -51,9 +51,9 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
       accelerate(-moveSpeed * dt);
     }
     if (isKeyDown(Key.keyA)) {
-      strafe(strafingSpeed * dt);
-    } else if (isKeyDown(Key.keyD)) {
       strafe(-strafingSpeed * dt);
+    } else if (isKeyDown(Key.keyD)) {
+      strafe(strafingSpeed * dt);
     }
 
     final mouseDelta = Mouse.getDelta();
@@ -131,7 +131,7 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
   }
 
   static const moveSpeed = 12;
-  static const strafingSpeed = 2;
+  static const strafingSpeed = 16;
 
   static final _up = Vector3(0, 1, 0);
 }
