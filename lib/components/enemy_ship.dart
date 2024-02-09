@@ -29,13 +29,15 @@ class EnemyShip extends BaseComponent {
   double damageTimer = 0.0;
   double deathTimer = 0.0;
 
+  bool isShootingDonut = false;
+
   final Map<int, Color> _originalAlbedoColorMap = {};
 
   EnemyShip({
     required super.mesh,
-    required Vector3 position,
-  })  : goal = position,
-        super(position: position);
+    required super.position,
+    required this.goal,
+  });
 
   @override
   FutureOr<void> onLoad() {
@@ -49,13 +51,17 @@ class EnemyShip extends BaseComponent {
     final type = ShipType.values[Random().nextInt(ShipType.values.length)];
     final mesh = await ObjParser.parse(type.path);
 
-    final position = Vector3(
+    final direction = Vector3(
       _randomCoord(),
       _randomCoord(),
       _randomCoord(),
-    );
+    )..normalize();
 
-    return EnemyShip(mesh: mesh, position: position);
+    final targetDistance = worldRadius * (0.35 + random.nextDouble() / 4);
+    final goal = direction.clone()..scale(targetDistance);
+    final position = direction.clone()..scale(worldRadius);
+
+    return EnemyShip(mesh: mesh, position: position, goal: goal);
   }
 
   @override
@@ -94,16 +100,19 @@ class EnemyShip extends BaseComponent {
       _tintMesh();
     }
 
-    position += speed * dt;
-    rotation.setFromTwoVectors(_forward, speed.normalized());
+    if (isShootingDonut) {
+      game.donutLife -= _shipDps * dt;
+      return;
+    }
 
-    if (position.distanceTo(goal) < 0.001) {
-      // new goal
-      speed.setZero();
-      goal.setValues(_randomCoord(), _randomCoord(), _randomCoord());
+    if (position.distanceTo(goal) < 0.1) {
+      isShootingDonut =  true;
     } else {
-      final direction = goal - position;
-      speed.setFrom(direction.normalized() * _shipAcc);
+      final direction = (goal - position)..normalize();
+      rotation.setFromTwoVectors(_forward, direction);
+
+      speed.setFrom(direction * _shipAcc);
+      position += speed * dt;
     }
   }
 
@@ -142,7 +151,8 @@ class EnemyShip extends BaseComponent {
     return color.withRed((color.red + 50).clamp(0, 255)).withAlpha(180);
   }
 
-  static const _shipAcc = 2.0;
+  static const _shipAcc = 9.0;
+  static const _shipDps = 0.4;
 
   static double _randomCoord() => worldRadius * (2 * random.nextDouble() - 1);
 

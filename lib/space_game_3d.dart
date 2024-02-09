@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:defend_the_donut/components/pew.dart';
 import 'package:flame/components.dart' show TimerComponent;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart' show FlameGame;
@@ -57,18 +58,6 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
     }
     return super.onKeyEvent(event, keysPressed);
   }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    if (isPaused) {
-      return;
-    }
-    if (random.nextDouble() < 0.05) {
-      donutLife -= 0.1;
-    }
-  }
 }
 
 class SpaceWorld3D extends World3D with TapCallbacks {
@@ -83,6 +72,10 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   FutureOr<void> initGame() async {
     await addAll([
+      Pew(
+        position: Vector3(0, 0, 0),
+        direction: Vector3(0, 0, 0),
+      ),
       Donut(
         type: DonutType.donut1,
         position: Vector3(0, 0, 0),
@@ -95,7 +88,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
           if (children.whereType<EnemyShip>().length >= maxEnemies) {
             return;
           }
-          if (random.nextDouble() < 0.5) {
+          if (random.nextDouble() < 0.1) {
             spawnEnemy();
           }
         },
