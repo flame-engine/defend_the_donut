@@ -36,7 +36,7 @@ class _PlayerEnergyBar extends Component with HasGameReference<SpaceGame3D> {
         (height - 2 * d) * percent,
       ),
       _r,
-    )..scaleRadii();
+    ).scaleRadii();
   }
 
   RRect _makeBottomRect({
@@ -55,7 +55,7 @@ class _PlayerEnergyBar extends Component with HasGameReference<SpaceGame3D> {
         height * percent,
       ),
       _r,
-    )..scaleRadii();
+    ).scaleRadii();
   }
 
   @override
@@ -101,7 +101,7 @@ class _DonutLifeBar extends Component with HasGameReference<SpaceGame3D> {
         _h - 2 * d,
       ),
       _r,
-    )..scaleRadii();
+    ).scaleRadii();
   }
 
   @override
