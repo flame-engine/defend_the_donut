@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
 import 'package:space_nico/audio.dart';
 import 'package:space_nico/components/base_component.dart';
 import 'package:space_nico/obj_parser.dart';
@@ -23,12 +25,23 @@ class EnemyShip extends BaseComponent {
   final Vector3 goal;
 
   double life = 3.0;
+  double damageTimer = 0.0;
+
+  final Map<int, Color> _originalAlbedoColorMap = {};
 
   EnemyShip({
     required super.mesh,
     required Vector3 position,
   })  : goal = position,
         super(position: position);
+
+  @override
+  FutureOr<void> onLoad() {
+    for (int i = 0; i < mesh.surfaceCount; i++) {
+      final material = mesh.getMaterialToSurface(i)! as StandardMaterial;
+      _originalAlbedoColorMap[i] = material.albedoColor;
+    }
+  }
 
   static Future<EnemyShip> spawnShip() async {
     final type = ShipType.values[Random().nextInt(ShipType.values.length)];
@@ -45,6 +58,17 @@ class EnemyShip extends BaseComponent {
 
   @override
   void doUpdate(double dt) {
+    damageTimer -= dt;
+    if (damageTimer < 0) {
+      damageTimer = 0;
+    }
+
+    if (damageTimer > 0) {
+      _tintMesh(apply: damageTimer % 0.1 < 0.05);
+    } else {
+      _tintMesh(apply: false);
+    }
+
     position += speed * dt;
     rotation.setFromTwoVectors(_forward, speed.normalized());
 
@@ -59,11 +83,36 @@ class EnemyShip extends BaseComponent {
   }
 
   void takeDamage() {
+    if (damageTimer > 0) return;
+
     life -= 1;
+    damageTimer = 0.5;
     if (life <= 0) {
       Audio.explode();
       removeFromParent();
     }
+  }
+
+  void _tintMesh({
+    required bool apply,
+  }) {
+    for (int i = 0; i < mesh.surfaceCount; i++) {
+      final material = mesh.getMaterialToSurface(i)! as StandardMaterial;
+
+      final originalColor = _originalAlbedoColorMap[i]!;
+      final currentColor = apply ? _tint(originalColor) : originalColor;
+
+      if (material.albedoColor == currentColor) {
+        continue;
+      }
+
+      material.albedoColor = currentColor;
+      mesh.addMaterialToSurface(i, material);
+    }
+  }
+
+  Color _tint(Color color) {
+    return color.withRed((color.red + 50).clamp(0, 255)).withAlpha(180);
   }
 
   static const _shipAcc = 2.0;
