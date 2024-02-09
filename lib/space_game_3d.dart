@@ -20,6 +20,7 @@ import 'package:defend_the_donut/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
+
   double donutLife = 100.0;
 
   SpaceGame3D()
@@ -71,6 +72,8 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 }
 
 class SpaceWorld3D extends World3D with TapCallbacks {
+  static const maxEnemies = 32;
+
   SpaceGame3D get game => findParent<SpaceGame3D>()!;
   KeyboardControlledCamera get camera => game.camera;
 
@@ -89,6 +92,9 @@ class SpaceWorld3D extends World3D with TapCallbacks {
         period: 1, // 1 second
         repeat: true,
         onTick: () {
+          if (children.whereType<EnemyShip>().length >= maxEnemies) {
+            return;
+          }
           if (random.nextDouble() < 0.5) {
             spawnEnemy();
           }
