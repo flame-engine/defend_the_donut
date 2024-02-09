@@ -4,10 +4,10 @@ import 'dart:ui';
 
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
-import 'package:space_nico/audio.dart';
-import 'package:space_nico/components/base_component.dart';
-import 'package:space_nico/obj_parser.dart';
-import 'package:space_nico/utils.dart';
+import 'package:defend_the_donut/audio.dart';
+import 'package:defend_the_donut/components/base_component.dart';
+import 'package:defend_the_donut/obj_parser.dart';
+import 'package:defend_the_donut/utils.dart';
 
 enum ShipType {
   speeder1('objects/ships/speeder_1.obj'),

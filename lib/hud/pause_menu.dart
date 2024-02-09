@@ -1,11 +1,12 @@
+import 'package:defend_the_donut/styles.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:space_nico/mouse.dart';
-import 'package:space_nico/space_game_3d.dart';
+import 'package:defend_the_donut/mouse.dart';
+import 'package:defend_the_donut/space_game_3d.dart';
 
 class PauseMenu extends Component
     with TapCallbacks, HasGameReference<SpaceGame3D> {
@@ -24,18 +25,15 @@ class PauseMenu extends Component
     if (game.isPaused) {
       canvas.drawRect(
           game.canvasSize.toRect(), Paint()..color = const Color(0xAF000000));
-      _text.render(
+
+      Styles.textBig.render(
         canvas,
-        'Continue',
+        '- click to continue -',
         game.canvasSize / 2,
         anchor: Anchor.center,
       );
     }
   }
-
-  static final _text = TextPaint(
-    style: const TextStyle(color: Color(0xFFFFFFFF)),
-  );
 }
 
 mixin CanPause<T extends World> on FlameGame<T> {

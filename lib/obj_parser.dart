@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/flame.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
-import 'package:space_nico/surface_tool.dart';
+import 'package:defend_the_donut/surface_tool.dart';
 
 class Face {
   const Face(this.vertex, this.texCoord, this.normal);

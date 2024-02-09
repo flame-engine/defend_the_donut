@@ -1,5 +1,9 @@
-name: space_nico
-description: "A new Flutter project."
+name: defend_the_donut
+description: >
+  Everyone knows donuts are the most precious things in the Universe.
+  However, our despicable enemies from the Empire are seeking to destroy such a beloved treasure.
+  It's up to you to defend your donut from the Empire's ships.
+  How long can you keep up?
 publish_to: 'none'
 version: 0.1.0
 

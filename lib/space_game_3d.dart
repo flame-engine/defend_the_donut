@@ -7,16 +7,16 @@ import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:space_nico/audio.dart';
-import 'package:space_nico/components/donut.dart';
-import 'package:space_nico/components/enemy_ship.dart';
-import 'package:space_nico/components/player.dart';
-import 'package:space_nico/hud/crosshair.dart';
-import 'package:space_nico/hud/hud.dart';
-import 'package:space_nico/hud/pause_menu.dart';
-import 'package:space_nico/keyboard_controlled_camera.dart';
-import 'package:space_nico/main_menu.dart';
-import 'package:space_nico/utils.dart';
+import 'package:defend_the_donut/audio.dart';
+import 'package:defend_the_donut/components/donut.dart';
+import 'package:defend_the_donut/components/enemy_ship.dart';
+import 'package:defend_the_donut/components/player.dart';
+import 'package:defend_the_donut/hud/crosshair.dart';
+import 'package:defend_the_donut/hud/hud.dart';
+import 'package:defend_the_donut/hud/pause_menu.dart';
+import 'package:defend_the_donut/keyboard_controlled_camera.dart';
+import 'package:defend_the_donut/main_menu.dart';
+import 'package:defend_the_donut/utils.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {

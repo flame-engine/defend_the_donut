@@ -1,11 +1,11 @@
 import 'package:flame/components.dart' show HasGameReference;
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
-import 'package:space_nico/audio.dart';
-import 'package:space_nico/components/pew.dart';
-import 'package:space_nico/key_event_handler.dart';
-import 'package:space_nico/mouse.dart';
-import 'package:space_nico/space_game_3d.dart';
+import 'package:defend_the_donut/audio.dart';
+import 'package:defend_the_donut/components/pew.dart';
+import 'package:defend_the_donut/key_event_handler.dart';
+import 'package:defend_the_donut/mouse.dart';
+import 'package:defend_the_donut/space_game_3d.dart';
 
 class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGame3D> {
 

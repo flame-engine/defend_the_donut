@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flame/game.dart' show GameWidget;
-import 'package:space_nico/space_game_3d.dart';
+import 'package:defend_the_donut/space_game_3d.dart';
 
 void main() async {
   runApp(const MainApp());
