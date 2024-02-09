@@ -33,7 +33,7 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
     _addHeat(-20 * dt);
     _addEnergy(5 * dt);
 
-    final isBoosting = isKeyDown(Key.shiftLeft) && consumeEnergy(25 * dt);
+    final isBoosting = isKeyDown(Key.shiftLeft) && isKeyDown(Key.keyW) && consumeEnergy(25 * dt);
     if (isBoosting && boostingSfxTimer == 0.0) {
       Audio.boost();
       boostingSfxTimer = 2.0;
