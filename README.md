@@ -6,8 +6,8 @@ Everyone knows donuts are the most precious things in the Universe. However, our
 
 * Move the ship with WASD
 * Move the camera with the mouse
-* Left click to shoot (consumes energy)
-* (TODO): boost (consumes energy)
+* Left click to shoot (generates heat)
+* Shift to boost (consumes energy)
 * (TODO): locking
 * (TODO): look around
 
