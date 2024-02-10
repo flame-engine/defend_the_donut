@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:defend_the_donut/components/beam.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/audio.dart';
@@ -30,6 +31,7 @@ class EnemyShip extends BaseComponent {
   double deathTimer = 0.0;
 
   bool isShootingDonut = false;
+  Beam? beam;
 
   final Map<int, Color> _originalAlbedoColorMap = {};
 
@@ -107,6 +109,7 @@ class EnemyShip extends BaseComponent {
 
     if (position.distanceTo(goal) < 0.1) {
       isShootingDonut =  true;
+      game.world.add(beam = Beam.generate(start: position, end: Vector3.zero()));
     } else {
       final direction = (goal - position)..normalize();
       rotation.setFromTwoVectors(_forward, direction);
@@ -123,6 +126,7 @@ class EnemyShip extends BaseComponent {
     damageTimer = 0.5;
     if (life <= 0) {
       Audio.explode();
+      beam?.removeFromParent();
       deathTimer = 2.0;
     }
   }

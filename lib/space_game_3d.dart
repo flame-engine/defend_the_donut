@@ -1,16 +1,9 @@
 import 'dart:async';
 
-import 'package:defend_the_donut/components/pew.dart';
-import 'package:flame/components.dart' show TimerComponent;
-import 'package:flame/events.dart';
-import 'package:flame/game.dart' show FlameGame;
-import 'package:flame_3d/camera.dart';
-import 'package:flame_3d/game.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/donut.dart';
 import 'package:defend_the_donut/components/enemy_ship.dart';
+import 'package:defend_the_donut/components/pew.dart';
 import 'package:defend_the_donut/components/player.dart';
 import 'package:defend_the_donut/hud/crosshair.dart';
 import 'package:defend_the_donut/hud/hud.dart';
@@ -18,10 +11,16 @@ import 'package:defend_the_donut/hud/pause_menu.dart';
 import 'package:defend_the_donut/keyboard_controlled_camera.dart';
 import 'package:defend_the_donut/main_menu.dart';
 import 'package:defend_the_donut/utils.dart';
+import 'package:flame/components.dart' show TimerComponent;
+import 'package:flame/events.dart';
+import 'package:flame/game.dart' show FlameGame;
+import 'package:flame_3d/camera.dart';
+import 'package:flame_3d/game.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
-
   double donutLife = 100.0;
 
   SpaceGame3D()
