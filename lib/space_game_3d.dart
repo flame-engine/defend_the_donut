@@ -61,6 +61,7 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 
 class SpaceWorld3D extends World3D with TapCallbacks {
   static const maxEnemies = 32;
+  double spawnRate = 0.1;
 
   SpaceGame3D get game => findParent<SpaceGame3D>()!;
   KeyboardControlledCamera get camera => game.camera;
@@ -87,8 +88,10 @@ class SpaceWorld3D extends World3D with TapCallbacks {
           if (children.whereType<EnemyShip>().length >= maxEnemies) {
             return;
           }
-          if (random.nextDouble() < 0.1) {
+          if (random.nextDouble() < spawnRate) {
             spawnEnemy();
+          } else if (random.nextDouble() < spawnRate) {
+            spawnRate += 0.02;
           }
         },
       ),
