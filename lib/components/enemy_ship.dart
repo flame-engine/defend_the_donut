@@ -107,6 +107,7 @@ class EnemyShip extends BaseComponent {
       return;
     }
 
+    final target = position.distanceTo(goal);
     if (position.distanceTo(goal) < 0.1) {
       isShootingDonut =  true;
       game.world.add(beam = Beam.generate(start: position, end: Vector3.zero()));
@@ -116,6 +117,9 @@ class EnemyShip extends BaseComponent {
 
       speed.setFrom(direction * _shipAcc);
       position += speed * dt;
+      if (position.distanceTo(goal) < target) {
+        position.setFrom(goal);
+      }
     }
   }
 

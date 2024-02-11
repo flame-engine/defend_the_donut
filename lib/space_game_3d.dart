@@ -6,6 +6,7 @@ import 'package:defend_the_donut/components/enemy_ship.dart';
 import 'package:defend_the_donut/components/pew.dart';
 import 'package:defend_the_donut/components/player.dart';
 import 'package:defend_the_donut/hud/crosshair.dart';
+import 'package:defend_the_donut/hud/end_game_menu.dart';
 import 'package:defend_the_donut/hud/hud.dart';
 import 'package:defend_the_donut/hud/pause_menu.dart';
 import 'package:defend_the_donut/keyboard_controlled_camera.dart';
@@ -21,8 +22,8 @@ import 'package:flutter/widgets.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
-  double donutLife = 100.0;
-  double timer = 0.0;
+  late double donutLife;
+  late double timer;
 
   SpaceGame3D()
       : super(
@@ -38,10 +39,20 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
   }
 
   void initGame() async {
+    donutLife = 100.0;
+    timer = 0.0;
+
     camera.viewport.removeWhere((e) => e is MainMenu);
     await camera.viewport.addAll([Crosshair(), Hud(), PauseMenu()]);
     await world.initGame();
     resume();
+  }
+
+  void restartGame() {
+    pause();
+    camera.viewport.removeWhere((e) => e is! MainMenu);
+    world.resetGame();
+    camera.viewport.add(MainMenu());
   }
 
   @override
@@ -67,7 +78,20 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
       return;
     }
 
+    if (donutLife <= 0) {
+      donutLife = 0;
+      camera.viewport.removeWhere((e) => e is PauseMenu);
+      pause();
+      camera.viewport.add(EndGameMenu());
+    }
+
     timer += dt;
+  }
+
+  String get clock {
+    final hours = (timer / 60).floor().toString().padLeft(2, '0');
+    final minutes = (timer % 60).floor().toString().padLeft(2, '0');
+    return '$hours:$minutes';
   }
 }
 
@@ -108,6 +132,11 @@ class SpaceWorld3D extends World3D with TapCallbacks {
         },
       ),
     ]);
+  }
+
+  void resetGame() {
+    removeWhere((e) => true);
+    spawnRate = 0.1;
   }
 
   @override

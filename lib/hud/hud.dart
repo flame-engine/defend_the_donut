@@ -16,14 +16,9 @@ class Hud extends Component with HasGameReference<SpaceGame3D> {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    final time = game.timer;
-    final hours = (time / 60).floor().toString().padLeft(2, '0');
-    final minutes = (time % 60).floor().toString().padLeft(2, '0');
-    final clock = '$hours:$minutes';
-
     Styles.textBig.render(
       canvas,
-      clock,
+      game.clock,
       Vector2.all(_m),
       anchor: Anchor.topLeft,
     );
