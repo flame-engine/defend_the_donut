@@ -11,6 +11,23 @@ class Hud extends Component with HasGameReference<SpaceGame3D> {
   FutureOr<void> onLoad() {
     addAll([_DonutLifeBar(), _PlayerEnergyBar()]);
   }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+
+    final time = game.timer;
+    final hours = (time / 60).floor().toString().padLeft(2, '0');
+    final minutes = (time % 60).floor().toString().padLeft(2, '0');
+    final clock = '$hours:$minutes';
+
+    Styles.textBig.render(
+      canvas,
+      clock,
+      Vector2.all(_m),
+      anchor: Anchor.topLeft,
+    );
+  }
 }
 
 class _PlayerEnergyBar extends Component with HasGameReference<SpaceGame3D> {
@@ -31,7 +48,7 @@ class _PlayerEnergyBar extends Component with HasGameReference<SpaceGame3D> {
     return RRect.fromRectAndRadius(
       Rect.fromLTWH(
         _m + d,
-        _m + d,
+        _m + d + 32.0,
         _h - 2 * d,
         (height - 2 * d) * percent,
       ),
@@ -50,7 +67,7 @@ class _PlayerEnergyBar extends Component with HasGameReference<SpaceGame3D> {
     return RRect.fromRectAndRadius(
       Rect.fromLTWH(
         _m + d,
-        topHeight + _m + d + height * (1 - percent),
+        topHeight + _m + d + 32.0 + height * (1 - percent),
         _h - 2 * d,
         height * percent,
       ),

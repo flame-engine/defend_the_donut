@@ -22,6 +22,7 @@ import 'package:flutter/widgets.dart';
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents {
   double donutLife = 100.0;
+  double timer = 0.0;
 
   SpaceGame3D()
       : super(
@@ -56,6 +57,17 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
       pause();
     }
     return super.onKeyEvent(event, keysPressed);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    if (isPaused) {
+      return;
+    }
+
+    timer += dt;
   }
 }
 
