@@ -1,18 +1,22 @@
-import 'package:defend_the_donut/space_game_3d.dart';
+import 'package:defend_the_donut/menu/menu.dart';
+import 'package:defend_the_donut/menu/menu_item.dart';
 import 'package:defend_the_donut/styles.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flutter/painting.dart';
 
-class EndGameMenu extends Component
-    with TapCallbacks, HasGameReference<SpaceGame3D> {
+class EndGameMenu extends Menu {
   @override
-  void onTapUp(TapUpEvent event) {
-    game.restartGame();
+  Future<void> onLoad() async {
+    await add(
+      MenuItem(
+        textRenderer: Styles.textBig,
+        text: '- restart -',
+        positionProvider: (gameSize) => gameSize / 2 + Vector2(0, 80.0),
+        anchor: Anchor.center,
+        onTap: game.restartGame,
+      ),
+    );
   }
-
-  @override
-  bool containsLocalPoint(Vector2 point) => true;
 
   @override
   void render(Canvas canvas) {
@@ -30,13 +34,7 @@ class EndGameMenu extends Component
     Styles.textBig.render(
       canvas,
       'Your Score: ${game.clock}',
-      game.canvasSize / 2 + Vector2(0, 48.0),
-      anchor: Anchor.center,
-    );
-    Styles.textBig.render(
-      canvas,
-      '- click to restart -',
-      game.canvasSize / 2 + Vector2(0, 64.0),
+      game.canvasSize / 2 + Vector2(0, 52.0),
       anchor: Anchor.center,
     );
   }

@@ -6,11 +6,12 @@ import 'package:defend_the_donut/components/enemy_ship.dart';
 import 'package:defend_the_donut/components/pew.dart';
 import 'package:defend_the_donut/components/player.dart';
 import 'package:defend_the_donut/hud/crosshair.dart';
-import 'package:defend_the_donut/hud/end_game_menu.dart';
+import 'package:defend_the_donut/menu/end_game_menu.dart';
 import 'package:defend_the_donut/hud/hud.dart';
-import 'package:defend_the_donut/hud/pause_menu.dart';
+import 'package:defend_the_donut/menu/menu.dart';
+import 'package:defend_the_donut/menu/pause_menu.dart';
 import 'package:defend_the_donut/keyboard_controlled_camera.dart';
-import 'package:defend_the_donut/main_menu.dart';
+import 'package:defend_the_donut/menu/main_menu.dart';
 import 'package:defend_the_donut/utils.dart';
 import 'package:flame/components.dart' show TimerComponent;
 import 'package:flame/events.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/widgets.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
     with CanPause, HasKeyboardHandlerComponents, SecondaryTapDetector {
+  Menu? menu;
   late double donutLife;
   late double timer;
 
@@ -29,30 +31,31 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
       : super(
           world: SpaceWorld3D(),
           camera: KeyboardControlledCamera(
-            hudComponents: [MainMenu()],
+            hudComponents: [],
           ),
         );
 
   @override
   FutureOr<void> onLoad() async {
     await Audio.init();
+    _updateMenu(MainMenu());
   }
 
   void initGame() async {
     donutLife = 100.0;
     timer = 0.0;
 
-    camera.viewport.removeWhere((e) => e is MainMenu);
-    await camera.viewport.addAll([Crosshair(), Hud(), PauseMenu()]);
+    _removeMenu();
+    await camera.viewport.addAll([Crosshair(), Hud()]);
     await world.initGame();
     resume();
   }
 
   void restartGame() {
-    pause();
-    camera.viewport.removeWhere((e) => e is! MainMenu);
+    super.pause();
     world.resetGame();
-    camera.viewport.add(MainMenu());
+    camera.viewport.removeWhere((c) => c is Hud || c is Crosshair);
+    _updateMenu(MainMenu());
   }
 
   @override
@@ -65,7 +68,11 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
     Set<LogicalKeyboardKey> keysPressed,
   ) {
     if (keysPressed.contains(LogicalKeyboardKey.escape)) {
-      pause();
+      if (isPaused) {
+        resume();
+      } else {
+        pause();
+      }
     }
     return super.onKeyEvent(event, keysPressed);
   }
@@ -80,12 +87,26 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 
     if (donutLife <= 0) {
       donutLife = 0;
-      camera.viewport.removeWhere((e) => e is PauseMenu);
-      pause();
-      camera.viewport.add(EndGameMenu());
+      super.pause();
+      _updateMenu(EndGameMenu());
     }
 
     timer += dt;
+  }
+
+  void _updateMenu(Menu menu) {
+    if (this.menu != menu) {
+      _removeMenu();
+      camera.viewport.add(this.menu = menu);
+    }
+  }
+
+  void _removeMenu() {
+    final currentMenu = menu;
+    if (currentMenu != null) {
+      camera.viewport.remove(currentMenu);
+      menu = null;
+    }
   }
 
   String get clock {
@@ -100,6 +121,18 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
       return;
     }
     world.player.resetCamera();
+  }
+
+  @override
+  void pause() {
+    super.pause();
+    _updateMenu(PauseMenu());
+  }
+
+  @override
+  void resume() {
+    _removeMenu();
+    super.resume();
   }
 }
 
