@@ -107,6 +107,12 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
     );
   }
 
+  void resetCamera() {
+    _addEnergy(-50.0);
+    rotation.setFromTwoVectors(Vector3(0, 0, 1), -position);
+    Mouse.reset();
+  }
+
   void applyDeltaYawPitch({
     required double deltaYaw,
     required double deltaPitch,

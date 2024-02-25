@@ -59,7 +59,7 @@ class EnemyShip extends BaseComponent {
       _randomCoord(),
     )..normalize();
 
-    final targetDistance = worldRadius * (0.35 + random.nextDouble() / 4);
+    final targetDistance = worldRadius * (0.1 + random.nextDouble() / 4);
     final goal = direction.clone()..scale(targetDistance);
     final position = direction.clone()..scale(worldRadius);
 
@@ -108,7 +108,7 @@ class EnemyShip extends BaseComponent {
     }
 
     final target = position.distanceTo(goal);
-    if (position.distanceTo(goal) < 0.1) {
+    if (target < 0.1) {
       isShootingDonut =  true;
       game.world.add(beam = Beam.generate(start: position, end: Vector3.zero()));
     } else {
@@ -117,7 +117,7 @@ class EnemyShip extends BaseComponent {
 
       speed.setFrom(direction * _shipAcc);
       position += speed * dt;
-      if (position.distanceTo(goal) < target) {
+      if (position.distanceTo(goal) > target) {
         position.setFrom(goal);
       }
     }
@@ -159,7 +159,7 @@ class EnemyShip extends BaseComponent {
     return color.withRed((color.red + 50).clamp(0, 255)).withAlpha(180);
   }
 
-  static const _shipAcc = 9.0;
+  static const _shipAcc = 2.2;
   static const _shipDps = 0.4;
 
   static double _randomCoord() => worldRadius * (2 * random.nextDouble() - 1);

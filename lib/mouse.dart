@@ -48,6 +48,10 @@ class Mouse {
     return await unlock();
   }
 
+  static Future<void> reset() async {
+    _delta = Offset.zero;
+  }
+
   static Future<void> lock() async {
     if (_pointerLocked) return;
     return _lock.lockPointer().then((_) => _pointerLocked = true);

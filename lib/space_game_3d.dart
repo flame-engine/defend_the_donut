@@ -21,7 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class SpaceGame3D extends FlameGame<SpaceWorld3D>
-    with CanPause, HasKeyboardHandlerComponents {
+    with CanPause, HasKeyboardHandlerComponents, SecondaryTapDetector {
   late double donutLife;
   late double timer;
 
@@ -93,11 +93,19 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
     final minutes = (timer % 60).floor().toString().padLeft(2, '0');
     return '$hours:$minutes';
   }
+
+  @override
+  void onSecondaryTapDown(TapDownInfo info) {
+    if (isPaused) {
+      return;
+    }
+    world.player.resetCamera();
+  }
 }
 
 class SpaceWorld3D extends World3D with TapCallbacks {
   static const maxEnemies = 32;
-  double spawnRate = 0.1;
+  double spawnRate = 0.03;
 
   SpaceGame3D get game => findParent<SpaceGame3D>()!;
   KeyboardControlledCamera get camera => game.camera;
@@ -117,6 +125,13 @@ class SpaceWorld3D extends World3D with TapCallbacks {
         position: Vector3(0, 0, 0),
       ),
       player,
+      TimerComponent(
+        period: 5, // 5 seconds
+        repeat: false,
+        onTick: () {
+          spawnEnemy();
+        },
+      ),
       TimerComponent(
         period: 1, // 1 second
         repeat: true,
