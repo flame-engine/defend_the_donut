@@ -61,7 +61,7 @@ class EnemyShip extends BaseComponent {
 
     final targetDistance = worldRadius * (0.1 + random.nextDouble() / 4);
     final goal = direction.clone()..scale(targetDistance);
-    final position = direction.clone()..scale(worldRadius);
+    final position = direction.clone()..scale(4 / 5 * worldRadius);
 
     return EnemyShip(mesh: mesh, position: position, goal: goal);
   }
@@ -159,7 +159,7 @@ class EnemyShip extends BaseComponent {
     return color.withRed((color.red + 50).clamp(0, 255)).withAlpha(180);
   }
 
-  static const _shipAcc = 2.2;
+  static const _shipAcc = 3.6;
   static const _shipDps = 0.4;
 
   static double _randomCoord() => worldRadius * (2 * random.nextDouble() - 1);
