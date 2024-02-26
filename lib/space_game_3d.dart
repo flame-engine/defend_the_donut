@@ -64,7 +64,7 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 
   @override
   KeyEventResult onKeyEvent(
-    RawKeyEvent event,
+    KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
     if (keysPressed.contains(LogicalKeyboardKey.escape)) {

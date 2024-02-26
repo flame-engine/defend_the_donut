@@ -7,8 +7,8 @@ import 'package:defend_the_donut/key_event_handler.dart';
 import 'package:defend_the_donut/mouse.dart';
 import 'package:defend_the_donut/space_game_3d.dart';
 
-class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGame3D> {
-
+class Player extends Component3D
+    with KeyEventHandler, HasGameReference<SpaceGame3D> {
   double energy = 100.0;
   double heat = 0.0;
 
@@ -33,7 +33,9 @@ class Player extends Component3D with KeyEventHandler, HasGameReference<SpaceGam
     _addHeat(-20 * dt);
     _addEnergy(5 * dt);
 
-    final isBoosting = isKeyDown(Key.shiftLeft) && isKeyDown(Key.keyW) && consumeEnergy(25 * dt);
+    final isBoosting = isKeyDown(Key.shiftLeft) &&
+        isKeyDown(Key.keyW) &&
+        consumeEnergy(25 * dt);
     if (isBoosting && boostingSfxTimer == 0.0) {
       Audio.boost();
       boostingSfxTimer = 2.0;

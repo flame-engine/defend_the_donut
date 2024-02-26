@@ -9,7 +9,7 @@ mixin KeyEventHandler implements KeyboardHandler {
   bool isAnyDown(List<Key> keys) => _keysDown.containsAll(keys);
 
   @override
-  bool onKeyEvent(RawKeyEvent event, Set<Key> keysPressed) {
+  bool onKeyEvent(KeyEvent event, Set<Key> keysPressed) {
     _keysDown = keysPressed;
     return propagateKeyEvent;
   }
