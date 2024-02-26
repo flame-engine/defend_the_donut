@@ -15,7 +15,7 @@ class MainMenu extends Menu {
       MenuItem(
         textRenderer: Styles.textBig,
         text: '- start -',
-        positionProvider: (gameSize) => Vector2(gameSize.x / 2, 592.0),
+        positionProvider: (gameSize) => Vector2(gameSize.x / 2, gameSize.y / 3 + 272.0),
         anchor: Anchor.topCenter,
         onTap: game.initGame,
       ),
@@ -27,13 +27,13 @@ class MainMenu extends Menu {
     Styles.title.render(
       canvas,
       'DEFEND THE',
-      Vector2(game.size.x / 2, 320.0),
+      Vector2(game.size.x / 2, game.size.y / 3),
       anchor: Anchor.topCenter,
     );
     mainTitle.render(
       canvas,
       'DONUT',
-      Vector2(game.size.x / 2, 360.0),
+      Vector2(game.size.x / 2, game.size.y / 3 + 40.0),
       anchor: Anchor.topCenter,
     );
   }
