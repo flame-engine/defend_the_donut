@@ -4,7 +4,7 @@ import 'package:flame/geometry.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/components/base_component.dart';
-import 'package:defend_the_donut/obj_parser.dart';
+import 'package:defend_the_donut/parser/obj_parser.dart';
 import 'package:defend_the_donut/utils.dart';
 
 enum DonutType {
