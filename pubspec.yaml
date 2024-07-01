@@ -33,6 +33,7 @@ flutter:
     - assets/audio/sfx/
     - assets/objects/donuts/
     - assets/objects/ships/
+    - assets/objects/
 
   fonts:
     - family: SingleDay

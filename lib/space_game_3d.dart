@@ -12,12 +12,15 @@ import 'package:defend_the_donut/menu/menu.dart';
 import 'package:defend_the_donut/menu/pause_menu.dart';
 import 'package:defend_the_donut/keyboard_controlled_camera.dart';
 import 'package:defend_the_donut/menu/main_menu.dart';
+import 'package:defend_the_donut/parser/glb_parser.dart';
 import 'package:defend_the_donut/utils.dart';
 import 'package:flame/components.dart' show TimerComponent;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart' show FlameGame;
 import 'package:flame_3d/camera.dart';
+import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -149,6 +152,12 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   );
 
   FutureOr<void> initGame() async {
+    await add(MeshComponent(mesh: CuboidMesh(size: Vector3.all(1.0))));
+
+    final result = await GlbParser.parseGlb('objects/cube.glb');
+    final oneMesh = result.parse().scenes[0].toFlameMeshes()[0];
+    await add(MeshComponent(mesh: oneMesh));
+
     await addAll([
       Pew(
         position: Vector3(0, 0, 0),

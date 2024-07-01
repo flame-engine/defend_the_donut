@@ -1,9 +1,17 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:defend_the_donut/parser/gltf/accessor.dart';
+import 'package:defend_the_donut/parser/gltf/buffer.dart';
+import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
+import 'package:defend_the_donut/parser/gltf/glb_chunk.dart';
+import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
+import 'package:defend_the_donut/parser/gltf/material.dart';
+import 'package:defend_the_donut/parser/gltf/mesh.dart';
+import 'package:defend_the_donut/parser/gltf/node.dart';
+import 'package:defend_the_donut/parser/gltf/scene.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame/flame.dart';
-import 'package:flame_3d/game.dart';
-import 'package:flame_3d/resources.dart';
 
 /// Parses GLB and GLTF file formats as per specified by:
 /// https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.pdf
@@ -63,49 +71,57 @@ class Glb {
     required this.chunks,
   });
 
-  Map<String, dynamic> jsonChunk() {
+  Map<String, Object?> jsonChunk() {
     final chunk = chunks.firstWhere((GlbChunk chunk) => chunk.type == 'JSON');
     return jsonDecode(_parseString(chunk.data));
   }
 
-  Iterable<GlbChunk> _buffers() {
+  Iterable<GlbChunk> binaryChunks() {
     return chunks.where((GlbChunk chunk) => chunk.type == 'BIN\x00');
   }
 
   Uint8List buffer(int index) {
-    return _buffers().toList()[index].data;
+    return binaryChunks().toList()[index].data;
   }
 
   void describe() {
     print('version: $version length: $length');
     print('chunks: ${chunks.map((e) => e.type).join(', ')}');
 
-    final mesh = toMesh();
+    final mesh = parse();
     print(mesh);
   }
 
-  Mesh toMesh() {
+  GltfRoot parse() {
     final json = jsonChunk();
-    final primitives = json['meshes'][0]['primitives'];
+    final root = GltfRoot();
 
-    final mesh = Mesh();
-    for (final primitive in primitives) {
-      final attributes = primitive['attributes'];
+    root.chunks = binaryChunks().toList();
 
-      final indices = _accessScalarData(primitive['indices']!);
-      final positions = _accessVector3Data(attributes['POSITION']!);
-      final normals = _accessVector3Data(attributes['NORMAL']!);
-      final texCoords = _accessVector2Data(attributes['TEXCOORD_0']!);
+    root.scene = json['scene'] as int;
+    root.scenes = (json['scenes'] as List<Object?>)
+        .map((e) => Scene.parse(root, e as Map<String, Object?>))
+        .toList();
+    root.nodes = (json['nodes'] as List<Object?>)
+        .map((e) => Node.parse(root, e as Map<String, Object?>))
+        .toList();
+    root.meshes = (json['meshes'] as List<Object?>)
+        .map((e) => Mesh.parse(root, e as Map<String, Object?>))
+        .toList();
+    root.materials = (json['materials'] as List<Object?>)
+        .map((e) => Material.parse(root, e as Map<String, Object?>))
+        .toList();
+    root.accessors = (json['accessors'] as List<Object?>)
+        .map((e) => RawAccessor.parse(root, e as Map<String, Object?>))
+        .toList();
+    root.bufferViews = (json['bufferViews'] as List<Object?>)
+        .map((e) => BufferView.parse(root, e as Map<String, Object?>))
+        .toList();
+    root.buffers = (json['buffers'] as List<Object?>)
+        .map((e) => Buffer.parse(root, e as Map<String, Object?>))
+        .toList();
 
-      _constructSurfaceWithUniqueVertices(
-        mesh,
-        positions,
-        normals,
-        texCoords,
-        indices,
-      );
-    }
-    return mesh;
+    return root;
   }
 
   List<Vector3> _accessVector3Data(int accessorIndex) {
@@ -121,47 +137,6 @@ class Glb {
       );
     }
     return result;
-  }
-
-  void _constructSurfaceWithUniqueVertices(
-    Mesh mesh,
-    List<Vector3> positions,
-    List<Vector3> normals,
-    List<Vector2> texCoords,
-    List<int> indices,
-  ) {
-    final uniqueVertices = <Vertex>[];
-    final newIndices = <int>[];
-
-    for (int i = 0; i < indices.length; i += 3) {
-      // For each face, create unique vertices
-      for (int j = 0; j < 3; j++) {
-        final index = indices[i + j];
-        final position = positions[index];
-        final normal = normals[index];
-        final texCoord = texCoords.length > index
-            ? texCoords[index]
-            : Vector2(0, 0); // Handle missing texCoords
-
-        // Check if this combination exists
-        final vertex = Vertex(
-          position: position,
-          normal: normal,
-          texCoord: texCoord,
-        );
-        final existingIndex = uniqueVertices.indexOf(vertex);
-        if (existingIndex == -1) {
-          // Not found, add new vertex
-          uniqueVertices.add(vertex);
-          newIndices.add(uniqueVertices.length - 1);
-        } else {
-          // Reuse existing vertex index
-          newIndices.add(existingIndex);
-        }
-      }
-    }
-
-    mesh.addSurface(uniqueVertices, newIndices);
   }
 
   List<Vector2> _accessVector2Data(int accessorIndex) {
@@ -184,7 +159,7 @@ class Glb {
   }
 
   List<num> _accessData(int index) {
-    final json = jsonChunk();
+    final json = jsonChunk() as Map<String, dynamic>;
     final ac = json["accessors"][index];
     final bv = json["bufferViews"][ac["bufferView"]];
     final buff = buffer(bv["buffer"]);
@@ -213,18 +188,6 @@ class Glb {
     }
     return result;
   }
-}
-
-class GlbChunk {
-  final int length;
-  final String type;
-  final Uint8List data;
-
-  GlbChunk({
-    required this.length,
-    required this.type,
-    required this.data,
-  });
 }
 
 int _parseInt(Uint8List bytes) {
