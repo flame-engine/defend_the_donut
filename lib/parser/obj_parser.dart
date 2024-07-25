@@ -19,13 +19,13 @@ class Face {
 }
 
 class ObjParser {
-  static Future<Map<String, StandardMaterial>> _parseMaterial(
+  static Future<Map<String, SpatialMaterial>> _parseMaterial(
     String filePath,
   ) async {
     final lines = (await Flame.assets.readFile(filePath)).split('\n');
 
-    final materials = <String, StandardMaterial>{};
-    StandardMaterial? currentMat;
+    final materials = <String, SpatialMaterial>{};
+    SpatialMaterial? currentMat;
     for (final line in lines) {
       final [type, ...parts] = line.split(' ');
       switch (type) {
@@ -34,7 +34,7 @@ class ObjParser {
           continue;
         // Creating a new material
         case 'newmtl':
-          currentMat = StandardMaterial(
+          currentMat = SpatialMaterial(
             albedoTexture: ColorTexture(const Color(0xFFFFFFFF)),
           );
           materials[parts[0].trim()] = currentMat;
@@ -63,7 +63,7 @@ class ObjParser {
 
     var matName = 'default';
 
-    final materials = <String, StandardMaterial>{};
+    final materials = <String, SpatialMaterial>{};
     for (final line in lines) {
       final [type, ...parts] = line.split(' ');
 

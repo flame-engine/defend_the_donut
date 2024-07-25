@@ -83,6 +83,12 @@ class CylinderMesh extends Mesh {
       indices.add(topIndex + 1);
     }
 
-    addSurface(vertices, indices, material: material);
+    addSurface(
+      Surface(
+        vertices: vertices,
+        indices: indices,
+        material: material,
+      ),
+    );
   }
 }

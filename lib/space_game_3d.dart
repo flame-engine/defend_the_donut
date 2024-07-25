@@ -140,6 +140,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   static const maxEnemies = 32;
   double spawnRate = 0.032;
 
+  @override
   SpaceGame3D get game => findParent<SpaceGame3D>()!;
   KeyboardControlledCamera get camera => game.camera;
 

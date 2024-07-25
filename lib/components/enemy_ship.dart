@@ -42,8 +42,8 @@ class EnemyShip extends BaseComponent {
 
   @override
   FutureOr<void> onLoad() {
-    for (int i = 0; i < mesh.surfaceCount; i++) {
-      final material = mesh.getMaterialToSurface(i)! as StandardMaterial;
+    for (final (i, surface) in mesh.surfaces.indexed) {
+      final material = surface.material as SpatialMaterial;
       _originalAlbedoColorMap[i] = material.albedoColor;
     }
   }
@@ -137,8 +137,8 @@ class EnemyShip extends BaseComponent {
   void _tintMesh([
     Color Function(Color) tint = _tintNone,
   ]) {
-    for (int i = 0; i < mesh.surfaceCount; i++) {
-      final material = mesh.getMaterialToSurface(i)! as StandardMaterial;
+    for (final (i, surface) in mesh.surfaces.indexed) {
+      final material = surface.material as SpatialMaterial;
 
       final originalColor = _originalAlbedoColorMap[i]!;
       final newColor = tint(originalColor);
@@ -148,7 +148,6 @@ class EnemyShip extends BaseComponent {
       }
 
       material.albedoColor = newColor;
-      mesh.addMaterialToSurface(i, material);
     }
   }
 
