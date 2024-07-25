@@ -13,7 +13,7 @@ class SurfaceTool {
   Color _lastColor = const Color(0xFFFFFFFF);
   final Vector3 _lastNormal = Vector3.zero();
   final Vector2 _lastTexCoord = Vector2.zero();
-  Material _lastMaterial = StandardMaterial();
+  Material _lastMaterial = SpatialMaterial();
 
   void setColor(Color color) => _lastColor = color;
 
@@ -91,6 +91,13 @@ class SurfaceTool {
   Mesh apply([Mesh? mesh]) {
     index();
     mesh ??= Mesh();
-    return mesh..addSurface(_vertices, _indices, material: _lastMaterial);
+    return mesh
+      ..addSurface(
+        Surface(
+          vertices: _vertices,
+          indices: _indices,
+          material: _lastMaterial,
+        ),
+      );
   }
 }

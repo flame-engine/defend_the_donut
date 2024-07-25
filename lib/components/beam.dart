@@ -14,7 +14,7 @@ class Beam extends MeshComponent {
           mesh: CylinderMesh(
             radius: radius,
             height: height,
-            material: StandardMaterial()..albedoColor = const Color(0xFFFF0000),
+            material: SpatialMaterial()..albedoColor = const Color(0xFFFF0000),
           ),
         );
 

@@ -13,7 +13,7 @@ class Pew extends BaseComponent {
         super(
           mesh: SphereMesh(
             radius: _pewRadius,
-            material: StandardMaterial(),
+            material: SpatialMaterial(),
           ),
         );
 
