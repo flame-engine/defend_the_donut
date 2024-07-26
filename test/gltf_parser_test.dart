@@ -14,17 +14,17 @@ void main() {
       final scene = root.scenes[0];
 
       final meshes = scene.toFlameMeshes();
-      print(meshes.length);
+      print('Meshes: ${meshes.length}');
       // expect(meshes.length, 80);
 
       final node = scene.nodes[0].get().children[0].get();
       final prim = node.mesh!.get().primitives[0];
-      print(prim.toFlameVertices());
+      print('Flame vertices: ${prim.toFlameVertices()}');
 
       final mesh = meshes[0];
-      final surface = mesh.copySurfaces()[0];
+      final surface = mesh.surfaces.toList()[0];
       final aabb = surface.aabb;
-      print(aabb);
+      print('aabb: $aabb');
     });
   });
 }

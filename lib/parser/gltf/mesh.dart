@@ -33,7 +33,7 @@ class Mesh extends GltfNode {
   flame_3d.Mesh toFlameMesh() {
     final mesh = flame_3d.Mesh();
     for (final primitive in primitives) {
-      mesh.addSurfaceObj(primitive.toFlameSurface());
+      mesh.addSurface(primitive.toFlameSurface());
     }
     return mesh;
   }

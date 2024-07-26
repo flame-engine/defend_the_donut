@@ -1,7 +1,7 @@
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/texture_info.dart';
-import 'package:flame_3d/extensions.dart';
+import 'package:flame_3d/core.dart';
 
 /// A set of parameter values that are used to define the metallic-roughness material model from Physically-Based Rendering (PBR) methodology.
 class PBRMetallicRoughness extends GltfNode {

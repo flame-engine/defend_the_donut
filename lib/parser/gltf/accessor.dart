@@ -5,8 +5,7 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/sparse_accessor.dart';
-import 'package:defend_the_donut/parser/gltf/utils.dart';
-import 'package:flame_3d/extensions.dart';
+import 'package:flame_3d/core.dart';
 
 class RawAccessor extends GltfNode {
   /// The reference to the buffer view.
@@ -169,7 +168,7 @@ class Vector2Accessor extends TypedAccessor<Vector2> {
   @override
   List<Vector2> typedData() {
     _checkAccessorType(AccessorType.vec2);
-    return rawAccessor._typedData(2, Vector2Factory.fromList);
+    return rawAccessor._typedData(2, (it) => Vector2.array(it.cast()));
   }
 }
 
@@ -182,6 +181,6 @@ class Vector3Accessor extends TypedAccessor<Vector3> {
   @override
   List<Vector3> typedData() {
     _checkAccessorType(AccessorType.vec3);
-    return rawAccessor._typedData(3, Vector3Factory.fromList);
+    return rawAccessor._typedData(3, (it) => Vector3.array(it.cast()));
   }
 }

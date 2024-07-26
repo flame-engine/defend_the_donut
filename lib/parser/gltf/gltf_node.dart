@@ -1,7 +1,6 @@
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
-import 'package:defend_the_donut/parser/gltf/utils.dart';
-import 'package:flame_3d/extensions.dart';
+import 'package:flame_3d/core.dart';
 
 abstract class GltfNode {
   final GltfRoot root;
@@ -49,7 +48,7 @@ class Parser {
   ) {
     return map['baseColorFactor']
         ?.let((e) => e as List<Object?>)
-        .let((e) => Vector3Factory.fromList(e.cast()));
+        .let((e) => Vector3.array(e.cast()));
   }
 
   static Matrix4? matrix4(
@@ -69,7 +68,7 @@ class Parser {
   ) {
     return map[key]
         ?.let((e) => e as List<Object?>)
-        .let((e) => Vector4Factory.fromList(e.cast()));
+        .let((e) => Vector4.array(e.cast()));
   }
 
   static int? integer(
@@ -164,5 +163,14 @@ class Parser {
   ) {
     return (map[key] as Map<String, Object?>?)
         ?.map((key, value) => MapEntry(key, value as int));
+  }
+}
+
+extension _Let<T> on T {
+  R let<R>(R Function(T) block) {
+    if (this == null) {
+      return null as R;
+    }
+    return block(this!);
   }
 }

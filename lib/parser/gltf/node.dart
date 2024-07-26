@@ -4,8 +4,7 @@ import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/mesh.dart';
 import 'package:defend_the_donut/parser/gltf/skin.dart';
-import 'package:defend_the_donut/parser/gltf/utils.dart';
-import 'package:flame_3d/extensions.dart';
+import 'package:flame_3d/core.dart';
 import 'package:flame_3d/resources.dart' as flame_3d;
 
 /// A node in the node hierarchy.
@@ -84,6 +83,6 @@ class Node extends GltfNode {
       mesh?.get().toFlameMesh(),
       ...children.expand((e) => e.get().toFlameMeshes()),
     ];
-    return meshes.filterNotNull();
+    return meshes.nonNulls.toList();
   }
 }

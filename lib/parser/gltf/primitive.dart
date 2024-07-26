@@ -5,8 +5,7 @@ import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/material.dart';
 import 'package:defend_the_donut/parser/gltf/morph_target.dart';
 import 'package:defend_the_donut/parser/gltf/primitive_mode.dart';
-import 'package:defend_the_donut/parser/gltf/utils.dart';
-import 'package:flame_3d/extensions.dart';
+import 'package:flame_3d/core.dart';
 import 'package:flame_3d/resources.dart' as flame_3d;
 
 class Primitive extends GltfNode {
@@ -38,30 +37,37 @@ class Primitive extends GltfNode {
   });
 
   GltfRef<Vector3Accessor>? get positions {
-    return attributes['POSITION']?.let((e) {
-      return GltfRef<Vector3Accessor>(
-        root: root,
-        index: e,
-      );
-    });
+    final position = attributes['POSITION'];
+    if (position == null) {
+      return null;
+    }
+    return GltfRef<Vector3Accessor>(
+      root: root,
+      index: position,
+    );
   }
 
   GltfRef<Vector3Accessor>? get normals {
-    return attributes['NORMAL']?.let((e) {
-      return GltfRef<Vector3Accessor>(
-        root: root,
-        index: e,
-      );
-    });
+    final normal = attributes['NORMAL'];
+    if (normal == null) {
+      return null;
+    }
+    return GltfRef<Vector3Accessor>(
+      root: root,
+      index: normal,
+    );
   }
 
   GltfRef<Vector2Accessor>? get texCoords {
-    return attributes['TEXCOORD_0']?.let((e) {
-      return GltfRef<Vector2Accessor>(
-        root: root,
-        index: e,
-      );
-    });
+    final textCoords = attributes['TEXCOORD_0'];
+    if (textCoords == null) {
+      print(attributes.keys.join(', '));
+      return null;
+    }
+    return GltfRef<Vector2Accessor>(
+      root: root,
+      index: textCoords,
+    );
   }
 
   Iterable<flame_3d.Vertex> toFlameVertices() sync* {
@@ -89,8 +95,8 @@ class Primitive extends GltfNode {
 
     ''');
     return flame_3d.Surface(
-      toFlameVertices().toList(),
-      indices.get().typedData(),
+      vertices: toFlameVertices().toList(),
+      indices: indices.get().typedData(),
       // TODO: implement material
       // material?.get().toFlameMaterial(),
     );

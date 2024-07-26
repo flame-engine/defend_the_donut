@@ -5,7 +5,7 @@ import 'package:defend_the_donut/parser/gltf/normal_texture_info.dart';
 import 'package:defend_the_donut/parser/gltf/occlusion_texture_info.dart';
 import 'package:defend_the_donut/parser/gltf/pbr_metallic_roughness.dart';
 import 'package:defend_the_donut/parser/gltf/texture_info.dart';
-import 'package:flame_3d/extensions.dart';
+import 'package:flame_3d/core.dart';
 import 'package:flame_3d/resources.dart' as flame_3d;
 
 /// The material appearance of a primitive.
@@ -46,7 +46,7 @@ class Material extends GltfNode {
 
   flame_3d.Material toFlameMaterial() {
     // TODO: impl materials
-    return flame_3d.StandardMaterial();
+    return flame_3d.SpatialMaterial();
   }
 
   Material({

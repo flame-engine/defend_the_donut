@@ -84,14 +84,6 @@ class Glb {
     return binaryChunks().toList()[index].data;
   }
 
-  void describe() {
-    print('version: $version length: $length');
-    print('chunks: ${chunks.map((e) => e.type).join(', ')}');
-
-    final mesh = parse();
-    print(mesh);
-  }
-
   GltfRoot parse() {
     final json = jsonChunk();
     final root = GltfRoot();
