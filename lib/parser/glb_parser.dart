@@ -4,13 +4,13 @@ import 'dart:typed_data';
 import 'package:defend_the_donut/parser/gltf/accessor.dart';
 import 'package:defend_the_donut/parser/gltf/buffer.dart';
 import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
+import 'package:defend_the_donut/parser/gltf/component_type.dart';
 import 'package:defend_the_donut/parser/gltf/glb_chunk.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/material.dart';
 import 'package:defend_the_donut/parser/gltf/mesh.dart';
 import 'package:defend_the_donut/parser/gltf/node.dart';
 import 'package:defend_the_donut/parser/gltf/scene.dart';
-import 'package:flame/extensions.dart';
 import 'package:flame/flame.dart';
 
 /// Parses GLB and GLTF file formats as per specified by:
@@ -115,76 +115,11 @@ class Glb {
 
     return root;
   }
-
-  List<Vector3> _accessVector3Data(int accessorIndex) {
-    final rawData = _accessData(accessorIndex);
-    final result = <Vector3>[];
-    for (int i = 0; i < rawData.length; i += 3) {
-      result.add(
-        Vector3(
-          rawData[i].toDouble(),
-          rawData[i + 1].toDouble(),
-          rawData[i + 2].toDouble(),
-        ),
-      );
-    }
-    return result;
-  }
-
-  List<Vector2> _accessVector2Data(int accessorIndex) {
-    final rawData = _accessData(accessorIndex);
-    final result = <Vector2>[];
-    for (int i = 0; i < rawData.length; i += 2) {
-      result.add(
-        Vector2(
-          rawData[i].toDouble(),
-          rawData[i + 1].toDouble(),
-        ),
-      );
-    }
-    return result;
-  }
-
-  List<int> _accessScalarData(int accessorIndex) {
-    List<num> rawData = _accessData(accessorIndex);
-    return rawData.map<int>((e) => e.toInt()).toList();
-  }
-
-  List<num> _accessData(int index) {
-    final json = jsonChunk() as Map<String, dynamic>;
-    final ac = json["accessors"][index];
-    final bv = json["bufferViews"][ac["bufferView"]];
-    final buff = buffer(bv["buffer"]);
-
-    final offset = bv["byteOffset"] + ac["byteOffset"];
-    final length = bv["byteLength"];
-
-    final data = buff.sublist(offset, offset + length);
-    return _convertDataType(data, ac["componentType"]);
-  }
-
-  List<num> _convertDataType(Uint8List bytes, int componentType) {
-    final byteData = bytes.buffer.asByteData();
-
-    final (format, step) = switch (componentType) {
-      5126 => (byteData.getFloat32, 4),
-      5123 => (byteData.getUint16, 2),
-      5125 => (byteData.getUint32, 4),
-      _ => throw Exception('Invalid component type $componentType'),
-    };
-    int cursor = 0;
-    final result = <num>[];
-    while (cursor <= bytes.length - step) {
-      result.add(format(cursor));
-      cursor += step;
-    }
-    return result;
-  }
 }
 
 int _parseInt(Uint8List bytes) {
   final byteData = ByteData.view(bytes.buffer);
-  return byteData.getUint32(0, Endian.little);
+  return ComponentType.unsignedInt.parseData(byteData).toInt();
 }
 
 String _parseString(Uint8List bytes) {

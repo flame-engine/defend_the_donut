@@ -20,7 +20,7 @@ enum ComponentType {
     required this.byteSize,
   });
 
-  num parseData(ByteData byteData, int cursor) {
+  num parseData(ByteData byteData, { int cursor = 0 }) {
     final formatter = switch (this) {
       ComponentType.byte => (e, _) => byteData.getInt8(e),
       ComponentType.unsignedByte => (e, _) => byteData.getUint8(e),

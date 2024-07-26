@@ -46,7 +46,7 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    return map['baseColorFactor']
+    return map[key]
         ?.let((e) => e as List<Object?>)
         .let((e) => Vector3.array(e.cast()));
   }

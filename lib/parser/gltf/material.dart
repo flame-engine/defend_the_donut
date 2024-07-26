@@ -44,11 +44,6 @@ class Material extends GltfNode {
   /// The back-face **MUST** have its normals reversed before the lighting equation is evaluated
   final bool doubleSided;
 
-  flame_3d.Material toFlameMaterial() {
-    // TODO: impl materials
-    return flame_3d.SpatialMaterial();
-  }
-
   Material({
     required super.root,
     required this.name,
@@ -75,4 +70,8 @@ class Material extends GltfNode {
           alphaMode: AlphaMode.parse(map, 'alphaMode') ?? AlphaMode.opaque,
           doubleSided: Parser.boolean(map, 'doubleSided') ?? false,
         );
+
+  flame_3d.Material? toFlameMaterial() {
+    return pbrMetallicRoughness?.toFlameSpatialMaterial();
+  }
 }

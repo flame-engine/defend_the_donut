@@ -69,7 +69,7 @@ class RawAccessor extends GltfNode {
     int cursor = 0;
     final result = <num>[];
     while (cursor <= bytes.length - step) {
-      result.add(componentType.parseData(byteData, cursor));
+      result.add(componentType.parseData(byteData, cursor: cursor));
       cursor += step;
     }
     return result;

@@ -1,3 +1,5 @@
+import 'dart:ui' show Color;
+
 import 'package:defend_the_donut/parser/gltf/accessor.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
@@ -70,35 +72,63 @@ class Primitive extends GltfNode {
     );
   }
 
-  Iterable<flame_3d.Vertex> toFlameVertices() sync* {
+  List<Vector3> _recomputeNormals(
+    List<Vector3> vertices,
+    List<int> indices,
+  ) {
+    assert(mode == PrimitiveMode.triangles);
+
+    final normals = List.filled(vertices.length, Vector3.zero());
+    for (var i = 0; i < indices.length; i += 3) {
+      final i0 = indices[i];
+      final i1 = indices[i + 1];
+      final i2 = indices[i + 2];
+
+      final v0 = vertices[i0];
+      final v1 = vertices[i1];
+      final v2 = vertices[i2];
+
+      final edge1 = v1 - v0;
+      final edge2 = v2 - v0;
+      final faceNormal = edge1.cross(edge2)..normalize();
+
+      normals[i0] += faceNormal;
+      normals[i1] += faceNormal;
+      normals[i2] += faceNormal;
+    }
+    for (final normal in normals) {
+      normal.normalize();
+    }
+    return normals;
+  }
+
+  Iterable<flame_3d.Vertex> toFlameVertices(List<int> indices) sync* {
     final positions = this.positions!.get().typedData();
     final texCoords = this.texCoords?.get().typedData();
-    final normals = this.normals?.get().typedData();
+    final normals = this.normals?.get().typedData() ??
+        _recomputeNormals(positions, indices);
 
     for (var i = 0; i < positions.length; i++) {
       yield flame_3d.Vertex(
         position: positions[i],
         // TODO: consider null textures
         texCoord: texCoords?.elementAt(i) ?? Vector2.zero(),
-        normal: normals?.elementAt(i),
+        normal: normals.elementAt(i),
       );
     }
   }
 
   flame_3d.Surface toFlameSurface() {
-    print('''
+    final indices = this.indices.get().typedData();
+    final vertices = toFlameVertices(indices);
 
-      creating flame surface
-      positions: ${toFlameVertices().map((e) => e.position).join('\n')}
-      texels: ${toFlameVertices().map((e) => e.texCoord).join('\n')}
-      indices: ${indices.get().typedData()}
-
-    ''');
     return flame_3d.Surface(
-      vertices: toFlameVertices().toList(),
-      indices: indices.get().typedData(),
-      // TODO: implement material
-      // material?.get().toFlameMaterial(),
+      vertices: vertices.toList(),
+      indices: indices,
+      material: material?.get().toFlameMaterial() ??
+          flame_3d.SpatialMaterial(
+            albedoColor: const Color(0xFFFF00FF),
+          ),
     );
   }
 

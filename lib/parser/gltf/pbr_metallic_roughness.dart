@@ -1,13 +1,16 @@
+import 'dart:ui' show Color;
+
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/texture_info.dart';
 import 'package:flame_3d/core.dart';
+import 'package:flame_3d/resources.dart' as flame_3d;
 
 /// A set of parameter values that are used to define the metallic-roughness material model from Physically-Based Rendering (PBR) methodology.
 class PBRMetallicRoughness extends GltfNode {
   /// The factors for the base color of the material.
   /// This value defines linear multipliers for the sampled texels of the base color texture.
-  final Vector3? baseColorFactor;
+  final Vector4? baseColorFactor;
 
   /// The base color texture.
   ///
@@ -51,7 +54,7 @@ class PBRMetallicRoughness extends GltfNode {
     Map<String, Object?> map,
   ) : this(
           root: root,
-          baseColorFactor: Parser.vector3(root, map, 'baseColorFactor'),
+          baseColorFactor: Parser.vector4(root, map, 'baseColorFactor'),
           baseColorTexture: Parser.object(
             root,
             map,
@@ -67,4 +70,17 @@ class PBRMetallicRoughness extends GltfNode {
             TextureInfo.parse,
           ),
         );
+
+  flame_3d.SpatialMaterial? toFlameSpatialMaterial() {
+    final albedoColor = baseColorFactor?.toColor();
+    if (albedoColor == null) {
+      return null;
+    }
+    return flame_3d.SpatialMaterial(
+      albedoColor: albedoColor,
+      metallic: metallicFactor,
+      metallicSpecular: metallicFactor,
+      roughness: roughnessFactor,
+    );
+  }
 }

@@ -143,6 +143,11 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   static const maxEnemies = 32;
   double spawnRate = 0.032;
 
+  SpaceWorld3D()
+      : super(
+          clearColor: const Color(0xFF3C3C3C),
+        );
+
   @override
   SpaceGame3D get game => findParent<SpaceGame3D>()!;
   KeyboardControlledCamera get camera => game.camera;
@@ -152,20 +157,48 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   );
 
   FutureOr<void> initGame() async {
-    await add(MeshComponent(mesh: CuboidMesh(size: Vector3.all(1.0))));
-
     final result = await GlbParser.parseGlb('objects/cube.glb');
-    final oneMesh = result.parse().scenes[0].toFlameMeshes()[0];
-    await add(MeshComponent(mesh: oneMesh));
+    final meshes = result.parse().scenes[0].toFlameMeshes();
+    for (final mesh in meshes) {
+      for (final surface in mesh.surfaces) {
+        // surface.material = SpatialMaterial(
+        //   albedoColor: const Color(0xFF00FF00),
+        // );
+      }
+      final c1 = MeshComponent(
+        mesh: mesh,
+        // position: Vector3(1, 5, 1),
+        // rotation: Quaternion.euler(0.1, 0.2, 0.3),
+
+        position: Vector3(0.2, 0.1, 2),
+        rotation: Quaternion.euler(0.1, 0.2, 0.3),
+      );
+      await add(c1);
+    }
+
+    final c2 = MeshComponent(
+      mesh: CuboidMesh(
+        size: Vector3.all(2),
+        material: SpatialMaterial(
+          albedoColor: const Color(0xFF00FF00),
+        ),
+      ),
+      position: Vector3(0.2, 0.1, 2),
+      rotation: Quaternion.euler(0.1, 0.2, 0.3),
+    );
+    // await add(c2);
 
     await addAll([
+      LightComponent.spot(
+        position: Vector3.zero(),
+      ),
       Pew(
-        position: Vector3(0, 0, 0),
-        direction: Vector3(0, 0, 0),
+        position: Vector3.zero(),
+        direction: Vector3.zero(),
       ),
       Donut(
         type: DonutType.donut1,
-        position: Vector3(0, 0, 0),
+        position: Vector3.zero(),
       ),
       player,
       TimerComponent(
