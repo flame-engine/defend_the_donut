@@ -158,22 +158,14 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   FutureOr<void> initGame() async {
     final result = await GlbParser.parseGlb('objects/cube.glb');
-    final meshes = result.parse().scenes[0].toFlameMeshes();
+    final meshes = result.parse().toFlameMeshes();
     for (final mesh in meshes) {
-      for (final surface in mesh.surfaces) {
-        // surface.material = SpatialMaterial(
-        //   albedoColor: const Color(0xFF00FF00),
-        // );
-      }
-      final c1 = MeshComponent(
+      final c = MeshComponent(
         mesh: mesh,
-        // position: Vector3(1, 5, 1),
-        // rotation: Quaternion.euler(0.1, 0.2, 0.3),
-
         position: Vector3(0.2, 0.1, 2),
         rotation: Quaternion.euler(0.1, 0.2, 0.3),
       );
-      await add(c1);
+      await add(c);
     }
 
     final c2 = MeshComponent(
@@ -189,7 +181,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
     // await add(c2);
 
     await addAll([
-      LightComponent.spot(
+      LightComponent.point(
         position: Vector3.zero(),
       ),
       Pew(

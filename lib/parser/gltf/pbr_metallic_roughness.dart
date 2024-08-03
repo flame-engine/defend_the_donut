@@ -79,8 +79,18 @@ class PBRMetallicRoughness extends GltfNode {
     return flame_3d.SpatialMaterial(
       albedoColor: albedoColor,
       metallic: metallicFactor,
-      metallicSpecular: metallicFactor,
       roughness: roughnessFactor,
+    );
+  }
+}
+
+extension _ToColor on Vector4 {
+  Color toColor() {
+    return Color.fromARGB(
+      (a * 255).toInt(),
+      (r * 255).toInt(),
+      (g * 255).toInt(),
+      (b * 255).toInt(),
     );
   }
 }

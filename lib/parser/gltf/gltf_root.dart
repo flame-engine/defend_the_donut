@@ -9,6 +9,7 @@ import 'package:defend_the_donut/parser/gltf/mesh.dart';
 import 'package:defend_the_donut/parser/gltf/node.dart';
 import 'package:defend_the_donut/parser/gltf/scene.dart';
 import 'package:defend_the_donut/parser/gltf/skin.dart';
+import 'package:flame_3d/resources.dart' as flame_3d;
 
 class GltfRoot {
   late final List<RawAccessor> accessors;
@@ -53,5 +54,9 @@ class GltfRoot {
       const (RawAccessor) => accessors[index],
       _ => throw UnimplementedError('Cannot resolve type $T')
     } as T;
+  }
+
+  List<flame_3d.Mesh> toFlameMeshes() {
+    return scenes.expand((e) => e.toFlameMeshes()).toList();
   }
 }
