@@ -157,13 +157,14 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   );
 
   FutureOr<void> initGame() async {
-    final result = await GlbParser.parseGlb('objects/cube.glb');
+    final result = await GlbParser.parseGlb('objects/duck.glb');
     final meshes = result.parse().toFlameMeshes();
     for (final mesh in meshes) {
       final c = MeshComponent(
         mesh: mesh,
-        position: Vector3(0.2, 0.1, 2),
+        position: Vector3(0.2, 0.3, 2),
         rotation: Quaternion.euler(0.1, 0.2, 0.3),
+        scale: Vector3.all(0.1),
       );
       await add(c);
     }

@@ -48,7 +48,7 @@ class RawAccessor extends GltfNode {
   /// Both `min` and `max` arrays have the same length.
   ///
   /// The length is determined by the value of the `type` property; it can be 1, 2, 3, 4, 9, or 16.
-  /// 
+  ///
   /// `normalized` property has no effect on array values: they always correspond to the actual values stored in the buffer.
   /// When the accessor is sparse, this property **MUST** contain minimum values of accessor data with sparse substitution applied.
   final List<double>? min;
@@ -58,17 +58,22 @@ class RawAccessor extends GltfNode {
 
   List<num> data() {
     final buffer = bufferView.get();
-    if (byteOffset != 0) {
-      throw Exception('Accessor byteOffset is not supported yet.');
-    }
-    final bytes = buffer.data(0 * byteOffset);
+    final bytes = buffer.data(byteOffset);
 
     final byteData = bytes.buffer.asByteData();
-    final step = buffer.byteStride ?? componentType.byteSize;
+
+    final byteStride = buffer.byteStride;
+    final step =
+        byteStride == null ? componentType.byteSize : byteStride ~/ type.size;
 
     int cursor = 0;
     final result = <num>[];
-    while (cursor <= bytes.length - step) {
+    if (bytes.lengthInBytes % step != 0) {
+      throw Exception(
+        'Accessor data length ${bytes.lengthInBytes} is not a multiple of the stride $step',
+      );
+    }
+    while (cursor < bytes.lengthInBytes) {
       result.add(componentType.parseData(byteData, cursor: cursor));
       cursor += step;
     }
@@ -80,6 +85,10 @@ class RawAccessor extends GltfNode {
     _verifyAccessorType(size);
     final view = data();
     final result = <T>[];
+    if (view.length % size != 0) {
+      throw Exception(
+          'Accessor data length ${view.length} is not a multiple of the size $size (count $count $type $componentType)');
+    }
     for (var i = 0; i < view.length; i += size) {
       result.add(producer(view.sublist(i, i + size)));
     }

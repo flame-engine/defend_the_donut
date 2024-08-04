@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'dart:ui' show Color;
 
+import 'package:defend_the_donut/main.dart';
 import 'package:defend_the_donut/parser/gltf/accessor.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
@@ -103,17 +105,19 @@ class Primitive extends GltfNode {
   }
 
   Iterable<flame_3d.Vertex> toFlameVertices(List<int> indices) sync* {
+    final maxIndex = indices.reduce(max);
+
     final positions = this.positions!.get().typedData();
     final texCoords = this.texCoords?.get().typedData();
     final normals = this.normals?.get().typedData() ??
         _recomputeNormals(positions, indices);
 
-    for (var i = 0; i < positions.length; i++) {
+    for (var i = 0; i < maxIndex; i++) {
       yield flame_3d.Vertex(
         position: positions[i],
         // TODO: consider null textures
-        texCoord: texCoords?.elementAt(i) ?? Vector2.zero(),
-        normal: normals.elementAt(i),
+        texCoord: texCoords?.elementAtOrNull(i) ?? Vector2.zero(),
+        normal: normals.elementAtOrNull(i),
       );
     }
   }
