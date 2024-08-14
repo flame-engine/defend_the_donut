@@ -25,7 +25,7 @@ class NormalTextureInfo extends TextureInfo {
     Map<String, Object?> map,
   ) : this(
           root: root,
-          index: Parser.integer(map, 'index')!,
+          index: Parser.ref(root, map, 'index')!,
           texCoord: Parser.integer(map, 'texCoord'),
           scale: Parser.float(map, 'scale') ?? 1.0,
         );

@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
-import 'package:defend_the_donut/components/cylinder_mesh.dart';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';

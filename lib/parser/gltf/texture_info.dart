@@ -1,10 +1,13 @@
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
+import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
+import 'package:defend_the_donut/parser/gltf/texture.dart';
+import 'package:flame_3d/resources.dart' as flame_3d;
 
 /// Reference to a texture.
 class TextureInfo extends GltfNode {
-  /// The index of the texture.
-  final int index;
+  /// The reference to the texture.
+  final GltfRef<Texture> index;
 
   /// This integer value is used to construct a string in the format `TEXCOORD_<set index>`,
   /// which is a reference to a key in `mesh.primitives.attributes` (e.g. a value of `0` corresponds to `TEXCOORD_0`).
@@ -23,7 +26,11 @@ class TextureInfo extends GltfNode {
     Map<String, Object?> map,
   ) : this(
           root: root,
-          index: Parser.integer(map, 'index')!,
+          index: Parser.ref(root, map, 'index')!,
           texCoord: Parser.integer(map, 'texCoord'),
         );
+
+  flame_3d.Texture toFlameTexture() {
+    return index.get().toFlameTexture();
+  }
 }

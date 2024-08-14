@@ -33,8 +33,17 @@ class Camera extends GltfNode {
   ) : this(
           root: root,
           type: CameraType.parse(map, 'type')!,
-          orthographic: Parser.object(root, map, 'orthographic', CameraOrthographic.parse),
-          perspective: Parser.object(root, map, 'perspective', CameraPerspective.parse),
+          orthographic: Parser.object(
+            root,
+            map,
+            'orthographic',
+            CameraOrthographic.parse,
+          ),
+          perspective: Parser.object(
+            root,
+            map,
+            'perspective',
+            CameraPerspective.parse,
+          ),
         );
-
 }

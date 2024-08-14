@@ -1,16 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:defend_the_donut/parser/gltf/accessor.dart';
-import 'package:defend_the_donut/parser/gltf/buffer.dart';
-import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
 import 'package:defend_the_donut/parser/gltf/component_type.dart';
 import 'package:defend_the_donut/parser/gltf/glb_chunk.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
-import 'package:defend_the_donut/parser/gltf/material.dart';
-import 'package:defend_the_donut/parser/gltf/mesh.dart';
-import 'package:defend_the_donut/parser/gltf/node.dart';
-import 'package:defend_the_donut/parser/gltf/scene.dart';
 import 'package:flame/flame.dart';
 
 /// Parses GLB and GLTF file formats as per specified by:
@@ -84,34 +77,11 @@ class Glb {
     return binaryChunks().toList()[index].data;
   }
 
-  GltfRoot parse() {
-    final json = jsonChunk();
+  Future<GltfRoot> parse() async {
     final root = GltfRoot();
 
     root.chunks = binaryChunks().toList();
-
-    root.scene = json['scene'] as int;
-    root.scenes = (json['scenes'] as List<Object?>)
-        .map((e) => Scene.parse(root, e as Map<String, Object?>))
-        .toList();
-    root.nodes = (json['nodes'] as List<Object?>)
-        .map((e) => Node.parse(root, e as Map<String, Object?>))
-        .toList();
-    root.meshes = (json['meshes'] as List<Object?>)
-        .map((e) => Mesh.parse(root, e as Map<String, Object?>))
-        .toList();
-    root.materials = (json['materials'] as List<Object?>)
-        .map((e) => Material.parse(root, e as Map<String, Object?>))
-        .toList();
-    root.accessors = (json['accessors'] as List<Object?>)
-        .map((e) => RawAccessor.parse(root, e as Map<String, Object?>))
-        .toList();
-    root.bufferViews = (json['bufferViews'] as List<Object?>)
-        .map((e) => BufferView.parse(root, e as Map<String, Object?>))
-        .toList();
-    root.buffers = (json['buffers'] as List<Object?>)
-        .map((e) => Buffer.parse(root, e as Map<String, Object?>))
-        .toList();
+    await root.init(jsonChunk());
 
     return root;
   }

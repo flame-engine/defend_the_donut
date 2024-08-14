@@ -46,6 +46,6 @@ class Donut extends BaseComponent {
     final dr = Quaternion.axisAngle(_rotationAxis, angle);
     transform.rotation = transform.rotation * dr;
   }
-  
+
   static const _rotationSpeed = 0.2;
 }

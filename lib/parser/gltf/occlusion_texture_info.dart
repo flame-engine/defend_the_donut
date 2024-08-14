@@ -25,7 +25,7 @@ class OcclusionTextureInfo extends TextureInfo {
     Map<String, Object?> map,
   ) : this(
           root: root,
-          index: Parser.integer(map, 'index')!,
+          index: Parser.ref(root, map, 'index')!,
           texCoord: Parser.integer(map, 'texCoord'),
           strength: Parser.float(map, 'strength') ?? 1.0,
         );

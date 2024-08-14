@@ -7,7 +7,7 @@ enum CameraType {
   ;
 
   static CameraType valueOf(String value) {
-    return values.firstWhere((e) => e.toString() == value);
+    return values.firstWhere((e) => e.name == value);
   }
 
   static CameraType? parse(Map<String, Object?> map, String key) {

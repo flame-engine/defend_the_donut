@@ -12,7 +12,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
 
       final result = await GlbParser.parseGlb('objects/cube.glb');
-      final root = result.parse();
+      final root = await result.parse();
 
       expect(root.scenes.length, 1);
       final scene = root.scenes[0];

@@ -71,6 +71,19 @@ class Parser {
         .let((e) => Vector4.array(e.cast()));
   }
 
+  static Quaternion? quaternion(
+    GltfRoot root,
+    Map<String, Object?> map,
+    String key,
+  ) {
+    return map[key]?.let((e) => e as List<Object?>).let((e) => Quaternion(
+          e[0] as double,
+          e[1] as double,
+          e[2] as double,
+          e[3] as double,
+        ));
+  }
+
   static int? integer(
     Map<String, Object?> map,
     String key,

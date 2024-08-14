@@ -72,12 +72,9 @@ class PBRMetallicRoughness extends GltfNode {
         );
 
   flame_3d.SpatialMaterial? toFlameSpatialMaterial() {
-    final albedoColor = baseColorFactor?.toColor();
-    if (albedoColor == null) {
-      return null;
-    }
     return flame_3d.SpatialMaterial(
-      albedoColor: albedoColor,
+      albedoColor: baseColorFactor?.toColor() ?? const Color(0xFFFFFFFF),
+      albedoTexture: baseColorTexture?.toFlameTexture(),
       metallic: metallicFactor,
       roughness: roughnessFactor,
     );

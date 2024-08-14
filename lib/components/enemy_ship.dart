@@ -74,11 +74,11 @@ class EnemyShip extends BaseComponent {
       } else {
         if (deathTimer > 1.0) {
           final progress = 1 - (deathTimer - 1.0);
-          _tintMesh((color) {
-            return color
-                .withRed((color.red + (255 - color.red) * progress).toInt())
-                .withGreen((color.green + (255 - color.green) * progress).toInt())
-                .withBlue((color.blue + (255 - color.blue) * progress).toInt());
+          _tintMesh((c) {
+            return c
+                .withRed((c.red + (255 - c.red) * progress).toInt())
+                .withGreen((c.green + (255 - c.green) * progress).toInt())
+                .withBlue((c.blue + (255 - c.blue) * progress).toInt());
           });
         } else {
           final progress = 1 - Curves.easeInCubic.transform(1 - deathTimer);
@@ -108,8 +108,10 @@ class EnemyShip extends BaseComponent {
 
     final target = position.distanceTo(goal);
     if (target < 0.1) {
-      isShootingDonut =  true;
-      game.world.add(beam = Beam.generate(start: position, end: Vector3.zero()));
+      isShootingDonut = true;
+      game.world.add(
+        beam = Beam.generate(start: position, end: Vector3.zero()),
+      );
     } else {
       final direction = (goal - position)..normalize();
       rotation.setFromTwoVectors(_forward, direction);

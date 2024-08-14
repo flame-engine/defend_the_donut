@@ -9,7 +9,6 @@ enum PrimitiveMode {
   triangles(4),
   triangleStrip(5),
   triangleFan(6),
-
   ;
 
   final int value;

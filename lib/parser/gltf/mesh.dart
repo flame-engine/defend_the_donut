@@ -1,6 +1,7 @@
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/primitive.dart';
+import 'package:flame_3d/core.dart';
 import 'package:flame_3d/resources.dart' as flame_3d;
 
 /// A set of primitives to be rendered.
@@ -29,11 +30,11 @@ class Mesh extends GltfNode {
               Parser.objectList(root, map, 'primitives', Primitive.parse) ?? [],
           weights: Parser.floatList(root, map, 'weights'),
         );
-  
-  flame_3d.Mesh toFlameMesh() {
+
+  flame_3d.Mesh toFlameMesh([Matrix4? transform]) {
     final mesh = flame_3d.Mesh();
     for (final primitive in primitives) {
-      mesh.addSurface(primitive.toFlameSurface());
+      mesh.addSurface(primitive.toFlameSurface(transform));
     }
     return mesh;
   }

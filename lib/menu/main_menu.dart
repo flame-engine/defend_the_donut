@@ -7,7 +7,8 @@ import 'package:defend_the_donut/styles.dart';
 import 'package:flame/components.dart';
 
 class MainMenu extends Menu {
-  static final mainTitle = Styles.title.copyWith((it) => it.copyWith(fontSize: 240));
+  static final mainTitle =
+      Styles.title.copyWith((it) => it.copyWith(fontSize: 240));
 
   @override
   FutureOr<void> onLoad() async {
@@ -15,7 +16,9 @@ class MainMenu extends Menu {
       MenuItem(
         textRenderer: Styles.textBig,
         text: '- start -',
-        positionProvider: (gameSize) => Vector2(gameSize.x / 2, gameSize.y / 3 + 272.0),
+        positionProvider: (gameSize) {
+          return Vector2(gameSize.x / 2, gameSize.y / 3 + 272.0);
+        },
         anchor: Anchor.topCenter,
         onTap: game.initGame,
       ),

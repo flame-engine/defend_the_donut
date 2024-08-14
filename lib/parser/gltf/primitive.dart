@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui' show Color;
 
-import 'package:defend_the_donut/main.dart';
 import 'package:defend_the_donut/parser/gltf/accessor.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
@@ -65,7 +64,6 @@ class Primitive extends GltfNode {
   GltfRef<Vector2Accessor>? get texCoords {
     final textCoords = attributes['TEXCOORD_0'];
     if (textCoords == null) {
-      print(attributes.keys.join(', '));
       return null;
     }
     return GltfRef<Vector2Accessor>(
@@ -74,57 +72,39 @@ class Primitive extends GltfNode {
     );
   }
 
-  List<Vector3> _recomputeNormals(
-    List<Vector3> vertices,
+  Iterable<flame_3d.Vertex> toFlameVertices(
     List<int> indices,
-  ) {
+    Matrix4 transform,
+  ) sync* {
     assert(mode == PrimitiveMode.triangles);
 
-    final normals = List.filled(vertices.length, Vector3.zero());
-    for (var i = 0; i < indices.length; i += 3) {
-      final i0 = indices[i];
-      final i1 = indices[i + 1];
-      final i2 = indices[i + 2];
-
-      final v0 = vertices[i0];
-      final v1 = vertices[i1];
-      final v2 = vertices[i2];
-
-      final edge1 = v1 - v0;
-      final edge2 = v2 - v0;
-      final faceNormal = edge1.cross(edge2)..normalize();
-
-      normals[i0] += faceNormal;
-      normals[i1] += faceNormal;
-      normals[i2] += faceNormal;
-    }
-    for (final normal in normals) {
-      normal.normalize();
-    }
-    return normals;
-  }
-
-  Iterable<flame_3d.Vertex> toFlameVertices(List<int> indices) sync* {
     final maxIndex = indices.reduce(max);
 
     final positions = this.positions!.get().typedData();
     final texCoords = this.texCoords?.get().typedData();
     final normals = this.normals?.get().typedData() ??
-        _recomputeNormals(positions, indices);
+        flame_3d.Vertex.calculateVertexNormals(positions, indices);
 
     for (var i = 0; i < maxIndex; i++) {
+      Vector3? process(Vector3? v) {
+        if (v == null) {
+          return null;
+        }
+        return transform.transform3(v.clone());
+      }
+
       yield flame_3d.Vertex(
-        position: positions[i],
+        position: process(positions[i])!,
         // TODO: consider null textures
         texCoord: texCoords?.elementAtOrNull(i) ?? Vector2.zero(),
-        normal: normals.elementAtOrNull(i),
+        normal: process(normals.elementAtOrNull(i)),
       );
     }
   }
 
-  flame_3d.Surface toFlameSurface() {
+  flame_3d.Surface toFlameSurface([Matrix4? transform]) {
     final indices = this.indices.get().typedData();
-    final vertices = toFlameVertices(indices);
+    final vertices = toFlameVertices(indices, transform ?? Matrix4.identity());
 
     return flame_3d.Surface(
       vertices: vertices.toList(),

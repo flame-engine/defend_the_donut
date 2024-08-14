@@ -158,32 +158,26 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   FutureOr<void> initGame() async {
     final result = await GlbParser.parseGlb('objects/duck.glb');
-    final meshes = result.parse().toFlameMeshes();
+    final root = await result.parse();
+    final meshes = root.toFlameMeshes();
     for (final mesh in meshes) {
       final c = MeshComponent(
         mesh: mesh,
         position: Vector3(0.2, 0.3, 2),
         rotation: Quaternion.euler(0.1, 0.2, 0.3),
-        scale: Vector3.all(0.1),
+        scale: Vector3.all(1.5),
       );
       await add(c);
     }
 
-    final c2 = MeshComponent(
-      mesh: CuboidMesh(
-        size: Vector3.all(2),
-        material: SpatialMaterial(
-          albedoColor: const Color(0xFF00FF00),
-        ),
-      ),
-      position: Vector3(0.2, 0.1, 2),
-      rotation: Quaternion.euler(0.1, 0.2, 0.3),
-    );
-    // await add(c2);
+    await makeLight(Vector3.zero(), color: const Color(0xFFFFFFFF));
+    await makeLight(Vector3(0, 0, -6), color: const Color(0xFF0000FF));
+    await makeLight(Vector3(0, 3, 6), color: const Color(0xFF00FF00));
 
     await addAll([
-      LightComponent.point(
-        position: Vector3.zero(),
+      LightComponent.ambient(
+        color: const Color(0xFFFFFFFF),
+        intensity: 0.75,
       ),
       Pew(
         position: Vector3.zero(),
@@ -233,5 +227,27 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   Future<void> spawnEnemy() async {
     await add(await EnemyShip.spawnShip());
+  }
+
+  Future<void> makeLight(
+    Vector3 position, {
+    Color color = const Color(0xFFFFFFFF),
+  }) async {
+    await addAll([
+      LightComponent.point(
+        position: position,
+        color: color,
+        intensity: 20.0,
+      ),
+      MeshComponent(
+        position: position,
+        mesh: SphereMesh(
+          radius: 0.1,
+          material: SpatialMaterial(
+            albedoColor: color,
+          ),
+        ),
+      ),
+    ]);
   }
 }

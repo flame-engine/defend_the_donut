@@ -62,11 +62,28 @@ class Material extends GltfNode {
   ) : this(
           root: root,
           name: Parser.string(map, 'name'),
-          pbrMetallicRoughness: Parser.object(root, map, 'pbrMetallicRoughness', PBRMetallicRoughness.parse),
-          normalTexture: Parser.object(root, map, 'normalTexture', NormalTextureInfo.parse),
-          occlusionTexture: Parser.object(root, map, 'occlusionTexture', OcclusionTextureInfo.parse),
-          emissiveTexture: Parser.object(root, map, 'emissiveTexture', TextureInfo.parse),
-          emissiveFactor: Parser.vector3(root, map, 'emissiveFactor') ?? Vector3.all(0),
+          pbrMetallicRoughness: Parser.object(
+            root,
+            map,
+            'pbrMetallicRoughness',
+            PBRMetallicRoughness.parse,
+          ),
+          normalTexture: Parser.object(
+            root,
+            map,
+            'normalTexture',
+            NormalTextureInfo.parse,
+          ),
+          occlusionTexture: Parser.object(
+            root,
+            map,
+            'occlusionTexture',
+            OcclusionTextureInfo.parse,
+          ),
+          emissiveTexture:
+              Parser.object(root, map, 'emissiveTexture', TextureInfo.parse),
+          emissiveFactor:
+              Parser.vector3(root, map, 'emissiveFactor') ?? Vector3.all(0),
           alphaMode: AlphaMode.parse(map, 'alphaMode') ?? AlphaMode.opaque,
           doubleSided: Parser.boolean(map, 'doubleSided') ?? false,
         );
