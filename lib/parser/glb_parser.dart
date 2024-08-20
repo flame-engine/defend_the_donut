@@ -77,7 +77,7 @@ class Glb {
     final json = jsonChunk();
     final chunks = binaryChunks().toList();
 
-    // print(jsonEncode(json));
+    print(jsonEncode(json['skins']));
     return await GltfRoot.from(json, chunks);
   }
 }

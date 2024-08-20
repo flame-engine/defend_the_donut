@@ -39,36 +39,20 @@ class Primitive extends GltfNode {
     required this.targets,
   });
 
-  GltfRef<Vector3Accessor>? get positions {
-    final position = attributes['POSITION'];
-    if (position == null) {
-      return null;
-    }
-    return GltfRef<Vector3Accessor>(
-      root: root,
-      index: position,
-    );
-  }
+  GltfRef<Vector3Accessor>? get positions => _accessor('POSITION');
+  GltfRef<Vector3Accessor>? get normals => _accessor('NORMAL');
+  GltfRef<Vector2Accessor>? get texCoords => _accessor('TEXCOORD_0');
+  GltfRef<IntAccessor>? get joints => _accessor('JOINTS_0');
+  GltfRef<IntAccessor>? get weights => _accessor('WEIGHTS_0');
 
-  GltfRef<Vector3Accessor>? get normals {
-    final normal = attributes['NORMAL'];
-    if (normal == null) {
+  GltfRef<T>? _accessor<T extends GltfNode>(String key) {
+    final joints = attributes[key];
+    if (joints == null) {
       return null;
     }
-    return GltfRef<Vector3Accessor>(
+    return GltfRef<T>(
       root: root,
-      index: normal,
-    );
-  }
-
-  GltfRef<Vector2Accessor>? get texCoords {
-    final textCoords = attributes['TEXCOORD_0'];
-    if (textCoords == null) {
-      return null;
-    }
-    return GltfRef<Vector2Accessor>(
-      root: root,
-      index: textCoords,
+      index: joints,
     );
   }
 
