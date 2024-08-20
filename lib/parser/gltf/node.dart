@@ -94,7 +94,11 @@ class Node extends GltfNode {
     if (translation == null && rotation == null && scale == null) {
       return null;
     }
-    return Matrix4.compose(translation!, rotation!, scale!);
+    return Matrix4.compose(
+      translation ?? Vector3.zero(),
+      rotation ?? Quaternion.identity(),
+      scale ?? Vector3.all(1.0),
+    );
   }
 
   Matrix4 get transform => matrix ?? _trs ?? Matrix4.identity();

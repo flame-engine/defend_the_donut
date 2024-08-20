@@ -1,4 +1,5 @@
 import 'package:defend_the_donut/parser/gltf/accessor.dart';
+import 'package:defend_the_donut/parser/gltf/animation.dart';
 import 'package:defend_the_donut/parser/gltf/buffer.dart';
 import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
 import 'package:defend_the_donut/parser/gltf/camera.dart';
@@ -15,6 +16,8 @@ import 'package:defend_the_donut/parser/gltf/texture.dart';
 import 'package:flame_3d/resources.dart' as flame_3d;
 
 class GltfRoot {
+  GltfRoot._();
+
   late final List<RawAccessor> accessors;
   late final List<BufferView> bufferViews;
   late final List<Buffer> buffers;
@@ -28,13 +31,12 @@ class GltfRoot {
   late final List<Mesh> meshes;
   late final List<Material> materials;
   late final List<Texture> textures;
+  late final List<Animation> animations;
   late final List<Sampler> samplers;
 
   late final List<Image> images;
 
   late final List<GlbChunk> chunks;
-
-  // TODO: add animations, extensionsUsed, extensionsRequired
 
   T resolve<T extends GltfNode>(int index) {
     return switch (T) {
@@ -47,6 +49,7 @@ class GltfRoot {
       const (BufferView) => bufferViews[index],
       const (Buffer) => buffers[index],
       const (Texture) => textures[index],
+      const (Animation) => animations[index],
       const (Sampler) => samplers[index],
       const (Image) => images[index],
       const (IntAccessor) => IntAccessor(
@@ -66,33 +69,42 @@ class GltfRoot {
     } as T;
   }
 
-  Future<void> init(Map<String, dynamic> json) async {
+  static Future<GltfRoot> from(
+    Map<String, dynamic> json,
+    List<GlbChunk> chunks,
+  ) async {
+    final root = GltfRoot._();
+    root.chunks = chunks;
+
     List<T> parse<T>(
       String key,
       T Function(GltfRoot, Map<String, Object?>) parser,
     ) {
-      return Parser.objectList(this, json, key, parser) ?? [];
+      return Parser.objectList(root, json, key, parser) ?? [];
     }
 
-    accessors = parse('accessors', RawAccessor.parse);
-    bufferViews = parse('bufferViews', BufferView.parse);
-    buffers = parse('buffers', Buffer.parse);
+    root.accessors = parse('accessors', RawAccessor.parse);
+    root.bufferViews = parse('bufferViews', BufferView.parse);
+    root.buffers = parse('buffers', Buffer.parse);
 
-    scenes = parse('scenes', Scene.parse);
-    scene = Parser.integer(json, 'scene')!;
+    root.scenes = parse('scenes', Scene.parse);
+    root.scene = Parser.integer(json, 'scene')!;
 
-    nodes = parse('nodes', Node.parse);
-    cameras = parse('cameras', Camera.parse);
-    skins = parse('skins', Skin.parse);
-    meshes = parse('meshes', Mesh.parse);
-    materials = parse('materials', Material.parse);
-    textures = parse('textures', Texture.parse);
-    samplers = parse('samplers', Sampler.parse);
+    root.nodes = parse('nodes', Node.parse);
+    root.cameras = parse('cameras', Camera.parse);
+    root.skins = parse('skins', Skin.parse);
+    root.meshes = parse('meshes', Mesh.parse);
+    root.materials = parse('materials', Material.parse);
+    root.textures = parse('textures', Texture.parse);
+    root.animations = parse('animations', Animation.parse);
+    root.samplers = parse('samplers', Sampler.parse);
 
-    images = parse('images', Image.parse);
-    for (final image in images) {
+    root.images = parse('images', Image.parse);
+    for (final image in root.images) {
       await image.init();
     }
+
+    return root;
   }
 
   List<flame_3d.Mesh> toFlameMeshes([int? scene]) {

@@ -56,7 +56,7 @@ class RawAccessor extends GltfNode {
   /// Sparse storage of elements that deviate from their initialization value.
   final SparseAccessor? sparse;
 
-  List<num> data() {
+  Iterable<num> data() sync* {
     final buffer = bufferView.get();
     final bytes = buffer.data(byteOffset);
 
@@ -66,29 +66,29 @@ class RawAccessor extends GltfNode {
     final step =
         byteStride == null ? componentType.byteSize : byteStride ~/ type.size;
 
-    int cursor = 0;
-    final result = <num>[];
     if (bytes.lengthInBytes % step != 0) {
       throw Exception(
         'Accessor data length ${bytes.lengthInBytes} is not a multiple of the stride $step',
       );
     }
-    while (cursor < bytes.lengthInBytes) {
-      result.add(componentType.parseData(byteData, cursor: cursor));
-      cursor += step;
+
+    for (int cursor = 0; cursor < bytes.lengthInBytes; cursor += step) {
+      yield componentType.parseData(byteData, cursor: cursor);
     }
-    return result;
   }
 
   List<T> _typedData<T>(int size, T Function(List<num>) producer) {
     _verifyNotSparse();
     _verifyAccessorType(size);
-    final view = data();
-    final result = <T>[];
+
+    final view = data().toList();
     if (view.length % size != 0) {
       throw Exception(
-          'Accessor data length ${view.length} is not a multiple of the size $size (count $count $type $componentType)');
+          'Accessor data length ${view.length} is not a multiple of the size $size (count $count $type $componentType)',
+      );
     }
+
+    final result = <T>[];
     for (var i = 0; i < view.length; i += size) {
       result.add(producer(view.sublist(i, i + size)));
     }
@@ -165,6 +165,19 @@ class IntAccessor extends TypedAccessor<int> {
   List<int> typedData() {
     _checkAccessorType(AccessorType.scalar);
     return rawAccessor._typedData(1, (list) => list[0].toInt());
+  }
+}
+
+class FloatAccessor extends TypedAccessor<double> {
+  FloatAccessor({
+    required super.root,
+    required super.accessor,
+  });
+
+  @override
+  List<double> typedData() {
+    _checkAccessorType(AccessorType.scalar);
+    return rawAccessor._typedData(1, (list) => list[0].toDouble());
   }
 }
 

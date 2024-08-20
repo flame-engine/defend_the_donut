@@ -46,9 +46,8 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    return map[key]
-        ?.let((e) => e as List<Object?>)
-        .let((e) => Vector3.array(e.cast()));
+    final entries = floatList(root, map, key);
+    return entries?.let((e) => Vector3.array(e));
   }
 
   static Matrix4? matrix4(
@@ -56,9 +55,8 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    return map[key]
-        ?.let((e) => e as List<Object?>)
-        .let((e) => Matrix4.fromList(e.cast()));
+    final entries = floatList(root, map, key);
+    return entries?.let((e) => Matrix4.fromList(e));
   }
 
   static Vector4? vector4(
@@ -66,9 +64,8 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    return map[key]
-        ?.let((e) => e as List<Object?>)
-        .let((e) => Vector4.array(e.cast()));
+    final entries = floatList(root, map, key);
+    return entries?.let((e) => Vector4.array(e));
   }
 
   static Quaternion? quaternion(
@@ -76,12 +73,8 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    return map[key]?.let((e) => e as List<Object?>).let((e) => Quaternion(
-          e[0] as double,
-          e[1] as double,
-          e[2] as double,
-          e[3] as double,
-        ));
+    final entries = floatList(root, map, key);
+    return entries?.let((e) => Quaternion(e[0], e[1], e[2], e[3]));
   }
 
   static int? integer(

@@ -78,21 +78,20 @@ class Primitive extends GltfNode {
   ) sync* {
     assert(mode == PrimitiveMode.triangles);
 
-    final maxIndex = indices.reduce(max);
-
     final positions = this.positions!.get().typedData();
     final texCoords = this.texCoords?.get().typedData();
     final normals = this.normals?.get().typedData() ??
         flame_3d.Vertex.calculateVertexNormals(positions, indices);
 
-    for (var i = 0; i < maxIndex; i++) {
-      Vector3? process(Vector3? v) {
-        if (v == null) {
-          return null;
-        }
-        return transform.transform3(v.clone());
+    Vector3? process(Vector3? v) {
+      if (v == null) {
+        return null;
       }
+      return transform.transform3(v.clone());
+    }
 
+    final maxIndex = indices.reduce(max);
+    for (var i = 0; i <= maxIndex; i++) {
       yield flame_3d.Vertex(
         position: process(positions[i])!,
         // TODO: consider null textures
@@ -121,7 +120,7 @@ class Primitive extends GltfNode {
     Map<String, Object?> map,
   ) : this(
           root: root,
-          mode: PrimitiveMode.parse(map, 'mode')!,
+          mode: PrimitiveMode.parse(map, 'mode') ?? PrimitiveMode.triangles,
           attributes: Parser.mapInt(map, 'attributes') ?? {},
           indices: Parser.ref(root, map, 'indices')!,
           material: Parser.ref(root, map, 'material'),

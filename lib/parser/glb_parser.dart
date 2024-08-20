@@ -73,17 +73,12 @@ class Glb {
     return chunks.where((GlbChunk chunk) => chunk.type == 'BIN\x00');
   }
 
-  Uint8List buffer(int index) {
-    return binaryChunks().toList()[index].data;
-  }
-
   Future<GltfRoot> parse() async {
-    final root = GltfRoot();
+    final json = jsonChunk();
+    final chunks = binaryChunks().toList();
 
-    root.chunks = binaryChunks().toList();
-    await root.init(jsonChunk());
-
-    return root;
+    // print(jsonEncode(json));
+    return await GltfRoot.from(json, chunks);
   }
 }
 

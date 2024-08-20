@@ -157,7 +157,7 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   );
 
   FutureOr<void> initGame() async {
-    final result = await GlbParser.parseGlb('objects/duck.glb');
+    final result = await GlbParser.parseGlb('objects/rogue.glb');
     final root = await result.parse();
     final meshes = root.toFlameMeshes();
     for (final mesh in meshes) {
@@ -171,8 +171,8 @@ class SpaceWorld3D extends World3D with TapCallbacks {
     }
 
     await makeLight(Vector3.zero(), color: const Color(0xFFFFFFFF));
-    await makeLight(Vector3(0, 0, -6), color: const Color(0xFF0000FF));
-    await makeLight(Vector3(0, 3, 6), color: const Color(0xFF00FF00));
+    await makeLight(Vector3(0, 0, -6), color: const Color(0xFFFFFFFF));
+    await makeLight(Vector3(0, 3, 6), color: const Color(0xFFFFFFFF));
 
     await addAll([
       LightComponent.ambient(
