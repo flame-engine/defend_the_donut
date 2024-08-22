@@ -1,59 +1,23 @@
 import 'dart:ui';
 
+import 'package:defend_the_donut/flame3d/model.dart';
+import 'package:defend_the_donut/parser/model_parser.dart';
 import 'package:flame/flame.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/surface_tool.dart';
 
-class Face {
-  const Face(this.vertex, this.texCoord, this.normal);
-
-  final List<int> vertex;
-  final List<int> texCoord;
-  final List<int> normal;
-
-  Face.empty()
-      : vertex = [],
-        texCoord = [],
-        normal = [];
-}
-
-class ObjParser {
-  static Future<Map<String, SpatialMaterial>> _parseMaterial(
-    String filePath,
-  ) async {
-    final lines = (await Flame.assets.readFile(filePath)).split('\n');
-
-    final materials = <String, SpatialMaterial>{};
-    SpatialMaterial? currentMat;
-    for (final line in lines) {
-      final [type, ...parts] = line.split(' ');
-      switch (type) {
-        // Comment
-        case '#':
-          continue;
-        // Creating a new material
-        case 'newmtl':
-          currentMat = SpatialMaterial(
-            albedoTexture: ColorTexture(const Color(0xFFFFFFFF)),
-          );
-          materials[parts[0].trim()] = currentMat;
-          break;
-        // Diffuse color
-        case 'Kd':
-          currentMat?.albedoColor = Color.fromARGB(
-            255,
-            (double.parse(parts[0]) * 255).toInt(),
-            (double.parse(parts[1]) * 255).toInt(),
-            (double.parse(parts[2]) * 255).toInt(),
-          );
-          break;
-      }
-    }
-    return materials;
+class ObjParser extends ModelParser {
+  @override
+  Future<Model> parse(String filePath) async {
+    final mesh = await parseMesh(filePath);
+    return Model(
+      meshes: [mesh],
+      animations: {},
+    );
   }
 
-  static Future<Mesh> parse(String filePath, {Mesh? applyTo}) async {
+  Future<Mesh> parseMesh(String filePath, {Mesh? applyTo}) async {
     final vertices = <Vector3>[];
     final normals = <Vector3>[];
     final texCoords = <Vector2>[];
@@ -167,4 +131,51 @@ class ObjParser {
     }
     return mesh;
   }
+
+  Future<Map<String, SpatialMaterial>> _parseMaterial(
+    String filePath,
+  ) async {
+    final lines = (await Flame.assets.readFile(filePath)).split('\n');
+
+    final materials = <String, SpatialMaterial>{};
+    SpatialMaterial? currentMat;
+    for (final line in lines) {
+      final [type, ...parts] = line.split(' ');
+      switch (type) {
+        // Comment
+        case '#':
+          continue;
+        // Creating a new material
+        case 'newmtl':
+          currentMat = SpatialMaterial(
+            albedoTexture: ColorTexture(const Color(0xFFFFFFFF)),
+          );
+          materials[parts[0].trim()] = currentMat;
+          break;
+        // Diffuse color
+        case 'Kd':
+          currentMat?.albedoColor = Color.fromARGB(
+            255,
+            (double.parse(parts[0]) * 255).toInt(),
+            (double.parse(parts[1]) * 255).toInt(),
+            (double.parse(parts[2]) * 255).toInt(),
+          );
+          break;
+      }
+    }
+    return materials;
+  }
+}
+
+class Face {
+  const Face(this.vertex, this.texCoord, this.normal);
+
+  final List<int> vertex;
+  final List<int> texCoord;
+  final List<int> normal;
+
+  Face.empty()
+      : vertex = [],
+        texCoord = [],
+        normal = [];
 }

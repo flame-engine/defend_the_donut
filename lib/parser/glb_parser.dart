@@ -1,15 +1,31 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:defend_the_donut/flame3d/model.dart';
 import 'package:defend_the_donut/parser/gltf/component_type.dart';
 import 'package:defend_the_donut/parser/gltf/glb_chunk.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
+import 'package:defend_the_donut/parser/model_parser.dart';
 import 'package:flame/flame.dart';
 
 /// Parses GLB and GLTF file formats as per specified by:
 /// https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.pdf
-class GlbParser {
-  static Future<Glb> parseGlb(String filePath) async {
+class GlbParser extends ModelParser {
+  @override
+  Future<Model> parse(String filePath) async {
+    final root = await parseRoot(filePath);
+    return Model(
+      meshes: root.toFlameMeshes(),
+      animations: {},
+    );
+  }
+
+  Future<GltfRoot> parseRoot(String filePath) async {
+    final glb = await parseGlb(filePath);
+    return await glb.parse();
+  }
+
+  Future<Glb> parseGlb(String filePath) async {
     final content = await Flame.assets.readBinaryFile(filePath);
 
     int cursor = 0;

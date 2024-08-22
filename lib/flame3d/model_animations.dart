@@ -43,11 +43,14 @@ class QuaternionAnimationSpline extends AnimationSpline<Quaternion> {
 
 class AnimationController<T> {
   final AnimationSpline<T> animation;
+  final double _lastTime;
+
   int _currentIndex = 0;
+  double _clock = 0;
 
   AnimationController({
     required this.animation,
-  });
+  }) : _lastTime = animation.values.last.$1;
 
   static AnimationController<Vector3> vector3({
     required List<double> times,
@@ -67,7 +70,17 @@ class AnimationController<T> {
     );
   }
 
-  T sample(double time) {
+  void update(double dt) {
+    _clock += dt;
+    while (_clock > _lastTime) {
+      _clock -= _lastTime;
+      _currentIndex = 0;
+    }
+  }
+
+  T sample() => _sample(_clock);
+
+  T _sample(double time) {
     final values = animation.values;
     while (_currentIndex < values.length - 1 &&
         values[_currentIndex + 1].$1 < time) {
@@ -86,5 +99,10 @@ class AnimationController<T> {
     final value1 = values[_currentIndex + 1].$2;
 
     return animation.lerp(value0, value1, t);
+  }
+
+  void reset() {
+    _currentIndex = 0;
+    _clock = 0;
   }
 }

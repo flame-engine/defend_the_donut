@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:defend_the_donut/components/beam.dart';
+import 'package:defend_the_donut/parser/model_parser.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/base_component.dart';
-import 'package:defend_the_donut/parser/obj_parser.dart';
 import 'package:defend_the_donut/utils.dart';
 import 'package:flutter/animation.dart';
 
@@ -50,7 +50,7 @@ class EnemyShip extends BaseComponent {
 
   static Future<EnemyShip> spawnShip() async {
     final type = ShipType.values[Random().nextInt(ShipType.values.length)];
-    final mesh = await ObjParser.parse(type.path);
+    final mesh = await ModelParser.obj.parseMesh(type.path);
 
     final direction = Vector3(
       _randomCoord(),

@@ -1,4 +1,4 @@
-import 'package:defend_the_donut/parser/glb_parser.dart';
+import 'package:defend_the_donut/parser/model_parser.dart';
 import 'package:flame_3d/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,8 +11,7 @@ void main() {
     test('simple test', () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      final result = await GlbParser.parseGlb('objects/cube.glb');
-      final root = await result.parse();
+      final root = await ModelParser.glb.parseRoot('objects/cube.glb');
 
       expect(root.scenes.length, 1);
       final scene = root.scenes[0];
