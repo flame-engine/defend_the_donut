@@ -92,8 +92,6 @@ class Glb {
   Future<GltfRoot> parse() async {
     final json = jsonChunk();
     final chunks = binaryChunks().toList();
-
-    print(jsonEncode(json['skins']));
     return await GltfRoot.from(json, chunks);
   }
 }
