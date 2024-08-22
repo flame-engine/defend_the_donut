@@ -84,7 +84,7 @@ class RawAccessor extends GltfNode {
     final view = data().toList();
     if (view.length % size != 0) {
       throw Exception(
-          'Accessor data length ${view.length} is not a multiple of the size $size (count $count $type $componentType)',
+        'Accessor data length ${view.length} is not a multiple of the size $size (count $count $type $componentType)',
       );
     }
 

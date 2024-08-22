@@ -27,5 +27,5 @@ class AnimationTarget extends GltfNode {
           root: root,
           node: Parser.ref(root, map, 'node')!,
           path: AnimationPath.parse(map, 'path')!,
-  );
+        );
 }
