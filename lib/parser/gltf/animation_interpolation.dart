@@ -1,4 +1,5 @@
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
+import 'package:flame_3d/core.dart';
 
 enum AnimationInterpolation {
   /// The animated values are linearly interpolated between keyframes.
@@ -27,5 +28,21 @@ enum AnimationInterpolation {
 
   static AnimationInterpolation? parse(Map<String, Object?> map, String key) {
     return Parser.stringEnum(map, key, valueOf);
+  }
+
+  Vector3 lerp(Vector3 a, Vector3 b, double t) {
+    return switch (this) {
+      linear => a + (b - a) * t,
+      step => a,
+      cubicSpline => throw UnimplementedError(),
+    };
+  }
+
+  Quaternion slerp(Quaternion a, Quaternion b, double t) {
+    return switch (this) {
+      linear => a + (b - a).scaled(t),
+      step => a,
+      cubicSpline => throw UnimplementedError(),
+    };
   }
 }

@@ -16,13 +16,12 @@ void main() {
       expect(root.scenes.length, 1);
       final scene = root.scenes[0];
 
-      final meshes = scene.toFlameMeshes();
-      expect(meshes.length, 1);
+      final nodes = scene.toFlameNodes();
+      expect(nodes.length, 1);
 
-      final mesh = meshes[0];
-
-      final surface = mesh.surfaces.toList()[0];
-      final aabb = surface.aabb;
+      final node = nodes.values.first;
+      final mesh = node.mesh!;
+      final aabb = mesh.aabb;
       expect(aabb.min, closeToVector3(Vector3.all(-1), _epsilon));
       expect(aabb.max, closeToVector3(Vector3.all(1), _epsilon));
     });

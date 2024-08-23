@@ -14,10 +14,7 @@ class GlbParser extends ModelParser {
   @override
   Future<Model> parse(String filePath) async {
     final root = await parseRoot(filePath);
-    return Model(
-      meshes: root.toFlameMeshes(),
-      animations: {},
-    );
+    return root.toFlameModel();
   }
 
   Future<GltfRoot> parseRoot(String filePath) async {
@@ -62,6 +59,7 @@ class GlbParser extends ModelParser {
     }
 
     return Glb(
+      prefix: ModelParser.prefix(filePath),
       version: version,
       length: length,
       chunks: chunks,
@@ -70,11 +68,13 @@ class GlbParser extends ModelParser {
 }
 
 class Glb {
+  final String prefix;
   final int version;
   final int length;
   final List<GlbChunk> chunks;
 
   Glb({
+    required this.prefix,
     required this.version,
     required this.length,
     required this.chunks,
@@ -92,7 +92,11 @@ class Glb {
   Future<GltfRoot> parse() async {
     final json = jsonChunk();
     final chunks = binaryChunks().toList();
-    return await GltfRoot.from(json, chunks);
+    return await GltfRoot.from(
+      prefix: prefix,
+      json: json,
+      chunks: chunks,
+    );
   }
 }
 

@@ -1,23 +1,44 @@
-import 'package:defend_the_donut/flame3d/model_animations.dart';
+import 'package:defend_the_donut/flame3d/model_animation.dart';
 import 'package:defend_the_donut/flame3d/model.dart';
+import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/components.dart';
+import 'package:flame_3d/core.dart';
 import 'package:flame_3d/graphics.dart';
 
 class ModelComponent extends Object3D {
   final Model model;
-  AnimationController? _currentAnimation;
+  ModelAnimation? _currentAnimation;
 
   ModelComponent({
     required this.model,
   });
 
+  Aabb3 get aabb => model.aabb;
+
   @override
   void bind(GraphicsDevice device) {
-    for (final mesh in model.meshes) {
-      // ignore: invalid_use_of_internal_member
-      world.device
-        ..model.setFrom(transformMatrix)
-        ..bindMesh(mesh);
+    for (final entry in model.nodes.entries) {
+      // TODO(luan): figure out correct way of dealing with maps
+      final idx = entry.key;
+      final node = entry.value;
+
+      final animations = _currentAnimation?.channels[idx] ?? [];
+
+      final resultMatrix = transformMatrix.clone();
+      for (final animation in animations) {
+        final value = animation.sampleTransform();
+        resultMatrix.multiply(value);
+      }
+
+      // TODO(luan): handle bones
+
+      final mesh = node.mesh;
+      if (mesh != null) {
+        // ignore: invalid_use_of_internal_member
+        world.device
+          ..model.setFrom(resultMatrix)
+          ..bindMesh(mesh);
+      }
     }
   }
 
@@ -34,5 +55,14 @@ class ModelComponent extends Object3D {
     }
     animation.reset();
     _currentAnimation = animation;
+  }
+
+  void playAnimationIdx(int idx) {
+    playAnimation(model.animations.keys.toList()[idx]);
+  }
+
+  @override
+  bool shouldCull(CameraComponent3D camera) {
+    return camera.frustum.intersectsWithAabb3(aabb);
   }
 }

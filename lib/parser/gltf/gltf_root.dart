@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:defend_the_donut/flame3d/model.dart';
 import 'package:defend_the_donut/parser/gltf/accessor.dart';
 import 'package:defend_the_donut/parser/gltf/animation.dart';
 import 'package:defend_the_donut/parser/gltf/buffer.dart';
@@ -5,6 +9,8 @@ import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
 import 'package:defend_the_donut/parser/gltf/camera.dart';
 import 'package:defend_the_donut/parser/gltf/glb_chunk.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
+import 'package:defend_the_donut/parser/gltf/gltf_node_with_data.dart';
+import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/image.dart';
 import 'package:defend_the_donut/parser/gltf/material.dart';
 import 'package:defend_the_donut/parser/gltf/mesh.dart';
@@ -13,14 +19,15 @@ import 'package:defend_the_donut/parser/gltf/sampler.dart';
 import 'package:defend_the_donut/parser/gltf/scene.dart';
 import 'package:defend_the_donut/parser/gltf/skin.dart';
 import 'package:defend_the_donut/parser/gltf/texture.dart';
-import 'package:flame_3d/resources.dart' as flame_3d;
+import 'package:flame/flame.dart';
 
 class GltfRoot {
-  GltfRoot._();
+  /// Path prefix used to resolve relative paths.
+  final String _prefix;
 
-  late final List<RawAccessor> accessors;
-  late final List<BufferView> bufferViews;
   late final List<Buffer> buffers;
+  late final List<BufferView> bufferViews;
+  late final List<RawAccessor> accessors;
 
   late final int scene;
   late final List<Scene> scenes;
@@ -33,10 +40,40 @@ class GltfRoot {
   late final List<Texture> textures;
   late final List<Animation> animations;
   late final List<Sampler> samplers;
-
   late final List<Image> images;
 
   late final List<GlbChunk> chunks;
+
+  GltfRoot._({
+    required String prefix,
+  }) : _prefix = prefix;
+
+  Future<Uint8List> readChunk(GltfRef<Buffer> ref) async {
+    if (chunks.isNotEmpty) {
+      final chunk = chunks[ref.index];
+      return chunk.data;
+    }
+    final buffer = ref.get();
+    return await readChunkFrom(buffer.uri!);
+  }
+
+  Future<Uint8List> readChunkFrom(String uri) async {
+    if (uri.startsWith('data:')) {
+      const prefixes = [
+        'data:application/gltf-buffer;base64,',
+        'data:application/octet-stream;base64,',
+      ];
+      for (final prefix in prefixes) {
+        if (uri.startsWith(prefix)) {
+          return base64Decode(uri.substring(prefix.length));
+        }
+      }
+      throw Exception('Unsupported data URI: $uri');
+    } else {
+      final path = '$_prefix/$uri';
+      return Flame.assets.readBinaryFile(path);
+    }
+  }
 
   T resolve<T extends GltfNode>(int index) {
     return switch (T) {
@@ -52,62 +89,73 @@ class GltfRoot {
       const (Animation) => animations[index],
       const (Sampler) => samplers[index],
       const (Image) => images[index],
-      const (IntAccessor) => IntAccessor(
-          root: this,
-          accessor: accessors[index],
-        ),
-      const (Vector3Accessor) => Vector3Accessor(
-          root: this,
-          accessor: accessors[index],
-        ),
-      const (Vector2Accessor) => Vector2Accessor(
-          root: this,
-          accessor: accessors[index],
-        ),
+      const (IntAccessor) => accessors[index].asInt(),
+      const (FloatAccessor) => accessors[index].asFloat(),
+      const (Vector2Accessor) => accessors[index].asVector2(),
+      const (Vector3Accessor) => accessors[index].asVector3(),
+      const (QuaternionAccessor) => accessors[index].asQuaternion(),
       const (RawAccessor) => accessors[index],
       _ => throw UnimplementedError('Cannot resolve type $T')
     } as T;
   }
 
-  static Future<GltfRoot> from(
-    Map<String, dynamic> json,
-    List<GlbChunk> chunks,
-  ) async {
-    final root = GltfRoot._();
+  static Future<GltfRoot> from({
+    required String prefix,
+    required Map<String, dynamic> json,
+    required List<GlbChunk> chunks,
+  }) async {
+    final root = GltfRoot._(prefix: prefix);
     root.chunks = chunks;
 
-    List<T> parse<T>(
+    Future<List<T>> parse<T>(
       String key,
       T Function(GltfRoot, Map<String, Object?>) parser,
-    ) {
-      return Parser.objectList(root, json, key, parser) ?? [];
+    ) async {
+      final objects = Parser.objectList(root, json, key, parser) ?? [];
+      for (final object in objects) {
+        if (object is GltfNodeWithData) {
+          await object.init();
+        }
+      }
+      return objects;
     }
 
-    root.accessors = parse('accessors', RawAccessor.parse);
-    root.bufferViews = parse('bufferViews', BufferView.parse);
-    root.buffers = parse('buffers', Buffer.parse);
+    root.buffers = await parse('buffers', Buffer.parse);
+    root.bufferViews = await parse('bufferViews', BufferView.parse);
+    root.accessors = await parse('accessors', RawAccessor.parse);
 
-    root.scenes = parse('scenes', Scene.parse);
+    root.scenes = await parse('scenes', Scene.parse);
     root.scene = Parser.integer(json, 'scene')!;
 
-    root.nodes = parse('nodes', Node.parse);
-    root.cameras = parse('cameras', Camera.parse);
-    root.skins = parse('skins', Skin.parse);
-    root.meshes = parse('meshes', Mesh.parse);
-    root.materials = parse('materials', Material.parse);
-    root.textures = parse('textures', Texture.parse);
-    root.animations = parse('animations', Animation.parse);
-    root.samplers = parse('samplers', Sampler.parse);
-
-    root.images = parse('images', Image.parse);
-    for (final image in root.images) {
-      await image.init();
-    }
+    root.nodes = await parse('nodes', Node.parse);
+    root.cameras = await parse('cameras', Camera.parse);
+    root.skins = await parse('skins', Skin.parse);
+    root.meshes = await parse('meshes', Mesh.parse);
+    root.materials = await parse('materials', Material.parse);
+    root.textures = await parse('textures', Texture.parse);
+    root.animations = await parse('animations', Animation.parse);
+    root.samplers = await parse('samplers', Sampler.parse);
+    root.images = await parse('images', Image.parse);
 
     return root;
   }
 
-  List<flame_3d.Mesh> toFlameMeshes([int? scene]) {
-    return scenes[scene ?? this.scene].toFlameMeshes();
+  Map<int, ModelNode> toFlameMeshes([int? scene]) {
+    return scenes[scene ?? this.scene].toFlameNodes();
+  }
+
+  Model toFlameModel([int? scene]) {
+    int nextDefaultIdx = 0;
+    String nextDefaultName() => 'unnamed_animation_${nextDefaultIdx++}';
+
+    return Model(
+      nodes: toFlameMeshes(scene),
+      animations: Map.fromEntries(
+        animations.map((animation) {
+          final name = animation.name ?? nextDefaultName();
+          return MapEntry(name, animation.toFlameAnimation(name));
+        }),
+      ),
+    );
   }
 }

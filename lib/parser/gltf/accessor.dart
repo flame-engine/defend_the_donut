@@ -58,7 +58,7 @@ class RawAccessor extends GltfNode {
 
   Iterable<num> data() sync* {
     final buffer = bufferView.get();
-    final bytes = buffer.data(byteOffset);
+    final bytes = buffer.data();
 
     final byteData = bytes.buffer.asByteData();
 
@@ -66,13 +66,13 @@ class RawAccessor extends GltfNode {
     final step =
         byteStride == null ? componentType.byteSize : byteStride ~/ type.size;
 
-    if (bytes.lengthInBytes % step != 0) {
+    if ((bytes.lengthInBytes - byteOffset) % step != 0) {
       throw Exception(
         'Accessor data length ${bytes.lengthInBytes} is not a multiple of the stride $step',
       );
     }
 
-    for (int cursor = 0; cursor < bytes.lengthInBytes; cursor += step) {
+    for (int cursor = byteOffset; cursor < bytes.lengthInBytes; cursor += step) {
       yield componentType.parseData(byteData, cursor: cursor);
     }
   }
@@ -84,13 +84,16 @@ class RawAccessor extends GltfNode {
     final view = data().toList();
     if (view.length % size != 0) {
       throw Exception(
-        'Accessor data length ${view.length} is not a multiple of the size $size (count $count $type $componentType)',
+        'Accessor data length ${view.length} is not a multiple of the size $size',
       );
     }
 
     final result = <T>[];
     for (var i = 0; i < view.length; i += size) {
       result.add(producer(view.sublist(i, i + size)));
+      if (result.length == count) {
+        break;
+      }
     }
     return result;
   }
@@ -106,6 +109,15 @@ class RawAccessor extends GltfNode {
       throw Exception('Accessor is sparse: not supported yet.');
     }
   }
+
+  IntAccessor asInt() => IntAccessor(root: root, accessor: this);
+  FloatAccessor asFloat() => FloatAccessor(root: root, accessor: this);
+  Vector2Accessor asVector2() => Vector2Accessor(root: root, accessor: this);
+  Vector3Accessor asVector3() => Vector3Accessor(root: root, accessor: this);
+  QuaternionAccessor asQuaternion() => QuaternionAccessor(
+        root: root,
+        accessor: this,
+      );
 
   RawAccessor({
     required super.root,
@@ -204,5 +216,21 @@ class Vector3Accessor extends TypedAccessor<Vector3> {
   List<Vector3> typedData() {
     _checkAccessorType(AccessorType.vec3);
     return rawAccessor._typedData(3, (it) => Vector3.array(it.cast()));
+  }
+}
+
+class QuaternionAccessor extends TypedAccessor<Quaternion> {
+  QuaternionAccessor({
+    required super.root,
+    required super.accessor,
+  });
+
+  @override
+  List<Quaternion> typedData() {
+    _checkAccessorType(AccessorType.vec4);
+    return rawAccessor._typedData(4, (nums) {
+      final doubles = nums.cast<double>();
+      return Quaternion(doubles[0], doubles[1], doubles[2], doubles[3]);
+    });
   }
 }

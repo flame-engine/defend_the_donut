@@ -1,7 +1,10 @@
+import 'package:defend_the_donut/flame3d/model_animation.dart';
 import 'package:defend_the_donut/parser/gltf/animation_channel.dart';
+import 'package:defend_the_donut/parser/gltf/animation_path.dart';
 import 'package:defend_the_donut/parser/gltf/animation_sampler.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
+import 'package:flame_3d/core.dart';
 
 class Animation extends GltfNode {
   final String? name;
@@ -41,4 +44,47 @@ class Animation extends GltfNode {
             AnimationSampler.parse,
           )!,
         );
+
+  ModelAnimation toFlameAnimation(String name) {
+    final controllers = <int, List<AnimationController>>{};
+    for (final channel in channels) {
+      final path = channel.target.path;
+      final sampler = samplers[channel.sampler];
+
+      final times = sampler.input.get().typedData();
+      final values = sampler.output.get();
+
+      // TODO(luan): figure out bug with Dart
+      final AnimationSpline spline = switch (path) {
+        AnimationPath.translation => TranslationAnimationSpline.from(
+            interpolation: sampler.interpolation,
+            times: times,
+            values: values.asVector3().typedData(),
+          ) as AnimationSpline<Vector3>,
+        AnimationPath.scale => ScaleAnimationSpline.from(
+            interpolation: sampler.interpolation,
+            times: times,
+            values: values.asVector3().typedData(),
+          ) as AnimationSpline<Vector3>,
+        AnimationPath.rotation => RotationAnimationSpline.from(
+            interpolation: sampler.interpolation,
+            times: times,
+            values: values.asQuaternion().typedData(),
+          ) as AnimationSpline<Quaternion>,
+        AnimationPath.weights => throw UnimplementedError(),
+      };
+
+      final nodeIdx = channel.target.node.index;
+      (controllers[nodeIdx] ??= []).add(
+        AnimationController(
+          animation: spline,
+          nodeIdx: nodeIdx,
+        ),
+      );
+    }
+    return ModelAnimation(
+      name: name,
+      channels: controllers,
+    );
+  }
 }

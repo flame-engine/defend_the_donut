@@ -1,16 +1,16 @@
 import 'dart:ui' as dart;
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
+import 'package:defend_the_donut/parser/gltf/gltf_node_with_data.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/mime_type.dart';
 import 'package:flame_3d/resources.dart' as flame3d;
 
 /// Image data used to create a texture.
-class Image extends GltfNode {
+class Image extends GltfNode with GltfNodeWithData<flame3d.ImageTexture> {
   /// The URI (or IRI) of the image.
   ///
   /// Relative paths are relative to the current glTF asset.
@@ -26,10 +26,6 @@ class Image extends GltfNode {
   /// The reference to the bufferView that contains the image.
   /// This field **MUST NOT** be defined when `uri` is defined.
   final GltfRef<BufferView>? bufferView;
-
-  /// During initialization each image will be parsed only once into a Flame
-  /// texture.
-  late final flame3d.ImageTexture _flameTexture;
 
   Image({
     required super.root,
@@ -48,15 +44,10 @@ class Image extends GltfNode {
           bufferView: Parser.ref(root, map, 'bufferView'),
         );
 
-  Future<void> init() async {
-    _flameTexture = await parseFlameTexture();
-  }
-
-  Uint8List data() {
+  Future<Uint8List> data() async {
     final uri = this.uri;
     if (uri != null) {
-      const prefix = 'data:text/plain;base64,';
-      return base64Decode(uri.substring(prefix.length));
+      return await root.readChunkFrom(uri);
     } else {
       final bufferView = this.bufferView?.get();
       if (bufferView == null) {
@@ -67,17 +58,18 @@ class Image extends GltfNode {
   }
 
   Future<dart.Image> parseDartImage() async {
-    final bytes = data();
+    final bytes = await data();
     final codec = await dart.instantiateImageCodec(bytes);
     final frameInfo = await codec.getNextFrame();
     return frameInfo.image;
   }
 
-  Future<flame3d.ImageTexture> parseFlameTexture() async {
+  @override
+  Future<flame3d.ImageTexture> loadData() async {
     return flame3d.ImageTexture.create(await parseDartImage());
   }
 
   flame3d.ImageTexture toFlameTexture() {
-    return _flameTexture;
+    return getData();
   }
 }

@@ -15,7 +15,7 @@ class AnimationSampler extends GltfNode {
   final AnimationInterpolation interpolation;
 
   /// The index of an accessor, containing keyframe output values.
-  final GltfRef<FloatAccessor> output;
+  final GltfRef<RawAccessor> output;
 
   AnimationSampler({
     required super.root,

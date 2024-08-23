@@ -16,7 +16,7 @@ class Texture extends GltfNode {
   final TextureFormat internalFormat;
 
   /// The reference to the sampler used by this texture.
-  final GltfRef<Sampler> sampler;
+  final GltfRef<Sampler>? sampler;
 
   /// The reference to the image used by this texture.
   final GltfRef<Image> source;
@@ -47,7 +47,7 @@ class Texture extends GltfNode {
           format: TextureFormat.parse(map, 'format') ?? TextureFormat.rgba,
           internalFormat:
               TextureFormat.parse(map, 'internalFormat') ?? TextureFormat.rgba,
-          sampler: Parser.ref<Sampler>(root, map, 'sampler')!,
+          sampler: Parser.ref<Sampler>(root, map, 'sampler'),
           source: Parser.ref<Image>(root, map, 'source')!,
           target: TextureTarget.parse(map, 'target') ?? TextureTarget.texture2d,
           type: TextureType.parse(map, 'type') ?? TextureType.unsignedByte,

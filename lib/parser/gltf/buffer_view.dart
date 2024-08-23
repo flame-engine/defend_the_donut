@@ -3,11 +3,12 @@ import 'dart:typed_data';
 import 'package:defend_the_donut/parser/gltf/buffer.dart';
 import 'package:defend_the_donut/parser/gltf/buffer_view_target.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
+import 'package:defend_the_donut/parser/gltf/gltf_node_with_data.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 
 /// A view into a buffer generally representing a subset of the buffer.
-class BufferView extends GltfNode {
+class BufferView extends GltfNode with GltfNodeWithData<Uint8List> {
   /// The reference to the buffer.
   final GltfRef<Buffer> buffer;
 
@@ -25,15 +26,6 @@ class BufferView extends GltfNode {
 
   /// The hint representing the intended GPU buffer type to use with this buffer view.
   final BufferViewTarget? target;
-
-  Uint8List data([int accessorOffset = 0]) {
-    final data = root.chunks[buffer.index].data;
-    final totalOffset = byteOffset + accessorOffset;
-    return data.sublist(
-      totalOffset,
-      totalOffset + byteLength,
-    );
-  }
 
   BufferView({
     required super.root,
@@ -55,4 +47,17 @@ class BufferView extends GltfNode {
           byteStride: Parser.integer(map, 'byteStride'),
           target: BufferViewTarget.parse(map, 'target'),
         );
+
+  @override
+  Future<Uint8List> loadData() async {
+    return await root.readChunk(buffer);
+  }
+
+  Uint8List data() {
+    final data = getData();
+    return data.sublist(
+      byteOffset,
+      byteOffset + byteLength,
+    );
+  }
 }

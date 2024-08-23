@@ -11,10 +11,7 @@ class ObjParser extends ModelParser {
   @override
   Future<Model> parse(String filePath) async {
     final mesh = await parseMesh(filePath);
-    return Model(
-      meshes: [mesh],
-      animations: {},
-    );
+    return Model.simple(mesh: mesh);
   }
 
   Future<Mesh> parseMesh(String filePath, {Mesh? applyTo}) async {
