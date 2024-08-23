@@ -1,3 +1,4 @@
+import 'package:defend_the_donut/flame3d/matrix4_utils.dart';
 import 'package:defend_the_donut/parser/gltf/camera.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
@@ -94,10 +95,10 @@ class Node extends GltfNode {
     if (translation == null && rotation == null && scale == null) {
       return null;
     }
-    return Matrix4.compose(
-      translation ?? Vector3.zero(),
-      rotation ?? Quaternion.identity(),
-      scale ?? Vector3.all(1.0),
+    return matrix4(
+      translation: translation,
+      rotation: rotation,
+      scale: scale,
     );
   }
 
