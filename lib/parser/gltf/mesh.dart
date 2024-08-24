@@ -31,6 +31,7 @@ class Mesh extends GltfNode {
           weights: Parser.floatList(root, map, 'weights'),
         );
 
+  // TODO(luan): remove the tranform parameter
   flame_3d.Mesh toFlameMesh([Matrix4? transform]) {
     final mesh = flame_3d.Mesh();
     for (final primitive in primitives) {

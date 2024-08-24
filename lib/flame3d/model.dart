@@ -15,7 +15,10 @@ class Model {
   Model.simple({
     required Mesh mesh,
   })  : nodes = {
-          0: ModelNode(parent: null, mesh: mesh),
+          0: ModelNode.simple(
+            nodeIndex: 0,
+            mesh: mesh,
+          ),
         },
         animations = {};
 
@@ -35,11 +38,40 @@ class Model {
 }
 
 class ModelNode {
+  final int nodeIndex;
   final ModelNode? parent;
+  final Matrix4 transform;
   final Mesh? mesh;
 
   ModelNode({
+    required this.nodeIndex,
     required this.parent,
+    required this.transform,
     required this.mesh,
   });
+
+  ModelNode.simple({
+    required this.nodeIndex,
+    required this.mesh,
+  })  : parent = null,
+        transform = Matrix4.identity();
+
+  Matrix4 computeTransform(ModelAnimation? animation) {
+
+    final resultMatrix = Matrix4.identity();
+
+    // parent
+    resultMatrix.multiply(parent?.computeTransform(animation) ?? Matrix4.identity());
+
+    // animation
+    final animationTransform = animation?.sample(nodeIndex);
+    if (animationTransform != null) {
+      resultMatrix.multiply(animationTransform);
+    }
+
+    // local
+    resultMatrix.multiply(transform);
+
+    return resultMatrix;
+  }
 }

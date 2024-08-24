@@ -78,13 +78,20 @@ class Animation extends GltfNode {
       (controllers[nodeIdx] ??= []).add(
         AnimationController(
           animation: spline,
-          nodeIdx: nodeIdx,
         ),
       );
     }
+    final nodes = controllers.map(
+      (key, value) => MapEntry(
+        key,
+        NodeAnimation(
+          channels: value,
+        ),
+      ),
+    );
     return ModelAnimation(
       name: name,
-      channels: controllers,
+      nodes: nodes,
     );
   }
 }

@@ -56,9 +56,11 @@ class Scene extends GltfNode {
   }) {
     final gltfNode = nodeRef.get();
     final combinedTransform = parentTransform * gltfNode.transform;
-    final mesh = gltfNode.mesh?.get().toFlameMesh(combinedTransform);
+    final mesh = gltfNode.mesh?.get().toFlameMesh();
     final node = ModelNode(
+      nodeIndex: nodeRef.index,
       parent: parent,
+      transform: combinedTransform,
       mesh: mesh,
     );
     nodes[nodeRef.index] = node;

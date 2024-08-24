@@ -17,18 +17,9 @@ class ModelComponent extends Object3D {
 
   @override
   void bind(GraphicsDevice device) {
-    for (final entry in model.nodes.entries) {
-      // TODO(luan): figure out correct way of dealing with maps
-      final idx = entry.key;
-      final node = entry.value;
-
-      final animations = _currentAnimation?.channels[idx] ?? [];
-
-      final resultMatrix = transformMatrix.clone();
-      for (final animation in animations) {
-        final value = animation.sampleTransform();
-        resultMatrix.multiply(value);
-      }
+    for (final node in model.nodes.values) {
+      final transform = node.computeTransform(_currentAnimation)
+        ..multiply(transformMatrix);
 
       // TODO(luan): handle bones
 
@@ -36,7 +27,7 @@ class ModelComponent extends Object3D {
       if (mesh != null) {
         // ignore: invalid_use_of_internal_member
         world.device
-          ..model.setFrom(resultMatrix)
+          ..model.setFrom(transform)
           ..bindMesh(mesh);
       }
     }
