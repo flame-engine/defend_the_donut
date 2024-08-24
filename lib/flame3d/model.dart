@@ -57,7 +57,6 @@ class ModelNode {
         transform = Matrix4.identity();
 
   Matrix4 computeTransform(ModelAnimation? animation) {
-
     final resultMatrix = Matrix4.identity();
 
     // parent

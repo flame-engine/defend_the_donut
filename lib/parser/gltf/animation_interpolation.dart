@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:flame_3d/core.dart';
 
@@ -32,17 +34,35 @@ enum AnimationInterpolation {
 
   Vector3 lerp(Vector3 a, Vector3 b, double t) {
     return switch (this) {
-      linear => a + (b - a) * t,
+      linear => vec3lerp(a, b, t),
       step => a,
       cubicSpline => throw UnimplementedError(),
     };
   }
 
+  Vector3 vec3lerp(Vector3 a, Vector3 b, double t) {
+    return a + (b - a).scaled(t);
+  }
+
   Quaternion slerp(Quaternion a, Quaternion b, double t) {
     return switch (this) {
-      linear => a + (b - a).scaled(t),
+      linear => QuaternionUtils.slerp(a, b, t),
       step => a,
       cubicSpline => throw UnimplementedError(),
     };
+  }
+}
+
+extension QuaternionUtils on Quaternion {
+  double dot(Quaternion other) {
+    return x * other.x + y * other.y + z * other.z + w * other.w;
+  }
+
+  static Quaternion slerp(Quaternion q0, Quaternion q1, double t) {
+    final angle = acos(q0.dot(q1));
+    final a = sin((1 - t) * angle) / sin(angle);
+    final b = sin(t * angle) / sin(angle);
+
+    return q0.scaled(a) + q1.scaled(b);
   }
 }
