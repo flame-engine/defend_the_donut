@@ -72,7 +72,9 @@ class RawAccessor extends GltfNode {
       );
     }
 
-    for (int cursor = byteOffset; cursor < bytes.lengthInBytes; cursor += step) {
+    for (int cursor = byteOffset;
+        cursor < bytes.lengthInBytes;
+        cursor += step) {
       yield componentType.parseData(byteData, cursor: cursor);
     }
   }

@@ -21,8 +21,6 @@ class ModelComponent extends Object3D {
       final transform = node.computeTransform(_currentAnimation)
         ..multiply(transformMatrix);
 
-      // TODO(luan): handle bones
-
       final mesh = node.mesh;
       if (mesh != null) {
         // ignore: invalid_use_of_internal_member

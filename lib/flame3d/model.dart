@@ -57,10 +57,13 @@ class ModelNode {
         transform = Matrix4.identity();
 
   Matrix4 computeTransform(ModelAnimation? animation) {
+    // TODO(luan): handle bones
+
     final resultMatrix = Matrix4.identity();
 
     // parent
-    resultMatrix.multiply(parent?.computeTransform(animation) ?? Matrix4.identity());
+    resultMatrix
+        .multiply(parent?.computeTransform(animation) ?? Matrix4.identity());
 
     // animation
     final animationTransform = animation?.sample(nodeIndex);

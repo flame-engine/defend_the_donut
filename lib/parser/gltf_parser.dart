@@ -1,4 +1,3 @@
-
 import 'package:defend_the_donut/flame3d/model.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/model_parser.dart';
