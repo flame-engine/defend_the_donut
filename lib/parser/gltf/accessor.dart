@@ -116,6 +116,7 @@ class RawAccessor extends GltfNode {
   FloatAccessor asFloat() => FloatAccessor(root: root, accessor: this);
   Vector2Accessor asVector2() => Vector2Accessor(root: root, accessor: this);
   Vector3Accessor asVector3() => Vector3Accessor(root: root, accessor: this);
+  Vector4Accessor asVector4() => Vector4Accessor(root: root, accessor: this);
   QuaternionAccessor asQuaternion() => QuaternionAccessor(
         root: root,
         accessor: this,
@@ -145,8 +146,8 @@ class RawAccessor extends GltfNode {
           normalized: Parser.boolean(map, 'normalized') ?? false,
           count: Parser.integer(map, 'count')!,
           type: AccessorType.parse(map, 'type')!,
-          max: Parser.floatList(root, map, 'max'),
-          min: Parser.floatList(root, map, 'min'),
+          max: Parser.floatList(map, 'max'),
+          min: Parser.floatList(map, 'min'),
           sparse: Parser.object(root, map, 'sparse', SparseAccessor.parse),
         );
 }
@@ -204,7 +205,10 @@ class Vector2Accessor extends TypedAccessor<Vector2> {
   @override
   List<Vector2> typedData() {
     _checkAccessorType(AccessorType.vec2);
-    return rawAccessor._typedData(2, (it) => Vector2.array(it.cast()));
+    return rawAccessor._typedData(2, (values) {
+      final doubles = Parser.coerceFloatList(values);
+      return Vector2.array(doubles);
+    });
   }
 }
 
@@ -217,7 +221,10 @@ class Vector3Accessor extends TypedAccessor<Vector3> {
   @override
   List<Vector3> typedData() {
     _checkAccessorType(AccessorType.vec3);
-    return rawAccessor._typedData(3, (it) => Vector3.array(it.cast()));
+    return rawAccessor._typedData(3, (values) {
+      final doubles = Parser.coerceFloatList(values);
+      return Vector3.array(doubles);
+    });
   }
 }
 
@@ -230,7 +237,10 @@ class Vector4Accessor extends TypedAccessor<Vector4> {
   @override
   List<Vector4> typedData() {
     _checkAccessorType(AccessorType.vec4);
-    return rawAccessor._typedData(4, (it) => Vector4.array(it.cast()));
+    return rawAccessor._typedData(4, (values) {
+      final doubles = Parser.coerceFloatList(values);
+      return Vector4.array(doubles);
+    });
   }
 }
 
@@ -243,8 +253,8 @@ class QuaternionAccessor extends TypedAccessor<Quaternion> {
   @override
   List<Quaternion> typedData() {
     _checkAccessorType(AccessorType.vec4);
-    return rawAccessor._typedData(4, (nums) {
-      final doubles = nums.cast<double>();
+    return rawAccessor._typedData(4, (values) {
+      final doubles = Parser.coerceFloatList(values);
       return Quaternion(doubles[0], doubles[1], doubles[2], doubles[3]);
     });
   }

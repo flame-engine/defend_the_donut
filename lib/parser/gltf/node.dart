@@ -88,7 +88,7 @@ class Node extends GltfNode {
           rotation: Parser.quaternion(root, map, 'rotation'),
           scale: Parser.vector3(root, map, 'scale'),
           translation: Parser.vector3(root, map, 'translation'),
-          weights: Parser.floatList(root, map, 'weights'),
+          weights: Parser.floatList(map, 'weights'),
         );
 
   Matrix4? get _trs {

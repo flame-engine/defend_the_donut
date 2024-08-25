@@ -28,7 +28,7 @@ class Mesh extends GltfNode {
           root: root,
           primitives:
               Parser.objectList(root, map, 'primitives', Primitive.parse) ?? [],
-          weights: Parser.floatList(root, map, 'weights'),
+          weights: Parser.floatList(map, 'weights'),
         );
 
   // TODO(luan): remove the tranform parameter

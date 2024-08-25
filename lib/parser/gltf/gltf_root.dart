@@ -93,6 +93,7 @@ class GltfRoot {
       const (FloatAccessor) => accessors[index].asFloat(),
       const (Vector2Accessor) => accessors[index].asVector2(),
       const (Vector3Accessor) => accessors[index].asVector3(),
+      const (Vector4Accessor) => accessors[index].asVector4(),
       const (QuaternionAccessor) => accessors[index].asQuaternion(),
       const (RawAccessor) => accessors[index],
       _ => throw UnimplementedError('Cannot resolve type $T')

@@ -46,7 +46,7 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    final entries = floatList(root, map, key);
+    final entries = floatList(map, key);
     return entries?.let((e) => Vector3.array(e));
   }
 
@@ -55,7 +55,7 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    final entries = floatList(root, map, key);
+    final entries = floatList(map, key);
     return entries?.let((e) => Matrix4.fromList(e));
   }
 
@@ -64,7 +64,7 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    final entries = floatList(root, map, key);
+    final entries = floatList(map, key);
     return entries?.let((e) => Vector4.array(e));
   }
 
@@ -73,7 +73,7 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    final entries = floatList(root, map, key);
+    final entries = floatList(map, key);
     return entries?.let((e) => Quaternion(e[0], e[1], e[2], e[3]));
   }
 
@@ -99,13 +99,16 @@ class Parser {
   }
 
   static List<double>? floatList(
-    GltfRoot root,
     Map<String, Object?> map,
     String key,
   ) {
-    return (map[key] as List<Object?>?)
-        ?.map((e) => (e as num).toDouble())
-        .toList();
+    return (map[key] as List<Object?>?)?.let(coerceFloatList);
+  }
+
+  static List<double> coerceFloatList(
+    List<Object?> value,
+  ) {
+    return value.map((e) => (e as num).toDouble()).toList();
   }
 
   static String? string(
