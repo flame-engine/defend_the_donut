@@ -221,6 +221,19 @@ class Vector3Accessor extends TypedAccessor<Vector3> {
   }
 }
 
+class Vector4Accessor extends TypedAccessor<Vector4> {
+  Vector4Accessor({
+    required super.root,
+    required super.accessor,
+  });
+
+  @override
+  List<Vector4> typedData() {
+    _checkAccessorType(AccessorType.vec4);
+    return rawAccessor._typedData(4, (it) => Vector4.array(it.cast()));
+  }
+}
+
 class QuaternionAccessor extends TypedAccessor<Quaternion> {
   QuaternionAccessor({
     required super.root,
