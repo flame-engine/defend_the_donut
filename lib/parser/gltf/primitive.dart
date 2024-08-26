@@ -8,6 +8,7 @@ import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/material.dart';
 import 'package:defend_the_donut/parser/gltf/morph_target.dart';
 import 'package:defend_the_donut/parser/gltf/primitive_mode.dart';
+import 'package:defend_the_donut/utils.dart';
 import 'package:flame_3d/core.dart';
 import 'package:flame_3d/resources.dart' as flame_3d;
 
@@ -42,8 +43,8 @@ class Primitive extends GltfNode {
   GltfRef<Vector3Accessor>? get positions => _accessor('POSITION');
   GltfRef<Vector3Accessor>? get normals => _accessor('NORMAL');
   GltfRef<Vector2Accessor>? get texCoords => _accessor('TEXCOORD_0');
-  GltfRef<IntAccessor>? get joints => _accessor('JOINTS_0');
-  GltfRef<IntAccessor>? get weights => _accessor('WEIGHTS_0');
+  GltfRef<Vector4Accessor>? get joints => _accessor('JOINTS_0');
+  GltfRef<Vector4Accessor>? get weights => _accessor('WEIGHTS_0');
 
   GltfRef<T>? _accessor<T extends GltfNode>(String key) {
     final joints = attributes[key];
@@ -58,6 +59,7 @@ class Primitive extends GltfNode {
 
   Iterable<flame_3d.Vertex> toFlameVertices(
     List<int> indices,
+    JointData jointData,
     Matrix4 transform,
   ) sync* {
     assert(mode == PrimitiveMode.triangles);
@@ -81,21 +83,68 @@ class Primitive extends GltfNode {
         // TODO: consider null textures
         texCoord: texCoords?.elementAtOrNull(i) ?? Vector2.zero(),
         normal: process(normals.elementAtOrNull(i)),
+        joints: jointData.localizedJoint(i),
+        weights: jointData.weight(i),
       );
     }
   }
 
   flame_3d.Surface toFlameSurface([Matrix4? transform]) {
     final indices = this.indices.get().typedData();
-    final vertices = toFlameVertices(indices, transform ?? Matrix4.identity());
+    final jointData = computeJointData();
+
+    final vertices = toFlameVertices(
+      indices,
+      jointData,
+      transform ?? Matrix4.identity(),
+    );
 
     return flame_3d.Surface(
       vertices: vertices.toList(),
       indices: indices,
+      jointMap: jointData.jointMap,
       material: material?.get().toFlameMaterial() ??
           flame_3d.SpatialMaterial(
             albedoColor: const Color(0xFFFF00FF),
           ),
+    );
+  }
+
+  JointData computeJointData() {
+    final weights = this.weights?.get().typedData() ?? [];
+    // this are the indexes (0, 1, 2, 3) that have any relevance at all
+    final relevantIndexes = weights
+        .expand((w) =>
+            w.entries.indexed.where((e) => e.$2 > 0.0).map((e) => e.$1).toSet())
+        .toSet();
+
+    final joints = this.joints?.get().typedData() ?? [];
+    final globalToLocalJointMap = Map.fromEntries(
+      joints
+          .expand((e) => e.entries.indexed
+              .where((e) => relevantIndexes.contains(e.$1))
+              .map((e) => e.$2))
+          .toSet()
+          .indexed
+          .map((e) => MapEntry(e.$2.toInt(), e.$1)),
+    );
+
+    final localizedJoints = joints.map((joint) {
+      return Vector4.array(
+        joint.entries.map((e) {
+          if (e == 0.0 && globalToLocalJointMap[e] == null) {
+            // this must be a 0 weight value that just happens to be id = 0
+            return 0.0;
+          }
+          return globalToLocalJointMap[e]!.toDouble();
+        }).toList(),
+      );
+    }).toList();
+
+    return JointData(
+      weights: weights,
+      localizedJoints: localizedJoints,
+      jointMap: globalToLocalJointMap,
     );
   }
 
@@ -116,4 +165,24 @@ class Primitive extends GltfNode {
               ) ??
               [],
         );
+}
+
+class JointData {
+  final List<Vector4> weights;
+  final List<Vector4> localizedJoints;
+  final Map<int, int> jointMap;
+
+  JointData({
+    required this.weights,
+    required this.localizedJoints,
+    required this.jointMap,
+  });
+
+  Vector4 weight(int index) {
+    return weights.elementAtOrNull(index) ?? Vector4.zero();
+  }
+
+  Vector4 localizedJoint(int index) {
+    return localizedJoints.elementAtOrNull(index) ?? Vector4.zero();
+  }
 }

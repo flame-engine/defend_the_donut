@@ -121,6 +121,7 @@ class RawAccessor extends GltfNode {
         root: root,
         accessor: this,
       );
+  Matrix4Accessor asMatrix4() => Matrix4Accessor(root: root, accessor: this);
 
   RawAccessor({
     required super.root,
@@ -256,6 +257,22 @@ class QuaternionAccessor extends TypedAccessor<Quaternion> {
     return rawAccessor._typedData(4, (values) {
       final doubles = Parser.coerceFloatList(values);
       return Quaternion(doubles[0], doubles[1], doubles[2], doubles[3]);
+    });
+  }
+}
+
+class Matrix4Accessor extends TypedAccessor<Matrix4> {
+  Matrix4Accessor({
+    required super.root,
+    required super.accessor,
+  });
+
+  @override
+  List<Matrix4> typedData() {
+    _checkAccessorType(AccessorType.mat4);
+    return rawAccessor._typedData(16, (values) {
+      final doubles = Parser.coerceFloatList(values);
+      return Matrix4.fromList(doubles);
     });
   }
 }

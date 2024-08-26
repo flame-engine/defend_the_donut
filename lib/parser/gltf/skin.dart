@@ -9,7 +9,7 @@ class Skin extends GltfNode {
   /// The reference to the accessor containing the floating-point 4x4 inverse-bind matrices.
   /// Its `accessor.count` property **MUST** be greater than or equal to the number of elements of the `joints` array.
   /// When undefined, each matrix is a 4x4 identity matrix.
-  final GltfRef<RawAccessor>? inverseBindMatrices;
+  final GltfRef<Matrix4Accessor>? inverseBindMatrices;
 
   /// The reference to the node used as a skeleton root.
   /// The node **MUST** be the closest common root of the joints hierarchy or a direct or indirect parent node of the closest common root.

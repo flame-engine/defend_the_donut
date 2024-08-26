@@ -6,7 +6,6 @@ import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/mesh.dart';
 import 'package:defend_the_donut/parser/gltf/skin.dart';
 import 'package:flame_3d/core.dart';
-import 'package:flame_3d/resources.dart' as flame_3d;
 
 /// A node in the node hierarchy.
 ///
@@ -103,14 +102,4 @@ class Node extends GltfNode {
   }
 
   Matrix4 get transform => matrix ?? _trs ?? Matrix4.identity();
-
-  List<flame_3d.Mesh> toFlameMeshes([Matrix4? parentTransform]) {
-    final combinedTransform =
-        (parentTransform ?? Matrix4.identity()) * transform;
-    final meshes = [
-      mesh?.get().toFlameMesh(combinedTransform),
-      ...children.expand((e) => e.get().toFlameMeshes(combinedTransform)),
-    ];
-    return meshes.nonNulls.toList();
-  }
 }

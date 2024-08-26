@@ -95,6 +95,7 @@ class GltfRoot {
       const (Vector3Accessor) => accessors[index].asVector3(),
       const (Vector4Accessor) => accessors[index].asVector4(),
       const (QuaternionAccessor) => accessors[index].asQuaternion(),
+      const (Matrix4Accessor) => accessors[index].asMatrix4(),
       const (RawAccessor) => accessors[index],
       _ => throw UnimplementedError('Cannot resolve type $T')
     } as T;
@@ -141,7 +142,7 @@ class GltfRoot {
     return root;
   }
 
-  Map<int, ModelNode> toFlameMeshes([int? scene]) {
+  Map<int, ModelNode> toFlameNodes([int? scene]) {
     return scenes[scene ?? this.scene].toFlameNodes();
   }
 
@@ -150,7 +151,7 @@ class GltfRoot {
     String nextDefaultName() => 'unnamed_animation_${nextDefaultIdx++}';
 
     return Model(
-      nodes: toFlameMeshes(scene),
+      nodes: toFlameNodes(scene),
       animations: Map.fromEntries(
         animations.map((animation) {
           final name = animation.name ?? nextDefaultName();

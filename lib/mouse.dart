@@ -53,6 +53,7 @@ class Mouse {
   }
 
   static Future<void> lock() async {
+    return;
     if (_pointerLocked) return;
     return _lock.lockPointer().then((_) => _pointerLocked = true);
   }

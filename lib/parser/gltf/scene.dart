@@ -56,14 +56,31 @@ class Scene extends GltfNode {
   }) {
     final gltfNode = nodeRef.get();
     final combinedTransform = parentTransform * gltfNode.transform;
+
     final mesh = gltfNode.mesh?.get().toFlameMesh();
+
+    final skin = gltfNode.skin?.get();
+    final inverseBindMatrices = skin?.inverseBindMatrices?.get().typedData();
+    final joints = skin?.joints ?? [];
+
+    final modelJoints = <int, ModelJoint>{};
+    for (final (i, joint) in joints.indexed) {
+      modelJoints[i] = ModelJoint(
+        nodeIndex: joint.index,
+        inverseBindMatrix:
+            inverseBindMatrices?.elementAt(i) ?? Matrix4.identity(),
+      );
+    }
+
     final node = ModelNode(
       nodeIndex: nodeRef.index,
-      parent: parent,
+      parentNodeIndex: parent?.parentNodeIndex,
       transform: combinedTransform,
       mesh: mesh,
+      joints: modelJoints,
     );
     nodes[nodeRef.index] = node;
+
     for (final child in gltfNode.children) {
       _processNode(
         nodes: nodes,

@@ -17,15 +17,14 @@ class ModelComponent extends Object3D {
 
   @override
   void bind(GraphicsDevice device) {
-    for (final node in model.nodes.values) {
-      final transform = node.computeTransform(_currentAnimation)
-        ..multiply(transformMatrix);
-
-      final mesh = node.mesh;
+    final nodes = model.processNodes(_currentAnimation).values;
+    for (final node in nodes) {
+      final mesh = node.node.mesh;
       if (mesh != null) {
+        device.jointsInfo.jointTransformsPerSurface = node.jointTransforms;
         // ignore: invalid_use_of_internal_member
         world.device
-          ..model.setFrom(transform)
+          ..model.setFrom(node.combinedTransform)
           ..bindMesh(mesh);
       }
     }

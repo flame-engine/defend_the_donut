@@ -126,7 +126,11 @@ class NodeAnimation {
     Matrix4 result = Matrix4.identity();
     for (final channel in channels) {
       final value = channel.sample(time);
-      result.multiply(channel.animation.asTransform(value));
+      final transform = channel.animation.asTransform(value);
+      if (transform[0].isNaN) {
+        throw Exception('NaN ${channel.animation.values} in transform');
+      }
+      result.multiply(transform);
     }
     return result;
   }

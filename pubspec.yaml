@@ -17,6 +17,7 @@ dependencies:
   flame_3d: ^0.1.0-dev.1
   flutter:
     sdk: flutter
+  ordered_set: ^5.0.3
   pointer_lock:
     git:
       url: https://github.com/helgoboss/pointer_lock.git
@@ -24,6 +25,7 @@ dependencies:
 
 dev_dependencies:
   flame_test: ^1.16.2
+  flame_lint: ^1.2.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
