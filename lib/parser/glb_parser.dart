@@ -12,7 +12,7 @@ import 'package:flame/flame.dart';
 /// https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.pdf
 class GlbParser extends ModelParser {
   @override
-  Future<Model> parse(String filePath) async {
+  Future<Model> parseModel(String filePath) async {
     final root = await parseRoot(filePath);
     return root.toFlameModel();
   }

@@ -9,7 +9,7 @@ import 'package:flame_3d/resources.dart';
 
 class ObjParser extends ModelParser {
   @override
-  Future<Model> parse(String filePath) async {
+  Future<Model> parseModel(String filePath) async {
     final mesh = await parseMesh(filePath);
     return Model.simple(mesh: mesh);
   }

@@ -158,15 +158,15 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   );
 
   FutureOr<void> initGame() async {
-    final model = await ModelParser.glb.parse('objects/rogue.glb');
+    final model = await ModelParser.parse('objects/duck.glb');
     final mc = ModelComponent(model: model);
     await add(mc);
-    mc.playAnimation('Walking_B');
+    // mc.playAnimation('Walking_B');
     // mc.playAnimationIdx(0);
 
     await makeLight(Vector3.zero(), const Color(0xFFFFFFFF));
-    await makeLight(Vector3(0, 0, -6), const Color(0xFFFFFFFF));
-    await makeLight(Vector3(0, 3, 6), const Color(0xFFFFFFFF));
+    // await makeLight(Vector3(0, 0, -6), const Color(0xFFFFFFFF));
+    // await makeLight(Vector3(0, 3, 6), const Color(0xFFFFFFFF));
 
     await addAll([
       LightComponent.ambient(
