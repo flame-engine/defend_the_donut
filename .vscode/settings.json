@@ -15,6 +15,11 @@
         "texel",
         "texels",
         "usemtl",
-        "wolfen"
+        "wolfen",
+        "xmag",
+        "yfov",
+        "ymag",
+        "zfar",
+        "znear"
     ]
 }
