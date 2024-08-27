@@ -21,15 +21,14 @@ enum ComponentType {
   });
 
   num parseData(ByteData byteData, {int cursor = 0}) {
-    final formatter = switch (this) {
-      ComponentType.byte => (e, _) => byteData.getInt8(e),
-      ComponentType.unsignedByte => (e, _) => byteData.getUint8(e),
-      ComponentType.short => byteData.getInt16,
-      ComponentType.unsignedShort => byteData.getUint16,
-      ComponentType.unsignedInt => byteData.getUint32,
-      ComponentType.float => byteData.getFloat32,
+    return switch (this) {
+      ComponentType.byte => byteData.getInt8(cursor),
+      ComponentType.unsignedByte => byteData.getUint8(cursor),
+      ComponentType.short => byteData.getInt16(cursor, Endian.little),
+      ComponentType.unsignedShort => byteData.getUint16(cursor, Endian.little),
+      ComponentType.unsignedInt => byteData.getUint32(cursor, Endian.little),
+      ComponentType.float => byteData.getFloat32(cursor, Endian.little),
     };
-    return formatter(cursor, Endian.little);
   }
 
   static ComponentType valueOf(int value) {

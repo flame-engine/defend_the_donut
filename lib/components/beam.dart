@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
@@ -17,7 +17,7 @@ class Beam extends MeshComponent {
           ),
         );
 
-  static Beam generate({
+  factory Beam.generate({
     required Vector3 start,
     required Vector3 end,
     double radius = _beamRadius,
@@ -50,7 +50,7 @@ class Beam extends MeshComponent {
 
     final translationMatrix = Matrix4.translation(translation);
     final rotationMatrix = _rotateAroundPoint(rotation, start);
-    final transform = rotationMatrix * translationMatrix;
+    final transform = rotationMatrix.multiplied(translationMatrix);
 
     return Transform3D.fromMatrix4(transform);
   }
@@ -75,7 +75,9 @@ class Beam extends MeshComponent {
   }
 
   static Matrix4 _rotateAroundPoint(Matrix4 rotation, Vector3 point) {
-    return Matrix4.translation(point) * rotation * Matrix4.translation(-point);
+    return Matrix4.translation(point)
+        .multiplied(rotation)
+        .multiplied(Matrix4.translation(-point));
   }
 
   static const _beamRadius = 0.02;

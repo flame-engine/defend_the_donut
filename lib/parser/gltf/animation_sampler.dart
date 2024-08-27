@@ -4,11 +4,13 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 
-/// An animation sampler combines timestamps with a sequence of output values and defines an interpolation algorithm.
+/// An animation sampler combines timestamps with a sequence of output values
+/// and defines an interpolation algorithm.
 class AnimationSampler extends GltfNode {
   /// The index of an accessor containing keyframe timestamps.
   /// The accessor **MUST** be of scalar type with floating-point components.
-  /// The values represent time in seconds with `time[0] >= 0.0`, and strictly increasing values, i.e., `time[n + 1] > time[n]`.
+  /// The values represent time in seconds with `time[0] >= 0.0`, and strictly
+  /// increasing values, i.e., `time[n + 1] > time[n]`.
   final GltfRef<FloatAccessor> input;
 
   /// Interpolation algorithm.

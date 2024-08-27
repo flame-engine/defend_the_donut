@@ -2,11 +2,11 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 
 /// Texture formats; values correspond to WebGL enums.
 enum TextureFormat {
-  alpha("ALPHA", 6406),
-  rgb("RGB", 6407),
-  rgba("RGBA", 6408),
-  luminance("LUMINANCE", 6409),
-  luminanceAlpha("LUMINANCE_ALPHA", 6410),
+  alpha('ALPHA', 6406),
+  rgb('RGB', 6407),
+  rgba('RGBA', 6408),
+  luminance('LUMINANCE', 6409),
+  luminanceAlpha('LUMINANCE_ALPHA', 6410),
   ;
 
   final String name;

@@ -3,16 +3,20 @@ import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 import 'package:defend_the_donut/parser/gltf/sparse_accessor_indices.dart';
 import 'package:defend_the_donut/parser/gltf/sparse_accessor_values.dart';
 
-/// Sparse storage of accessor values that deviate from their initialization value.
+/// Sparse storage of accessor values that deviate from their initialization
+/// value.
 class SparseAccessor extends GltfNode {
   /// Number of deviating accessor values stored in the sparse array.
   final int count;
 
-  /// An object pointing to a buffer view containing the indices of deviating accessor values.
-  /// The number of indices is equal to `count`. Indices **MUST** strictly increase.
+  /// An object pointing to a buffer view containing the indices of deviating
+  /// accessor values.
+  /// The number of indices is equal to `count`.
+  /// Indices **MUST** strictly increase.
   final SparseAccessorIndices indices;
 
-  /// An object pointing to a buffer view containing the deviating accessor values.
+  /// An object pointing to a buffer view containing the deviating
+  /// accessor values.
   final SparseAccessorValues values;
 
   SparseAccessor({

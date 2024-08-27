@@ -3,7 +3,8 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 
 class AnimationChannel extends GltfNode {
-  /// The ID of a sampler in this animation used to compute the value for the target, e.g., a node's translation, rotation, or scale (TRS).
+  /// The ID of a sampler in this animation used to compute the value for the
+  /// target, e.g., a node's translation, rotation, or scale (TRS).
   final int sampler;
 
   /// The descriptor of the animated property.

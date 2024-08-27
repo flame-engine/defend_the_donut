@@ -5,19 +5,24 @@ import 'package:flame_3d/core.dart';
 
 enum AnimationInterpolation {
   /// The animated values are linearly interpolated between keyframes.
-  /// When targeting a rotation, spherical linear interpolation (slerp) **SHOULD** be used to interpolate quaternions.
+  /// When targeting a rotation, spherical linear interpolation (slerp)
+  /// **SHOULD** be used to interpolate quaternions.
   /// The number of output elements **MUST** equal the number of input elements.
-  linear("LINEAR"),
+  linear('LINEAR'),
 
-  /// The animated values remain constant to the output of the first keyframe, until the next keyframe.
+  /// The animated values remain constant to the output of the first keyframe,
+  /// until the next keyframe.
   /// The number of output elements **MUST** equal the number of input elements.
-  step("STEP"),
+  step('STEP'),
 
-  /// The animation's interpolation is computed using a cubic spline with specified tangents.
-  /// The number of output elements **MUST** equal three times the number of input elements.
-  /// For each input element, the output stores three elements, an in-tangent, a spline vertex, and an out-tangent.
+  /// The animation's interpolation is computed using a cubic spline with
+  /// specified tangents.
+  /// The number of output elements **MUST** equal three times the number of
+  /// input elements.
+  /// For each input element, the output stores three elements, an in-tangent,
+  /// a spline vertex, and an out-tangent.
   /// There **MUST** be at least two keyframes when using this interpolation.
-  cubicSpline("CUBICSPLINE"),
+  cubicSpline('CUBICSPLINE'),
   ;
 
   final String value;

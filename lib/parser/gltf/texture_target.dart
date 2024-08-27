@@ -2,7 +2,7 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 
 /// Texture targets; values correspond to WebGL enums.
 enum TextureTarget {
-  texture2d("TEXTURE_2D", 3553),
+  texture2d('TEXTURE_2D', 3553),
   ;
 
   final String name;

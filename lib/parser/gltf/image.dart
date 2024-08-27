@@ -1,5 +1,5 @@
-import 'dart:ui' as dart;
 import 'dart:typed_data';
+import 'dart:ui' as dart;
 
 import 'package:defend_the_donut/parser/gltf/buffer_view.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
@@ -14,7 +14,8 @@ class Image extends GltfNode with GltfNodeWithData<flame3d.ImageTexture> {
   /// The URI (or IRI) of the image.
   ///
   /// Relative paths are relative to the current glTF asset.
-  /// Instead of referencing an external file, this field **MAY** contain a `data:`-URI.
+  /// Instead of referencing an external file, this field **MAY** contain a
+  /// `data:`-URI.
   /// This field **MUST NOT** be defined when `bufferView` is defined.
   final String? uri;
 
@@ -47,7 +48,7 @@ class Image extends GltfNode with GltfNodeWithData<flame3d.ImageTexture> {
   Future<Uint8List> data() async {
     final uri = this.uri;
     if (uri != null) {
-      return await root.readChunkFrom(uri);
+      return root.readChunkFrom(uri);
     } else {
       final bufferView = this.bufferView?.get();
       if (bufferView == null) {

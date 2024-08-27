@@ -12,36 +12,54 @@ import 'package:flame_3d/resources.dart' as flame_3d;
 class Material extends GltfNode {
   final String? name;
 
-  /// A set of parameter values that are used to define the metallic-roughness material model from Physically Based Rendering (PBR) methodology.
-  /// When undefined, all the default values of `pbrMetallicRoughness` **MUST** apply.
+  /// A set of parameter values that are used to define the metallic-roughness
+  /// material model from Physically Based Rendering (PBR) methodology.
+  /// When undefined, all the default values of `pbrMetallicRoughness` **MUST**
+  /// apply.
   final PBRMetallicRoughness? pbrMetallicRoughness;
 
-  /// The tangent space normal texture. The texture encodes RGB components with linear transfer function.
-  /// Each texel represents the XYZ components of a normal vector in tangent space.
-  /// The normal vectors use the convention +X is right and +Y is up. +Z points toward the viewer.
-  /// If a fourth component (A) is present, it **MUST** be ignored. When undefined, the material does not have a tangent space normal texture.
+  /// The tangent space normal texture. The texture encodes RGB components with
+  /// linear transfer function.
+  /// Each texel represents the XYZ components of a normal vector in tangent
+  /// space.
+  /// The normal vectors use the convention +X is right and +Y is up. +Z points
+  /// toward the viewer.
+  /// If a fourth component (A) is present, it **MUST** be ignored.
+  /// When undefined, the material does not have a tangent space normal texture.
   final NormalTextureInfo? normalTexture;
 
-  /// The occlusion texture. The occlusion values are linearly sampled from the R channel.
-  /// Higher values indicate areas that receive full indirect lighting and lower values indicate no indirect lighting.
-  /// If other channels are present (GBA), they **MUST** be ignored for occlusion calculations.
+  /// The occlusion texture. The occlusion values are linearly sampled from the
+  /// R channel.
+  /// Higher values indicate areas that receive full indirect lighting and lower
+  /// values indicate no indirect lighting.
+  /// If other channels are present (GBA), they **MUST** be ignored for
+  /// occlusion calculations.
   /// When undefined, the material does not have an occlusion texture.
   final OcclusionTextureInfo? occlusionTexture;
 
-  /// The emissive texture. It controls the color and intensity of the light being emitted by the material.
-  /// This texture contains RGB components encoded with the sRGB transfer function.
-  /// If a fourth component (A) is present, it **MUST** be ignored. When undefined, the texture **MUST** be sampled as having `1.0` in RGB components.
+  /// The emissive texture. It controls the color and intensity of the light
+  /// being emitted by the material.
+  /// This texture contains RGB components encoded with the sRGB transfer
+  /// function.
+  /// If a fourth component (A) is present, it **MUST** be ignored.
+  /// When undefined, the texture **MUST** be sampled as having `1.0` in RGB
+  /// components.
   final TextureInfo? emissiveTexture;
 
-  /// The factors for the emissive color of the material. This value defines linear multipliers for the sampled texels of the emissive texture.
+  /// The factors for the emissive color of the material. This value defines
+  /// linear multipliers for the sampled texels of the emissive texture.
   final Vector3 emissiveFactor;
 
-  /// The material's alpha rendering mode enumeration specifying the interpretation of the alpha value of the base color.
+  /// The material's alpha rendering mode enumeration specifying the
+  /// interpretation of the alpha value of the base color.
   final AlphaMode alphaMode;
 
-  /// Specifies whether the material is double sided. When this value is false, back-face culling is enabled.
-  /// When this value is true, back-face culling is disabled and double-sided lighting is enabled.
-  /// The back-face **MUST** have its normals reversed before the lighting equation is evaluated
+  /// Specifies whether the material is double sided. When this value is false,
+  /// back-face culling is enabled.
+  /// When this value is true, back-face culling is disabled and double-sided
+  /// lighting is enabled.
+  /// The back-face **MUST** have its normals reversed before the lighting
+  /// equation is evaluated.
   final bool doubleSided;
 
   Material({

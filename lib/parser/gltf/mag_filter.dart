@@ -2,8 +2,8 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 
 /// Magnification filter. Valid values correspond to WebGL enums.
 enum MagFilter {
-  nearest("NEAREST", 9728),
-  linear("LINEAR", 9729),
+  nearest('NEAREST', 9728),
+  linear('LINEAR', 9729),
   ;
 
   final String name;

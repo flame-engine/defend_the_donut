@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:defend_the_donut/space_game_3d.dart';
+import 'package:defend_the_donut/styles.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/rendering.dart';
-import 'package:defend_the_donut/space_game_3d.dart';
-import 'package:defend_the_donut/styles.dart';
 
 class Hud extends Component with HasGameReference<SpaceGame3D> {
   @override
@@ -20,7 +20,6 @@ class Hud extends Component with HasGameReference<SpaceGame3D> {
       canvas,
       game.clock,
       Vector2.all(_m),
-      anchor: Anchor.topLeft,
     );
   }
 }

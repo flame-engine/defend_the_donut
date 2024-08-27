@@ -21,10 +21,12 @@ class BufferView extends GltfNode with GltfNodeWithData<Uint8List> {
   /// The stride, in bytes, between vertex attributes.
   ///
   /// When this is not defined, data is tightly packed.
-  /// When two or more accessors use the same buffer view, this field **MUST** be defined.
+  /// When two or more accessors use the same buffer view, this field **MUST**
+  /// be defined.
   final int? byteStride;
 
-  /// The hint representing the intended GPU buffer type to use with this buffer view.
+  /// The hint representing the intended GPU buffer type to use with this
+  /// buffer view.
   final BufferViewTarget? target;
 
   BufferView({
@@ -50,7 +52,7 @@ class BufferView extends GltfNode with GltfNodeWithData<Uint8List> {
 
   @override
   Future<Uint8List> loadData() async {
-    return await root.readChunk(buffer);
+    return root.readChunk(buffer);
   }
 
   Uint8List data() {

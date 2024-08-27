@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:defend_the_donut/components/beam.dart';
-import 'package:defend_the_donut/parser/model_parser.dart';
-import 'package:flame_3d/game.dart';
-import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/base_component.dart';
+import 'package:defend_the_donut/components/beam.dart';
+import 'package:defend_the_donut/parser/model_parser.dart';
 import 'package:defend_the_donut/utils.dart';
+import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
 import 'package:flutter/animation.dart';
 
 enum ShipType {
@@ -43,7 +43,7 @@ class EnemyShip extends BaseComponent {
   @override
   FutureOr<void> onLoad() {
     for (final (i, surface) in mesh.surfaces.indexed) {
-      final material = surface.material as SpatialMaterial;
+      final material = surface.material! as SpatialMaterial;
       _originalAlbedoColorMap[i] = material.albedoColor;
     }
   }
@@ -125,7 +125,9 @@ class EnemyShip extends BaseComponent {
   }
 
   void takeDamage() {
-    if (damageTimer > 0) return;
+    if (damageTimer > 0) {
+      return;
+    }
 
     life -= 1;
     damageTimer = 0.5;
@@ -140,7 +142,7 @@ class EnemyShip extends BaseComponent {
     Color Function(Color) tint = _tintNone,
   ]) {
     for (final (i, surface) in mesh.surfaces.indexed) {
-      final material = surface.material as SpatialMaterial;
+      final material = surface.material! as SpatialMaterial;
 
       final originalColor = _originalAlbedoColorMap[i]!;
       final newColor = tint(originalColor);
@@ -164,6 +166,7 @@ class EnemyShip extends BaseComponent {
 
   static double _randomCoord() => worldRadius * (2 * random.nextDouble() - 1);
 
-  // this is the "forward" direction with respect to how the ship mesh is oriented
+  // this is the "forward" direction with respect to how the ship mesh is
+  // oriented
   final _forward = Vector3(0, 0, 1);
 }

@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:defend_the_donut/flame3d/model.dart';
 import 'package:defend_the_donut/parser/model_parser.dart';
+import 'package:defend_the_donut/surface_tool.dart';
 import 'package:flame/flame.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
-import 'package:defend_the_donut/surface_tool.dart';
 
 class ObjParser extends ModelParser {
   @override
@@ -63,7 +63,7 @@ class ObjParser extends ModelParser {
             faces[matName]?.add(face);
           } else if (parts.length > 4) {
             // Triangulate
-            // TODO(wolfen):
+            // TODO(wolfen): implement triangulation
           }
           break;
         // Material library

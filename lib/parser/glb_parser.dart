@@ -19,20 +19,20 @@ class GlbParser extends ModelParser {
 
   Future<GltfRoot> parseRoot(String filePath) async {
     final glb = await parseGlb(filePath);
-    return await glb.parse();
+    return glb.parse();
   }
 
   Future<Glb> parseGlb(String filePath) async {
     final content = await Flame.assets.readBinaryFile(filePath);
 
-    int cursor = 0;
+    var cursor = 0;
     Uint8List read(int bytes) {
       cursor += bytes;
       return content.sublist(cursor - bytes, cursor);
     }
 
     final magic = _parseString(read(4));
-    if (magic.toString() != 'glTF') {
+    if (magic != 'glTF') {
       throw Exception('Invalid magic number $magic');
     }
 
@@ -82,7 +82,7 @@ class Glb {
 
   Map<String, Object?> jsonChunk() {
     final chunk = chunks.firstWhere((GlbChunk chunk) => chunk.type == 'JSON');
-    return jsonDecode(_parseString(chunk.data));
+    return jsonDecode(_parseString(chunk.data)) as Map<String, Object?>;
   }
 
   Iterable<GlbChunk> binaryChunks() {
@@ -92,7 +92,7 @@ class Glb {
   Future<GltfRoot> parse() async {
     final json = jsonChunk();
     final chunks = binaryChunks().toList();
-    return await GltfRoot.from(
+    return GltfRoot.from(
       prefix: prefix,
       json: json,
       chunks: chunks,

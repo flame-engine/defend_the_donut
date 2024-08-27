@@ -123,7 +123,7 @@ class NodeAnimation {
   }) : lastTime = channels.map((e) => e.lastTime).reduce(max);
 
   Matrix4 sample(double time) {
-    Matrix4 result = Matrix4.identity();
+    final result = Matrix4.identity();
     for (final channel in channels) {
       final value = channel.sample(time);
       final transform = channel.animation.asTransform(value);

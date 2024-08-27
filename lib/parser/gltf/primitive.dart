@@ -16,13 +16,17 @@ class Primitive extends GltfNode {
   /// The topology type of primitives to render.
   final PrimitiveMode mode;
 
-  /// A plain JSON object, where each key corresponds to a mesh attribute semantic and each value is the index of the accessor containing attribute's data.
+  /// A plain JSON object, where each key corresponds to a mesh attribute
+  /// semantic and each value is the index of the accessor containing
+  /// attribute's data.
+  ///
   /// Typical keys include: `POSITION`, `NORMAL`, `TEXCOORD_0`, etc.
   final Map<String, int> attributes;
 
   /// The reference to the accessor that contains the vertex indices.
   /// When this is undefined, the primitive defines non-indexed geometry.
-  /// When defined, the accessor **MUST** have `SCALAR` type and an unsigned integer component type.
+  /// When defined, the accessor **MUST** have `SCALAR` type and an unsigned
+  /// integer component type.
   final GltfRef<IntAccessor> indices;
 
   /// The reference to the material to apply to this primitive when rendering.
@@ -80,7 +84,6 @@ class Primitive extends GltfNode {
     for (var i = 0; i <= maxIndex; i++) {
       yield flame_3d.Vertex(
         position: process(positions[i])!,
-        // TODO: consider null textures
         texCoord: texCoords?.elementAtOrNull(i) ?? Vector2.zero(),
         normal: process(normals.elementAtOrNull(i)),
         joints: jointData.localizedJoint(i),
@@ -113,17 +116,21 @@ class Primitive extends GltfNode {
   JointData computeJointData() {
     final weights = this.weights?.get().typedData() ?? [];
     // this are the indexes (0, 1, 2, 3) that have any relevance at all
-    final relevantIndexes = weights
-        .expand((w) =>
-            w.entries.indexed.where((e) => e.$2 > 0.0).map((e) => e.$1).toSet())
-        .toSet();
+    final relevantIndexes = weights.expand((w) {
+      return w.entries.indexed
+          .where((e) => e.$2 > 0.0)
+          .map((e) => e.$1)
+          .toSet();
+    }).toSet();
 
     final joints = this.joints?.get().typedData() ?? [];
     final globalToLocalJointMap = Map.fromEntries(
       joints
-          .expand((e) => e.entries.indexed
-              .where((e) => relevantIndexes.contains(e.$1))
-              .map((e) => e.$2))
+          .expand((e) {
+            return e.entries.indexed
+                .where((e) => relevantIndexes.contains(e.$1))
+                .map((e) => e.$2);
+          })
           .toSet()
           .indexed
           .map((e) => MapEntry(e.$2.toInt(), e.$1)),

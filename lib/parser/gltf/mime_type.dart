@@ -1,9 +1,9 @@
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 
 enum MimeType {
-  jpeg("image/jpeg"),
-  png("image/png"),
-  string("string"),
+  jpeg('image/jpeg'),
+  png('image/png'),
+  string('string'),
   ;
 
   final String value;

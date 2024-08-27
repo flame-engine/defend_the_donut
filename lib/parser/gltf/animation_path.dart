@@ -1,10 +1,10 @@
 import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 
 enum AnimationPath {
-  translation("translation"),
-  rotation("rotation"),
-  scale("scale"),
-  weights("weights"),
+  translation('translation'),
+  rotation('rotation'),
+  scale('scale'),
+  weights('weights'),
   ;
 
   final String value;

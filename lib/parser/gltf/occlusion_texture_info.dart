@@ -5,7 +5,8 @@ import 'package:defend_the_donut/parser/gltf/texture_info.dart';
 class OcclusionTextureInfo extends TextureInfo {
   /// A scalar parameter controlling the amount of occlusion applied.
   ///
-  /// A value of `0.0` means no occlusion. A value of `1.0` means full occlusion.
+  /// A value of `0.0` means no occlusion. A value of `1.0` means full
+  /// occlusion.
   ///
   /// This value affects the final occlusion value as:
   /// ```'

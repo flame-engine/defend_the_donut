@@ -9,14 +9,19 @@ import 'package:flame_3d/core.dart';
 
 /// A node in the node hierarchy.
 ///
-/// When the node contains `skin`, all `mesh.primitives` **MUST** contain `JOINTS_0` and `WEIGHTS_0` attributes.
+/// When the node contains `skin`, all `mesh.primitives` **MUST** contain
+/// `JOINTS_0` and `WEIGHTS_0` attributes.
 ///
-/// A node **MAY** have either a `matrix` or any combination of `translation`/`rotation`/`scale` (TRS) properties.
-/// TRS properties are converted to matrices and postmultiplied in the `T * R * S` order to compose the transformation matrix;
-/// first the scale is applied to the vertices, then the rotation, and then the translation.
+/// A node **MAY** have either a `matrix` or any combination of
+/// `translation`/`rotation`/`scale` (TRS) properties.
+/// TRS properties are converted to matrices and postmultiplied in the
+/// `T * R * S` order to compose the transformation matrix;
+/// first the scale is applied to the vertices, then the rotation, and then the
+/// translation.
 /// If none are provided, the transform is the identity.
 ///
-/// When a node is targeted for animation (referenced by an animation.channel.target), `matrix` **MUST NOT** be present.
+/// When a node is targeted for animation (referenced by an 
+/// animation.channel.target), `matrix` **MUST NOT** be present.
 class Node extends GltfNode {
   /// The reference to the camera referenced by this node.
   final GltfRef<Camera>? camera;
@@ -26,11 +31,13 @@ class Node extends GltfNode {
 
   /// The reference to skeleton nodes.
   ///
-  /// Each node defines a subtree, which has a `jointName` of the corresponding element in the referenced `skin.jointNames`.
+  /// Each node defines a subtree, which has a `jointName` of the corresponding
+  /// element in the referenced `skin.jointNames`.
   final List<GltfRef<Node>> skeletons;
 
   /// The reference to the skin referenced by this node.
-  /// When a skin is referenced by a node within a scene, all joints used by the skin **MUST** belong to the same scene.
+  /// When a skin is referenced by a node within a scene, all joints used by
+  /// the skin **MUST** belong to the same scene.
   /// When defined, `mesh` **MUST** also be defined.
   final GltfRef<Skin>? skin;
 
@@ -43,17 +50,20 @@ class Node extends GltfNode {
   /// The reference to the mesh in this node.
   final GltfRef<Mesh>? mesh;
 
-  /// The node's unit quaternion rotation in the order (x, y, z, w), where w is the scalar.
+  /// The node's unit quaternion rotation in the order (x, y, z, w),
+  /// where w is the scalar.
   final Quaternion? rotation;
 
-  /// The node's non-uniform scale, given as the scaling factors along the x, y, and z axes.
+  /// The node's non-uniform scale, given as the scaling factors along
+  /// the x, y, and z axes.
   final Vector3? scale;
 
   /// The node's translation along the x, y, and z axes.".
   final Vector3? translation;
 
   /// The weights of the instantiated morph target.
-  /// The number of array elements **MUST** match the number of morph targets of the referenced mesh.
+  /// The number of array elements **MUST** match the number of morph targets
+  /// of the referenced mesh.
   /// When defined, `mesh` **MUST** also be defined.
   final List<double>? weights;
 

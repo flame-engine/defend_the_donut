@@ -20,14 +20,16 @@ class Mouse {
   static ValueChanged<PointerDataPacket>? _onPointerDataPacket;
 
   static Future<void> init() async {
-    _onPointerDataPacket = PlatformDispatcher.instance.onPointerDataPacket!;
+    _onPointerDataPacket = PlatformDispatcher.instance.onPointerDataPacket;
 
     PlatformDispatcher.instance.onPointerDataPacket = (packet) async {
       _onPointerDataPacket?.call(packet);
 
       // If any of the data events is a move or hover we should get a new delta.
-      final hasPointerMoved = packet.data.any((e) =>
-          e.change == PointerChange.move || e.change == PointerChange.hover);
+      final hasPointerMoved = packet.data.any((e) {
+        return e.change == PointerChange.move ||
+            e.change == PointerChange.hover;
+      });
 
       // If the data is empty and the pointer is locked then we can assume that
       // the user did move the mouse because Flutter will still trigger the
@@ -45,7 +47,7 @@ class Mouse {
     if (_onPointerDataPacket != null) {
       PlatformDispatcher.instance.onPointerDataPacket = _onPointerDataPacket;
     }
-    return await unlock();
+    return unlock();
   }
 
   static Future<void> reset() async {
@@ -53,13 +55,16 @@ class Mouse {
   }
 
   static Future<void> lock() async {
-    return;
-    if (_pointerLocked) return;
+    if (_pointerLocked) {
+      return;
+    }
     return _lock.lockPointer().then((_) => _pointerLocked = true);
   }
 
   static Future<void> unlock() async {
-    if (!_pointerLocked) return;
+    if (!_pointerLocked) {
+      return;
+    }
     return _lock.unlockPointer().then((_) => _pointerLocked = false);
   }
 }

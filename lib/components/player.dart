@@ -1,11 +1,11 @@
-import 'package:flame/components.dart' show HasGameReference;
-import 'package:flame_3d/components.dart';
-import 'package:flame_3d/game.dart';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/pew.dart';
 import 'package:defend_the_donut/key_event_handler.dart';
 import 'package:defend_the_donut/mouse.dart';
 import 'package:defend_the_donut/space_game_3d.dart';
+import 'package:flame/components.dart' show HasGameReference;
+import 'package:flame_3d/components.dart';
+import 'package:flame_3d/game.dart';
 
 class Player extends Component3D
     with KeyEventHandler, HasGameReference<SpaceGame3D> {
@@ -119,9 +119,8 @@ class Player extends Component3D
     required double deltaYaw,
     required double deltaPitch,
   }) {
-    Quaternion yawRotation = Quaternion.axisAngle(Vector3(0, 1, 0), deltaYaw);
-    Quaternion pitchRotation =
-        Quaternion.axisAngle(Vector3(1, 0, 0), deltaPitch);
+    final yawRotation = Quaternion.axisAngle(Vector3(0, 1, 0), deltaYaw);
+    final pitchRotation = Quaternion.axisAngle(Vector3(1, 0, 0), deltaPitch);
 
     rotation.setFrom((rotation * yawRotation) * pitchRotation);
     rotation.normalize();

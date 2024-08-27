@@ -4,12 +4,16 @@ import 'package:defend_the_donut/parser/gltf/gltf_node.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_ref.dart';
 import 'package:defend_the_donut/parser/gltf/gltf_root.dart';
 
-/// An object pointing to a buffer view containing the indices of deviating accessor values.
-/// The number of indices is equal to `accessor.sparse.count`. Indices **MUST** strictly increase.
+/// An object pointing to a buffer view containing the indices of deviating
+/// accessor values.
+/// The number of indices is equal to `accessor.sparse.count`. Indices **MUST**
+/// strictly increase.
 class SparseAccessorIndices extends GltfNode {
   /// The reference to the buffer view with sparse indices.
-  /// The referenced buffer view **MUST NOT** have its `target` or `byteStride` properties defined.
-  /// The buffer view and the optional `byteOffset` **MUST** be aligned to the `componentType` byte length."
+  /// The referenced buffer view **MUST NOT** have its `target` or `byteStride`
+  /// properties defined.
+  /// The buffer view and the optional `byteOffset` **MUST** be aligned to the
+  /// `componentType` byte length."
   final GltfRef<BufferView> bufferView;
 
   /// The offset relative to the start of the buffer view in bytes.

@@ -9,7 +9,8 @@ import 'package:flame_3d/core.dart';
 
 class RawAccessor extends GltfNode {
   /// The reference to the buffer view.
-  /// When undefined, the accessor **MUST** be initialized with zeros; `sparse` property or extensions **MAY** override zeros with actual values.
+  /// When undefined, the accessor **MUST** be initialized with zeros; `sparse`
+  /// property or extensions **MAY** override zeros with actual values.
   final GltfRef<BufferView> bufferView;
 
   /// The offset relative to the start of the buffer view in bytes.
@@ -19,38 +20,57 @@ class RawAccessor extends GltfNode {
   final int byteOffset;
 
   /// The datatype of the accessor's components.
-  /// UNSIGNED_INT type **MUST NOT** be used for any accessor that is not referenced by `mesh.primitive.indices`.
+  /// UNSIGNED_INT type **MUST NOT** be used for any accessor that is not
+  /// referenced by `mesh.primitive.indices`.
   final ComponentType componentType;
 
-  /// Specifies whether integer data values are normalized (`true`) to [0, 1] (for unsigned types) or to [-1, 1] (for signed types) when they are accessed.
-  /// This property **MUST NOT** be set to `true` for accessors with `FLOAT` or `UNSIGNED_INT` component type.
+  /// Specifies whether integer data values are normalized (`true`) to [0, 1]
+  /// (for unsigned types) or to [-1, 1] (for signed types) when they are
+  /// accessed.
+  ///
+  /// This property **MUST NOT** be set to `true` for accessors with `FLOAT` or
+  /// `UNSIGNED_INT` component type.
   final bool normalized;
 
-  /// The number of elements referenced by this accessor, not to be confused with the number of bytes or number of components.
+  /// The number of elements referenced by this accessor, not to be confused
+  /// with the number of bytes or number of components.
   final int count;
 
   /// Specifies if the accessor's elements are scalars, vectors, or matrices.
-  /// This should match the type parameter [T].
+  /// This should match the type used for a [TypedAccessor].
   final AccessorType type;
 
   /// Maximum value of each component in this accessor.
-  /// Array elements **MUST** be treated as having the same data type as accessor's `componentType`.
+  /// Array elements **MUST** be treated as having the same data type as
+  /// accessor's `componentType`.
+  ///
   /// Both `min` and `max` arrays have the same length.
   ///
-  /// The length is determined by the value of the `type` property; it can be 1, 2, 3, 4, 9, or 16.
-  /// `normalized` property has no effect on array values: they always correspond to the actual values stored in the buffer.
-  /// When the accessor is sparse, this property **MUST** contain maximum values of accessor data with sparse substitution applied.
+  /// The length is determined by the value of the `type` property;
+  /// it can be 1, 2, 3, 4, 9, or 16.
+  ///
+  /// `normalized` property has no effect on array values: they always
+  /// correspond to the actual values stored in the buffer.
+  ///
+  /// When the accessor is sparse, this property **MUST** contain maximum
+  /// values of accessor data with sparse substitution applied.
   final List<double>? max;
 
   /// Minimum value of each component in this accessor.
   ///
-  /// Array elements **MUST** be treated as having the same data type as accessor's `componentType`.
+  /// Array elements **MUST** be treated as having the same data type as
+  /// accessor's `componentType`.
+  ///
   /// Both `min` and `max` arrays have the same length.
   ///
-  /// The length is determined by the value of the `type` property; it can be 1, 2, 3, 4, 9, or 16.
+  /// The length is determined by the value of the `type` property;
+  /// it can be 1, 2, 3, 4, 9, or 16.
   ///
-  /// `normalized` property has no effect on array values: they always correspond to the actual values stored in the buffer.
-  /// When the accessor is sparse, this property **MUST** contain minimum values of accessor data with sparse substitution applied.
+  /// `normalized` property has no effect on array values: they always
+  /// correspond to the actual values stored in the buffer.
+  ///
+  /// When the accessor is sparse, this property **MUST** contain minimum
+  /// values of accessor data with sparse substitution applied.
   final List<double>? min;
 
   /// Sparse storage of elements that deviate from their initialization value.
@@ -68,11 +88,12 @@ class RawAccessor extends GltfNode {
 
     if ((bytes.lengthInBytes - byteOffset) % step != 0) {
       throw Exception(
-        'Accessor data length ${bytes.lengthInBytes} is not a multiple of the stride $step',
+        'Accessor data length ${bytes.lengthInBytes} '
+        'is not a multiple of the stride $step.',
       );
     }
 
-    for (int cursor = byteOffset;
+    for (var cursor = byteOffset;
         cursor < bytes.lengthInBytes;
         cursor += step) {
       yield componentType.parseData(byteData, cursor: cursor);
@@ -86,7 +107,8 @@ class RawAccessor extends GltfNode {
     final view = data().toList();
     if (view.length % size != 0) {
       throw Exception(
-        'Accessor data length ${view.length} is not a multiple of the size $size',
+        'Accessor data length ${view.length}'
+        ' is not a multiple of the size $size',
       );
     }
 

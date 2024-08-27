@@ -33,12 +33,12 @@ class Parser {
     Map<String, Object?> map,
     String key,
   ) {
-    return (map[key] as List<Object?>?)
-        ?.map((e) => GltfRef<T>(
-              root: root,
-              index: e as int,
-            ))
-        .toList();
+    return (map[key] as List<Object?>?)?.map((e) {
+      return GltfRef<T>(
+        root: root,
+        index: e! as int,
+      );
+    }).toList();
   }
 
   static Vector3? vector3(
@@ -47,7 +47,7 @@ class Parser {
     String key,
   ) {
     final entries = floatList(map, key);
-    return entries?.let((e) => Vector3.array(e));
+    return entries?.let(Vector3.array);
   }
 
   static Matrix4? matrix4(
@@ -56,7 +56,7 @@ class Parser {
     String key,
   ) {
     final entries = floatList(map, key);
-    return entries?.let((e) => Matrix4.fromList(e));
+    return entries?.let(Matrix4.fromList);
   }
 
   static Vector4? vector4(
@@ -65,7 +65,7 @@ class Parser {
     String key,
   ) {
     final entries = floatList(map, key);
-    return entries?.let((e) => Vector4.array(e));
+    return entries?.let(Vector4.array);
   }
 
   static Quaternion? quaternion(
@@ -108,7 +108,7 @@ class Parser {
   static List<double> coerceFloatList(
     List<Object?> value,
   ) {
-    return value.map((e) => (e as num).toDouble()).toList();
+    return value.map((e) => (e! as num).toDouble()).toList();
   }
 
   static String? string(
@@ -162,7 +162,7 @@ class Parser {
     T Function(GltfRoot, Map<String, Object?>) parser,
   ) {
     return (map[key] as List<Object?>?)
-        ?.map((e) => parser(root, e as Map<String, Object?>))
+        ?.map((e) => parser(root, e! as Map<String, Object?>))
         .toList();
   }
 
@@ -171,7 +171,7 @@ class Parser {
     String key,
   ) {
     return (map[key] as Map<String, Object?>?)
-        ?.map((key, value) => MapEntry(key, value as int));
+        ?.map((key, value) => MapEntry(key, value! as int));
   }
 }
 

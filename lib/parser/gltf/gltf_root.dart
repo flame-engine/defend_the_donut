@@ -54,7 +54,7 @@ class GltfRoot {
       return chunk.data;
     }
     final buffer = ref.get();
-    return await readChunkFrom(buffer.uri!);
+    return readChunkFrom(buffer.uri!);
   }
 
   Future<Uint8List> readChunkFrom(String uri) async {
@@ -147,7 +147,7 @@ class GltfRoot {
   }
 
   Model toFlameModel([int? scene]) {
-    int nextDefaultIdx = 0;
+    var nextDefaultIdx = 0;
     String nextDefaultName() => 'unnamed_animation_${nextDefaultIdx++}';
 
     return Model(

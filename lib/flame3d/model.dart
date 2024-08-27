@@ -1,10 +1,9 @@
 import 'dart:collection';
 
+import 'package:defend_the_donut/flame3d/model_animation.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flame_3d/resources.dart';
 import 'package:ordered_set/comparing.dart';
-
-import 'model_animation.dart';
 
 class Model {
   final Map<int, ModelNode> nodes;
@@ -55,7 +54,7 @@ class Model {
     }
 
     final queue = Queue<int>.from(
-      nodes.values.map(((e) => e.nodeIndex)).where((e) => inDegree[e] == 0),
+      nodes.values.map((e) => e.nodeIndex).where((e) => inDegree[e] == 0),
     );
 
     while (queue.isNotEmpty) {

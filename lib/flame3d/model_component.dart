@@ -1,5 +1,5 @@
-import 'package:defend_the_donut/flame3d/model_animation.dart';
 import 'package:defend_the_donut/flame3d/model.dart';
+import 'package:defend_the_donut/flame3d/model_animation.dart';
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/core.dart';

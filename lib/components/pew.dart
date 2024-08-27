@@ -1,14 +1,14 @@
-import 'package:flame_3d/game.dart';
-import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/components/base_component.dart';
 import 'package:defend_the_donut/components/enemy_ship.dart';
+import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
 
 class Pew extends BaseComponent {
   final Vector3 speed;
 
   Pew({
-    super.position,
     required Vector3 direction,
+    super.position,
   })  : speed = direction.normalized() * _pewSpeed,
         super(
           mesh: SphereMesh(

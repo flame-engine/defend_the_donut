@@ -6,10 +6,12 @@ import 'package:defend_the_donut/parser/gltf/texture_info.dart';
 class NormalTextureInfo extends TextureInfo {
   /// The scalar parameter applied to each normal vector of the texture.
   ///
-  /// This value scales the normal vector in X and Y directions using the formula:
+  /// This value scales the normal vector in X and Y directions using the
+  /// formula:
   ///
   /// ```
-  ///   scaledNormal =  normalize((<sampled normal texture value> * 2.0 - 1.0) * vec3(<normal scale>, <normal scale>, 1.0))
+  ///   scaledNormal =  normalize((<sampled normal texture value> * 2.0 - 1.0)
+  ///                       * vec3(<normal scale>, <normal scale>, 1.0))
   /// ```
   final double scale;
 
