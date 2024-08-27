@@ -127,9 +127,6 @@ class NodeAnimation {
     for (final channel in channels) {
       final value = channel.sample(time);
       final transform = channel.animation.asTransform(value);
-      if (transform[0].isNaN) {
-        throw Exception('NaN ${channel.animation.values} in transform');
-      }
       result.multiply(transform);
     }
     return result;
