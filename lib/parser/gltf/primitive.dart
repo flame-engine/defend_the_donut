@@ -27,7 +27,7 @@ class Primitive extends GltfNode {
   /// When this is undefined, the primitive defines non-indexed geometry.
   /// When defined, the accessor **MUST** have `SCALAR` type and an unsigned
   /// integer component type.
-  final GltfRef<IntAccessor> indices;
+  final GltfRef<IntAccessor>? indices;
 
   /// The reference to the material to apply to this primitive when rendering.
   final GltfRef<Material>? material;
@@ -61,14 +61,16 @@ class Primitive extends GltfNode {
     );
   }
 
-  Iterable<flame_3d.Vertex> toFlameVertices(
-    List<int> indices,
+  (List<flame_3d.Vertex>, List<int>) toFlameVertices(
     JointData jointData,
     Matrix4 transform,
-  ) sync* {
+  ) {
     assert(mode == PrimitiveMode.triangles);
 
     final positions = this.positions!.get().typedData();
+    final indices = this.indices?.get().typedData() ??
+        // for non-indexed geometries
+        List.generate(positions.length, (i) => i);
     final texCoords = this.texCoords?.get().typedData();
     final normals = this.normals?.get().typedData() ??
         flame_3d.Vertex.calculateVertexNormals(positions, indices);
@@ -81,23 +83,26 @@ class Primitive extends GltfNode {
     }
 
     final maxIndex = indices.reduce(max);
+    final vertices = <flame_3d.Vertex>[];
     for (var i = 0; i <= maxIndex; i++) {
-      yield flame_3d.Vertex(
-        position: process(positions[i])!,
-        texCoord: texCoords?.elementAtOrNull(i) ?? Vector2.zero(),
-        normal: process(normals.elementAtOrNull(i)),
-        joints: jointData.localizedJoint(i),
-        weights: jointData.weight(i),
+      vertices.add(
+        flame_3d.Vertex(
+          position: process(positions[i])!,
+          texCoord: texCoords?.elementAtOrNull(i) ?? Vector2.zero(),
+          normal: process(normals.elementAtOrNull(i)),
+          joints: jointData.localizedJoint(i),
+          weights: jointData.weight(i),
+        ),
       );
     }
+
+    return (vertices, indices);
   }
 
   flame_3d.Surface toFlameSurface([Matrix4? transform]) {
-    final indices = this.indices.get().typedData();
     final jointData = computeJointData();
 
-    final vertices = toFlameVertices(
-      indices,
+    final (vertices, indices) = toFlameVertices(
       jointData,
       transform ?? Matrix4.identity(),
     );
@@ -162,7 +167,7 @@ class Primitive extends GltfNode {
           root: root,
           mode: PrimitiveMode.parse(map, 'mode') ?? PrimitiveMode.triangles,
           attributes: Parser.mapInt(map, 'attributes') ?? {},
-          indices: Parser.ref(root, map, 'indices')!,
+          indices: Parser.ref(root, map, 'indices'),
           material: Parser.ref(root, map, 'material'),
           targets: Parser.objectList<MorphTarget>(
                 root,

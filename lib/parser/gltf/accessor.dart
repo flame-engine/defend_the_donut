@@ -82,10 +82,7 @@ class RawAccessor extends GltfNode {
 
     final byteData = bytes.buffer.asByteData();
 
-    final byteStride = buffer.byteStride;
-    final step =
-        byteStride == null ? componentType.byteSize : byteStride ~/ type.size;
-
+    final step = componentType.byteSize;
     if ((bytes.lengthInBytes - byteOffset) % step != 0) {
       throw Exception(
         'Accessor data length ${bytes.lengthInBytes} '
@@ -104,16 +101,28 @@ class RawAccessor extends GltfNode {
     _verifyNotSparse();
     _verifyAccessorType(size);
 
+    final buffer = bufferView.get();
     final view = data().toList();
-    if (view.length % size != 0) {
+
+    final int step;
+    final byteStride = buffer.byteStride;
+    if (byteStride != null) {
+      step = byteStride ~/ componentType.byteSize;
+    } else {
+      step = size;
+    }
+    if (step == 0) {
+      throw Exception('Step cannot be 0');
+    }
+    if (view.length % step != 0) {
       throw Exception(
         'Accessor data length ${view.length}'
-        ' is not a multiple of the size $size',
+        ' is not a multiple of the step $step'
       );
     }
 
     final result = <T>[];
-    for (var i = 0; i < view.length; i += size) {
+    for (var i = 0; i < view.length; i += step) {
       result.add(producer(view.sublist(i, i + size)));
       if (result.length == count) {
         break;
