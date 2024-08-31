@@ -9,7 +9,6 @@ import 'package:flame_3d_extras/parser/model_parser.dart';
 enum DonutType {
   donut1('objects/donuts/donut_1.obj'),
   donut2('objects/donuts/donut_2.glb'),
-
   ;
 
   final String path;
