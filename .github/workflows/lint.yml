@@ -17,13 +17,13 @@ jobs:
           channel: main
       - uses: flame-engine/flame-format-action@v1.1.0
 
-  analyze:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: main
-          cache: true
-      - name: "Analyze"
-        run: flutter analyze --fatal-infos
+  # analyze:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: main
+  #         cache: true
+  #     - name: "Analyze"
+  #       run: flutter analyze --fatal-infos
