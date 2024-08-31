@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/donut.dart';
 import 'package:defend_the_donut/components/enemy_ship.dart';
-import 'package:defend_the_donut/components/pew.dart';
 import 'package:defend_the_donut/components/player.dart';
 import 'package:defend_the_donut/hud/crosshair.dart';
 import 'package:defend_the_donut/hud/hud.dart';
@@ -19,9 +18,6 @@ import 'package:flame/game.dart' show FlameGame;
 import 'package:flame_3d/camera.dart';
 import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
-import 'package:flame_3d/resources.dart';
-import 'package:flame_3d_extras/model/model_component.dart';
-import 'package:flame_3d_extras/parser/model_parser.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -142,11 +138,11 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 
 class SpaceWorld3D extends World3D with TapCallbacks {
   static const maxEnemies = 32;
-  double spawnRate = 0.032;
+  double spawnRate = 0.064 * 5;
 
   SpaceWorld3D()
       : super(
-          clearColor: const Color(0xFF3C3C3C),
+          clearColor: const Color(0xFF000000),
         );
 
   @override
@@ -158,33 +154,18 @@ class SpaceWorld3D extends World3D with TapCallbacks {
   );
 
   FutureOr<void> initGame() async {
-    final model = await ModelParser.parse('objects/duck.glb');
-    final mc = ModelComponent(model: model);
-    await add(mc);
-    // mc.playAnimation('Walking_B');
-    // mc.playAnimationIdx(0);
-
-    await makeLight(Vector3.zero(), const Color(0xFFFFFFFF));
-    // await makeLight(Vector3(0, 0, -6), const Color(0xFFFFFFFF));
-    // await makeLight(Vector3(0, 3, 6), const Color(0xFFFFFFFF));
-
     await addAll([
       LightComponent.ambient(
         intensity: 0.75,
       ),
-      Pew(
+      LightComponent.point(
         position: Vector3.zero(),
-        direction: Vector3.zero(),
+        intensity: 20.0,
       ),
-      Donut(
-        type: DonutType.donut1,
+      await Donut.donut(
         position: Vector3.zero(),
       ),
       player,
-      TimerComponent(
-        period: 5, // 5 seconds
-        onTick: spawnEnemy,
-      ),
       TimerComponent(
         period: 1, // 1 second
         repeat: true,
@@ -217,27 +198,5 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   Future<void> spawnEnemy() async {
     await add(await EnemyShip.spawnShip());
-  }
-
-  Future<void> makeLight(
-    Vector3 position,
-    Color color,
-  ) async {
-    await addAll([
-      LightComponent.point(
-        position: position,
-        color: color,
-        intensity: 20.0,
-      ),
-      MeshComponent(
-        position: position,
-        mesh: SphereMesh(
-          radius: 0.1,
-          material: SpatialMaterial(
-            albedoColor: color,
-          ),
-        ),
-      ),
-    ]);
   }
 }

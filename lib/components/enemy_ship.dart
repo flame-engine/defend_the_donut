@@ -32,25 +32,25 @@ class EnemyShip extends BaseComponent {
   bool isShootingDonut = false;
   Beam? beam;
 
-  final Map<int, Color> _originalAlbedoColorMap = {};
+  final Map<(int, int), Color> _originalAlbedoColorMap = {};
 
   EnemyShip({
-    required super.mesh,
+    required super.model,
     required super.position,
     required this.goal,
   });
 
   @override
   FutureOr<void> onLoad() {
-    for (final (i, surface) in mesh.surfaces.indexed) {
+    _iterateSurfaces((key, surface) {
       final material = surface.material! as SpatialMaterial;
-      _originalAlbedoColorMap[i] = material.albedoColor;
-    }
+      _originalAlbedoColorMap[key] = material.albedoColor;
+    });
   }
 
   static Future<EnemyShip> spawnShip() async {
     final type = ShipType.values[Random().nextInt(ShipType.values.length)];
-    final mesh = await ModelParser.obj.parseMesh(type.path);
+    final model = await ModelParser.parse(type.path);
 
     final direction = Vector3(
       _randomCoord(),
@@ -62,7 +62,7 @@ class EnemyShip extends BaseComponent {
     final goal = direction.clone()..scale(targetDistance);
     final position = direction.clone()..scale(4 / 5 * worldRadius);
 
-    return EnemyShip(mesh: mesh, position: position, goal: goal);
+    return EnemyShip(model: model, position: position, goal: goal);
   }
 
   @override
@@ -141,17 +141,30 @@ class EnemyShip extends BaseComponent {
   void _tintMesh([
     Color Function(Color) tint = _tintNone,
   ]) {
-    for (final (i, surface) in mesh.surfaces.indexed) {
+    _iterateSurfaces((key, surface) {
       final material = surface.material! as SpatialMaterial;
 
-      final originalColor = _originalAlbedoColorMap[i]!;
+      final originalColor = _originalAlbedoColorMap[key]!;
       final newColor = tint(originalColor);
 
       if (material.albedoColor == newColor) {
-        continue;
+        return;
       }
 
       material.albedoColor = newColor;
+    });
+  }
+
+  void _iterateSurfaces(void Function((int, int), Surface) consumer) {
+    for (final entry in model.nodes.entries) {
+      final node = entry.value;
+      final mesh = node.mesh;
+      if (mesh == null) {
+        continue;
+      }
+      for (final (i, surface) in mesh.surfaces.indexed) {
+        consumer((entry.key, i), surface);
+      }
     }
   }
 
