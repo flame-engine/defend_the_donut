@@ -1,0 +1,7 @@
+dependency_overrides:
+  flame_3d:
+    path: ../flame/packages/flame_3d
+  flame_3d_extras:
+    path: ../flame_3d_extras
+  flame_test:
+    path: ../flame/packages/flame_test

@@ -44,5 +44,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-pubspec_overrides.yaml
 pubspec.lock

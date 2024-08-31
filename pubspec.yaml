@@ -14,10 +14,10 @@ environment:
 dependencies:
   flame: ^1.16.0
   flame_3d: ^0.1.0-dev.1
+  flame_3d_extras: ^0.1.0-dev.1
   flame_audio: ^2.10.0
   flutter:
     sdk: flutter
-  ordered_set: ^5.0.3
   pointer_lock:
     git:
       url: https://github.com/helgoboss/pointer_lock.git
