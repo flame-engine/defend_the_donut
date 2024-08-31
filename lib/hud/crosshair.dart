@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:flame/components.dart';
 import 'package:defend_the_donut/space_game_3d.dart';
+import 'package:flame/components.dart';
 
 class Crosshair extends Component with HasGameReference<SpaceGame3D> {
   List<(Offset, Offset)> _lines = [];

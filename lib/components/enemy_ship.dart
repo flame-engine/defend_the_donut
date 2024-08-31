@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:defend_the_donut/components/beam.dart';
-import 'package:flame_3d/game.dart';
-import 'package:flame_3d/resources.dart';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/base_component.dart';
-import 'package:defend_the_donut/parser/obj_parser.dart';
+import 'package:defend_the_donut/components/beam.dart';
 import 'package:defend_the_donut/utils.dart';
+import 'package:flame_3d/game.dart';
+import 'package:flame_3d/resources.dart';
+import 'package:flame_3d_extras/parser/model_parser.dart';
 import 'package:flutter/animation.dart';
 
 enum ShipType {
@@ -32,25 +32,25 @@ class EnemyShip extends BaseComponent {
   bool isShootingDonut = false;
   Beam? beam;
 
-  final Map<int, Color> _originalAlbedoColorMap = {};
+  final Map<(int, int), Color> _originalAlbedoColorMap = {};
 
   EnemyShip({
-    required super.mesh,
+    required super.model,
     required super.position,
     required this.goal,
   });
 
   @override
   FutureOr<void> onLoad() {
-    for (final (i, surface) in mesh.surfaces.indexed) {
-      final material = surface.material as SpatialMaterial;
-      _originalAlbedoColorMap[i] = material.albedoColor;
-    }
+    _iterateSurfaces((key, surface) {
+      final material = surface.material! as SpatialMaterial;
+      _originalAlbedoColorMap[key] = material.albedoColor;
+    });
   }
 
   static Future<EnemyShip> spawnShip() async {
     final type = ShipType.values[Random().nextInt(ShipType.values.length)];
-    final mesh = await ObjParser.parse(type.path);
+    final model = await ModelParser.parse(type.path);
 
     final direction = Vector3(
       _randomCoord(),
@@ -62,7 +62,7 @@ class EnemyShip extends BaseComponent {
     final goal = direction.clone()..scale(targetDistance);
     final position = direction.clone()..scale(4 / 5 * worldRadius);
 
-    return EnemyShip(mesh: mesh, position: position, goal: goal);
+    return EnemyShip(model: model, position: position, goal: goal);
   }
 
   @override
@@ -74,11 +74,11 @@ class EnemyShip extends BaseComponent {
       } else {
         if (deathTimer > 1.0) {
           final progress = 1 - (deathTimer - 1.0);
-          _tintMesh((color) {
-            return color
-                .withRed((color.red + (255 - color.red) * progress).toInt())
-                .withGreen((color.green + (255 - color.green) * progress).toInt())
-                .withBlue((color.blue + (255 - color.blue) * progress).toInt());
+          _tintMesh((c) {
+            return c
+                .withRed((c.red + (255 - c.red) * progress).toInt())
+                .withGreen((c.green + (255 - c.green) * progress).toInt())
+                .withBlue((c.blue + (255 - c.blue) * progress).toInt());
           });
         } else {
           final progress = 1 - Curves.easeInCubic.transform(1 - deathTimer);
@@ -108,8 +108,10 @@ class EnemyShip extends BaseComponent {
 
     final target = position.distanceTo(goal);
     if (target < 0.1) {
-      isShootingDonut =  true;
-      game.world.add(beam = Beam.generate(start: position, end: Vector3.zero()));
+      isShootingDonut = true;
+      game.world.add(
+        beam = Beam.generate(start: position, end: Vector3.zero()),
+      );
     } else {
       final direction = (goal - position)..normalize();
       rotation.setFromTwoVectors(_forward, direction);
@@ -123,7 +125,9 @@ class EnemyShip extends BaseComponent {
   }
 
   void takeDamage() {
-    if (damageTimer > 0) return;
+    if (damageTimer > 0) {
+      return;
+    }
 
     life -= 1;
     damageTimer = 0.5;
@@ -137,17 +141,30 @@ class EnemyShip extends BaseComponent {
   void _tintMesh([
     Color Function(Color) tint = _tintNone,
   ]) {
-    for (final (i, surface) in mesh.surfaces.indexed) {
-      final material = surface.material as SpatialMaterial;
+    _iterateSurfaces((key, surface) {
+      final material = surface.material! as SpatialMaterial;
 
-      final originalColor = _originalAlbedoColorMap[i]!;
+      final originalColor = _originalAlbedoColorMap[key]!;
       final newColor = tint(originalColor);
 
       if (material.albedoColor == newColor) {
-        continue;
+        return;
       }
 
       material.albedoColor = newColor;
+    });
+  }
+
+  void _iterateSurfaces(void Function((int, int), Surface) consumer) {
+    for (final entry in model.nodes.entries) {
+      final node = entry.value;
+      final mesh = node.mesh;
+      if (mesh == null) {
+        continue;
+      }
+      for (final (i, surface) in mesh.surfaces.indexed) {
+        consumer((entry.key, i), surface);
+      }
     }
   }
 
@@ -162,6 +179,7 @@ class EnemyShip extends BaseComponent {
 
   static double _randomCoord() => worldRadius * (2 * random.nextDouble() - 1);
 
-  // this is the "forward" direction with respect to how the ship mesh is oriented
+  // this is the "forward" direction with respect to how the ship mesh is
+  // oriented
   final _forward = Vector3(0, 0, 1);
 }

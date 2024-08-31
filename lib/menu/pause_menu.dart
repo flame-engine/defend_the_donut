@@ -1,12 +1,12 @@
 import 'package:defend_the_donut/menu/menu.dart';
 import 'package:defend_the_donut/menu/menu_item.dart';
+import 'package:defend_the_donut/mouse.dart';
 import 'package:defend_the_donut/styles.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:defend_the_donut/mouse.dart';
 
 class PauseMenu extends Menu {
   static final _overlay = Paint()..color = const Color(0xAF000000);

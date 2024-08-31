@@ -3,20 +3,20 @@ import 'dart:async';
 import 'package:defend_the_donut/audio.dart';
 import 'package:defend_the_donut/components/donut.dart';
 import 'package:defend_the_donut/components/enemy_ship.dart';
-import 'package:defend_the_donut/components/pew.dart';
 import 'package:defend_the_donut/components/player.dart';
 import 'package:defend_the_donut/hud/crosshair.dart';
-import 'package:defend_the_donut/menu/end_game_menu.dart';
 import 'package:defend_the_donut/hud/hud.dart';
+import 'package:defend_the_donut/keyboard_controlled_camera.dart';
+import 'package:defend_the_donut/menu/end_game_menu.dart';
+import 'package:defend_the_donut/menu/main_menu.dart';
 import 'package:defend_the_donut/menu/menu.dart';
 import 'package:defend_the_donut/menu/pause_menu.dart';
-import 'package:defend_the_donut/keyboard_controlled_camera.dart';
-import 'package:defend_the_donut/menu/main_menu.dart';
 import 'package:defend_the_donut/utils.dart';
 import 'package:flame/components.dart' show TimerComponent;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart' show FlameGame;
 import 'package:flame_3d/camera.dart';
+import 'package:flame_3d/components.dart';
 import 'package:flame_3d/game.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -41,7 +41,7 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
     _updateMenu(MainMenu());
   }
 
-  void initGame() async {
+  Future<void> initGame() async {
     donutLife = 100.0;
     timer = 0.0;
 
@@ -138,7 +138,12 @@ class SpaceGame3D extends FlameGame<SpaceWorld3D>
 
 class SpaceWorld3D extends World3D with TapCallbacks {
   static const maxEnemies = 32;
-  double spawnRate = 0.032;
+  double spawnRate = 0.064 * 5;
+
+  SpaceWorld3D()
+      : super(
+          clearColor: const Color(0xFF000000),
+        );
 
   @override
   SpaceGame3D get game => findParent<SpaceGame3D>()!;
@@ -150,22 +155,17 @@ class SpaceWorld3D extends World3D with TapCallbacks {
 
   FutureOr<void> initGame() async {
     await addAll([
-      Pew(
-        position: Vector3(0, 0, 0),
-        direction: Vector3(0, 0, 0),
+      LightComponent.ambient(
+        intensity: 0.75,
       ),
-      Donut(
-        type: DonutType.donut1,
-        position: Vector3(0, 0, 0),
+      LightComponent.point(
+        position: Vector3.zero(),
+        intensity: 20.0,
+      ),
+      await Donut.donut(
+        position: Vector3.zero(),
       ),
       player,
-      TimerComponent(
-        period: 5, // 5 seconds
-        repeat: false,
-        onTick: () {
-          spawnEnemy();
-        },
-      ),
       TimerComponent(
         period: 1, // 1 second
         repeat: true,

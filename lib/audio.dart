@@ -1,3 +1,4 @@
+import 'package:defend_the_donut/utils.dart';
 import 'package:flame_audio/flame_audio.dart';
 
 class Audio {
@@ -5,23 +6,39 @@ class Audio {
   static late final AudioPool _failedPewPool;
 
   static Future<void> init() async {
-    _pewPool = await FlameAudio.createPool('sfx/laser.mp3', maxPlayers: 5, minPlayers: 3);
-    _failedPewPool = await FlameAudio.createPool('sfx/error.mp3', maxPlayers: 5, minPlayers: 3);
+    _pewPool = await FlameAudio.createPool(
+      'sfx/laser.mp3',
+      maxPlayers: 5,
+      minPlayers: 3,
+    );
+    _failedPewPool = await FlameAudio.createPool(
+      'sfx/error.mp3',
+      maxPlayers: 5,
+      minPlayers: 3,
+    );
   }
 
   static void pew() {
-    _pewPool.start();
+    if (enableAudio) {
+      _pewPool.start();
+    }
   }
 
   static void failedPew() {
-    _failedPewPool.start();
+    if (enableAudio) {
+      _failedPewPool.start();
+    }
   }
 
   static void boost() {
-    FlameAudio.play('sfx/boost.mp3');
+    if (enableAudio) {
+      FlameAudio.play('sfx/boost.mp3');
+    }
   }
 
   static void explode() {
-    FlameAudio.play('sfx/explode.mp3');
+    if (enableAudio) {
+      FlameAudio.play('sfx/explode.mp3');
+    }
   }
 }

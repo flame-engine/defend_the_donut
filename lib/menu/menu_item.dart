@@ -7,7 +7,6 @@ class MenuItem extends TextComponent<TextPaint>
     with HoverCallbacks, TapCallbacks {
   static final _hovered = Styles.textStyleWithShadows(
     color: const Color(0xFF444444),
-    shadow: const Color(0xFFFFFFFF),
   );
   static final _default = Styles.textStyleWithShadows();
 
