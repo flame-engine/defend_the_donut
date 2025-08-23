@@ -76,9 +76,9 @@ class EnemyShip extends BaseComponent {
           final progress = 1 - (deathTimer - 1.0);
           _tintMesh((c) {
             return c
-                .withRed((c.red + (255 - c.red) * progress).toInt())
-                .withGreen((c.green + (255 - c.green) * progress).toInt())
-                .withBlue((c.blue + (255 - c.blue) * progress).toInt());
+                .withRed(255 * (1 - progress).toInt())
+                .withGreen(255 * (1 - progress).toInt())
+                .withBlue(255 * (1 - progress).toInt());
           });
         } else {
           final progress = 1 - Curves.easeInCubic.transform(1 - deathTimer);
@@ -171,7 +171,9 @@ class EnemyShip extends BaseComponent {
   static Color _tintNone(Color color) => color;
 
   static Color _tintRed(Color color) {
-    return color.withRed((color.red + 50).clamp(0, 255)).withAlpha(180);
+    return color
+      .withRed((255 * (color.r + 0.2).clamp(0.0, 1.0)).toInt())
+      .withAlpha(180);
   }
 
   static const _shipAcc = 3.6;
