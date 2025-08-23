@@ -2,6 +2,10 @@
 
 Everyone knows donuts are the most precious things in the Universe. However, our despicable enemies from the Empire are seeking to destroy such a beloved treasure. It's up to you to defend your donut from the Empire's ships. How long can you keep up?
 
+<p align="center">
+    <img width="50%" alt="image" src="https://github.com/user-attachments/assets/1cda6e43-1cd4-465f-8182-8b1a316f9554" />
+</p>
+
 ## How to play
 
 * Move the ship with WASD
