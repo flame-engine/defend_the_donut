@@ -38,7 +38,6 @@ mixin CanPause<T extends World> on FlameGame<T> {
   @override
   @mustCallSuper
   void onMount() {
-    Mouse.init();
     return super.onMount();
   }
 

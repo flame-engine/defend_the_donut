@@ -6,8 +6,8 @@ import 'package:defend_the_donut/components/base_component.dart';
 import 'package:defend_the_donut/components/beam.dart';
 import 'package:defend_the_donut/utils.dart';
 import 'package:flame_3d/game.dart';
+import 'package:flame_3d/parser.dart';
 import 'package:flame_3d/resources.dart';
-import 'package:flame_3d_extras/parser/model_parser.dart';
 import 'package:flutter/animation.dart';
 
 enum ShipType {

@@ -1,7 +1,7 @@
 import 'package:defend_the_donut/space_game_3d.dart';
 import 'package:defend_the_donut/utils.dart';
 import 'package:flame/components.dart';
-import 'package:flame_3d_extras/model/model_component.dart';
+import 'package:flame_3d/model.dart';
 import 'package:flutter/foundation.dart';
 
 class BaseComponent extends ModelComponent with HasGameReference<SpaceGame3D> {

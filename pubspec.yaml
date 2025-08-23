@@ -8,14 +8,13 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
-  flutter: ">=3.22.0"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.32.0"
 
 dependencies:
-  flame: ^1.16.0
-  flame_3d: ^0.1.0-dev.1
-  flame_3d_extras: ^0.1.0-dev.1
-  flame_audio: ^2.10.0
+  flame: ^1.31.0
+  flame_3d: ^0.1.0
+  flame_audio: ^2.11.9
   flutter:
     sdk: flutter
   pointer_lock:
@@ -24,7 +23,7 @@ dependencies:
       ref: main
 
 dev_dependencies:
-  flame_lint: ^1.2.0
+  flame_lint: ^1.4.2
   flame_test: ^1.16.2
   flutter_test:
     sdk: flutter

@@ -14,7 +14,6 @@ class KeyboardControlledCamera extends CameraComponent3D
     super.hudComponents,
   }) : super(
           projection: CameraProjection.perspective,
-          mode: CameraMode.free,
           up: Vector3(0, 1, 0),
           target: Vector3(0, 0, -1),
           fovY: 60,
